@@ -1,0 +1,137 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f4f7fb;
+  color: #111827;
+  font-size: 16px;
+  line-height: 1.5;
+  --surface: rgba(255, 255, 255, 0.12);
+  --surface-strong: rgba(15, 23, 42, 0.72);
+  --surface-soft: rgba(255, 255, 255, 0.08);
+  --text-primary: #f8fafc;
+  --text-muted: rgba(248, 250, 252, 0.78);
+  --accent: #2563eb;
+  --accent-soft: rgba(59, 130, 246, 0.22);
+  --danger: #f87171;
+  --shadow: rgba(15, 23, 42, 0.24);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.55), rgba(37, 99, 235, 0.35)),
+    url('/images/images_login.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  padding: 1rem 1.4rem;
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 18px 38px rgba(37, 99, 235, 0.24);
+  transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 46px rgba(37, 99, 235, 0.32);
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.secondary-button,
+.danger-button {
+  border-radius: 18px;
+  padding: 0.95rem 1.1rem;
+  font-weight: 700;
+}
+
+.secondary-button {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-primary);
+  box-shadow: none;
+}
+
+.danger-button {
+  background: var(--danger);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+.eyebrow {
+  display: inline-flex;
+  margin: 0 0 16px;
+  color: #c7d2fe;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  padding: 36px 0 56px;
+}
+
+.main-content {
+  width: 100%;
+}
+
+.app-header {
+  width: min(100%, 520px);
+  margin: 0 auto;
+  text-align: center;
+  color: var(--text-primary);
+  text-shadow: 0 18px 45px rgba(1, 11, 30, 0.35);
+}
+
+.app-header h1 {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.app-header p {
+  color: rgba(248, 250, 252, 0.92);
+  font-size: clamp(0.95rem, 1vw, 1rem);
+  line-height: 1.75;
+}
+
+main {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

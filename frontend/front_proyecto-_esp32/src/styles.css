@@ -1,0 +1,504 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f4f7fb;
+  color: #111827;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.55), rgba(37, 99, 235, 0.35)),
+    url('/images/images_login.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  padding: 36px 0 56px;
+  gap: 28px;
+}
+
+.main-content {
+  width: 100%;
+}
+
+.login-view {
+  display: flex;
+  justify-content: center;
+}
+
+.dashboard-view {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.app-header {
+  width: min(100%, 520px);
+  text-align: center;
+  color: #f8fafc;
+  text-shadow: 0 18px 45px rgba(1, 11, 30, 0.35);
+}
+
+.app-header h1 {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.app-header p {
+  color: rgba(248, 250, 252, 0.92);
+  font-size: clamp(0.95rem, 1vw, 1rem);
+  line-height: 1.75;
+}
+
+.eyebrow {
+  display: inline-flex;
+  margin: 0 0 16px;
+  color: #c7d2fe;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+main {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.auth-card,
+.dashboard-card,
+.card {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 30px;
+  padding: 30px;
+  box-shadow: 0 32px 70px rgba(15, 23, 42, 0.2);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.auth-card {
+  width: min(100%, 460px);
+  margin: 0 auto;
+  display: grid;
+  gap: 18px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+@media (max-width: 520px) {
+  .auth-card {
+    width: min(100%, 100%);
+    padding: 24px;
+    border-radius: 26px;
+  }
+
+  .app-shell {
+    padding: 26px 14px 48px;
+  }
+
+  input {
+    padding: 0.95rem 1rem;
+  }
+
+  button {
+    padding: 0.95rem 1.2rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .auth-header h2 {
+    font-size: 1.7rem;
+  }
+
+  .field span,
+  .app-header p {
+    font-size: 0.95rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .app-shell {
+    padding: 48px 24px 72px;
+  }
+
+  .auth-card {
+    padding: 34px;
+  }
+}
+
+.auth-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
+  pointer-events: none;
+}
+
+.auth-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+  padding: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.55), rgba(59, 130, 246, 0.25), rgba(37, 99, 235, 0.15));
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.auth-header {
+  display: grid;
+  gap: 10px;
+}
+
+.auth-header h2 {
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+  color: #0f172a;
+}
+
+.auth-header p {
+  font-size: 1rem;
+  color: rgba(15, 23, 42, 0.75);
+  line-height: 1.7;
+}
+
+.field {
+  display: grid;
+  gap: 12px;
+}
+
+.field span {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: rgba(15, 23, 42, 0.95);
+}
+
+input {
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #0f172a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  padding: 1rem 1.4rem;
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 18px 38px rgba(37, 99, 235, 0.24);
+  transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 46px rgba(37, 99, 235, 0.32);
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.form-error {
+  color: #fee2e2;
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px solid rgba(254, 226, 226, 0.6);
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+}
+
+.form-error {
+  color: #b91c1c;
+  font-size: 0.95rem;
+}
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 26px 22px;
+  min-height: 560px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.14);
+}
+
+.sidebar-brand {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: rgba(59, 130, 246, 0.2);
+  color: #ffffff;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.brand-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.brand-subtitle {
+  margin-top: 4px;
+  color: rgba(248, 250, 252, 0.7);
+  font-size: 0.9rem;
+}
+
+.sidebar-profile {
+  display: grid;
+  gap: 6px;
+}
+
+.sidebar-label {
+  font-size: 0.8rem;
+  color: rgba(248, 250, 252, 0.75);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sidebar-profile h3 {
+  color: #f8fafc;
+  font-size: 1.25rem;
+}
+
+.sidebar-role {
+  color: rgba(248, 250, 252, 0.72);
+}
+
+.sidebar-nav {
+  display: grid;
+  gap: 12px;
+}
+
+.nav-item {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-radius: 16px;
+  padding: 0.95rem 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(248, 250, 252, 0.92);
+  cursor: pointer;
+  transition: background 150ms ease, transform 150ms ease;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  background: rgba(59, 130, 246, 0.2);
+  transform: translateX(2px);
+}
+
+.sidebar-logout {
+  margin-top: auto;
+}
+
+.logout-button {
+  width: 100%;
+  border: 0;
+  border-radius: 18px;
+  padding: 0.95rem 1rem;
+  background: rgba(248, 113, 113, 0.95);
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dashboard-main {
+  display: grid;
+  gap: 24px;
+}
+
+.dashboard-top {
+  display: grid;
+  gap: 10px;
+  align-items: start;
+}
+
+.dashboard-top h2 {
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  color: #f8fafc;
+}
+
+.dashboard-help {
+  color: rgba(248, 250, 252, 0.78);
+  font-size: 1rem;
+  line-height: 1.8;
+  max-width: 680px;
+}
+
+.dashboard-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+@media (max-width: 980px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding: 18px 12px 36px;
+  }
+
+  .auth-card {
+    width: 100%;
+    padding: 20px;
+    border-radius: 24px;
+  }
+
+  .app-header h1 {
+    font-size: 2rem;
+  }
+
+  .app-header p,
+  .auth-header p,
+  .field span {
+    font-size: 0.95rem;
+  }
+
+  .sidebar {
+    padding: 22px 18px;
+  }
+
+  .dashboard-top h2 {
+    font-size: 1.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 18px;
+  }
+
+  .auth-header h2 {
+    font-size: 1.55rem;
+  }
+
+  .field span {
+    font-size: 0.9rem;
+  }
+
+  .logout-button,
+  .nav-item {
+    padding: 0.85rem 0.95rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding: 18px 14px 36px;
+  }
+
+  .auth-card {
+    width: 100%;
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .app-header h1 {
+    font-size: 2.1rem;
+  }
+
+  .app-header p,
+  .auth-header p,
+  .field span {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 18px;
+  }
+
+  .auth-header h2 {
+    font-size: 1.55rem;
+  }
+
+  .field span {
+    font-size: 0.9rem;
+  }
+}
