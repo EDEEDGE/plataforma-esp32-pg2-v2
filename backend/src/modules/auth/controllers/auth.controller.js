@@ -92,7 +92,6 @@ export const register = async (req, res) => {
     }
 };
 
-
 // Inicio de sesión
 export const login = async (req, res) => {
     try {
@@ -107,9 +106,10 @@ export const login = async (req, res) => {
             });
         }
 
+        //normalizar el Email
         const normalizedEmail = email.trim().toLowerCase();
 
-        // Buscar usuario
+        // Buscar usuario   
         const user = await db.orm.public.User.first({
             email: normalizedEmail
         });
@@ -174,4 +174,20 @@ export const login = async (req, res) => {
             message: 'Error interno del servidor'
         });
     }
+};
+
+//primera ruta protegida
+export const me = async (req, res) => {
+  try {
+    return res.status(200).json({
+      user: req.user
+    });
+
+  } catch (error) {
+    console.error('Error al obtener usuario autenticado:', error);
+
+    return res.status(500).json({
+      message: 'Error interno del servidor'
+    });
+  }
 };
