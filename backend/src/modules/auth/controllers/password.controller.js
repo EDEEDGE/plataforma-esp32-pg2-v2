@@ -64,11 +64,12 @@ export const changePassword = async (req, res) => {
       })
       .update({
         passwordHash: newPasswordHash,
+        tokenVersion: user.tokenVersion + 1,
         updatedAt: Temporal.Now.instant()
       });
 
     return res.status(200).json({
-      message: 'Contraseña actualizada correctamente'
+      message: 'Contraseña actualizada correctamente. Iniciar sesión nuevamente'
     });
 
   } catch (error) {

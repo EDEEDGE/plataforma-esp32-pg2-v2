@@ -39,6 +39,13 @@ export const authMiddleware = async (req, res, next) => {
       });
     }
 
+    //validar si el token es valido o no
+    if (decoded.tokenVersion !== user.tokenVersion) {
+      return res.status(401).json({
+        message: 'La sesión ya no es válida. Inicia sesión nuevamente.'
+      });
+    }
+
     // Guardar usuario en la petición
     req.user = {
       id: user.id,
