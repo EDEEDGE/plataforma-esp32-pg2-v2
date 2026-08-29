@@ -32,15 +32,14 @@ function App() {
 
   // Maneja el intento de login usando el servicio de auth.
   // Actualiza el estado y guarda la sesión localmente para recargar la página.
-  const handleLogin = async (username, password) => {
+  const handleLogin = async (email, password) => {
     setLoading(true);
     setError('');
 
     try {
-      const response = await login(username, password);
+      const response = await login(email, password);
       setUser(response.user);
-      // response.token se guarda en localStorage para futuras llamadas
-      // autenticadas cuando el backend real ya esté integrado.
+      // response.token se guarda en localStorage para futuras llamadas autenticadas
       localStorage.setItem('authUser', JSON.stringify(response.user));
       localStorage.setItem('authToken', response.token);
     } catch (err) {
