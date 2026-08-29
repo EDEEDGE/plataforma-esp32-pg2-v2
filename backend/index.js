@@ -3,6 +3,10 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 
+//temporal
+//import './src/config/mailer.js';
+
+
 import authRoutes from './src/modules/auth/index.js';
 
 const app = express();

@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { randomBytes, createHash } from 'node:crypto';
 import { db } from '../../../prisma/db.ts';
+import { transporter } from '../../../config/mailer.js';
 
 export const changePassword = async (req, res) => {
   try {
@@ -125,7 +126,43 @@ export const forgotPassword = async (req, res) => {
     });
 
     // SOLO PARA DESARROLLO
-    console.log('Token de recuperación:', resetToken);
+    //console.log('Token de recuperación:', resetToken);
+
+    const resetUrl = `http://localhost:5173/reset-password?token=${resetToken}`;
+
+    console.log('MAIL_FROM:', process.env.MAIL_FROM);
+    console.log('DESTINO:', user.email);
+
+    await transporter.sendMail({
+      from: `"Plataforma OTA" <${process.env.MAIL_FROM}>`,
+      to: user.email,
+      subject: 'Recuperación de contraseña - Plataforma OTA',
+
+      html: `
+    <h2>Recuperación de contraseña</h2>
+
+    <p>Hola ${user.firstName},</p>
+
+    <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta.</p>
+
+    <p>Tu nombre de usuario es:</p>
+
+    <strong>${user.username}</strong>
+
+    <p>Haz clic en el siguiente enlace para crear una nueva contraseña:</p>
+
+    <p>
+      <a href="${resetUrl}">
+        Restablecer contraseña
+      </a>
+    </p>
+
+    <p>Este enlace expirará en 15 minutos.</p>
+
+    <p>Si no solicitaste este cambio, puedes ignorar este correo.</p>
+  `
+    });
+
 
     return res.status(200).json({
       message:
