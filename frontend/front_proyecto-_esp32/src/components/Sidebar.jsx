@@ -45,13 +45,24 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
               Resumen
             </button>
           </li>
+          {user.role === 'ADMIN' ? (
+            <li>
+              <button
+                type="button"
+                className={`nav-item${selectedPage === 'users' ? ' active' : ''}`}
+                onClick={() => onSelectPage('users')}
+              >
+                Usuarios
+              </button>
+            </li>
+          ) : null}
           <li>
             <button
               type="button"
-              className={`nav-item${selectedPage === 'users' ? ' active' : ''}`}
-              onClick={() => onSelectPage('users')}
+              className={`nav-item${selectedPage === 'profile' ? ' active' : ''}`}
+              onClick={() => onSelectPage('profile')}
             >
-              Usuarios
+              Mi perfil
             </button>
           </li>
           <li>

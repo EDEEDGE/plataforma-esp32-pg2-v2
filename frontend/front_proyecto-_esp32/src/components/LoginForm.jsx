@@ -3,7 +3,7 @@ import '../styles/login.css';
 
 // LoginForm muestra el formulario de autenticación.
 // Recibe onSubmit, loading y error como propiedades desde App.
-export default function LoginForm({ onSubmit, loading, error }) {
+export default function LoginForm({ onSubmit, loading, error, message, onRegister, onForgotPassword }) {
   const [email, setEmail] = useState('admin@plataforma.com');
   const [password, setPassword] = useState('admin123456');
 
@@ -52,8 +52,22 @@ export default function LoginForm({ onSubmit, loading, error }) {
         </p>
       ) : null}
 
+      {message ? (
+        <p className="form-message" role="status" aria-live="polite">
+          {message}
+        </p>
+      ) : null}
+
       <button type="submit" disabled={loading}>
         {loading ? 'Ingresando...' : 'Entrar'}
+      </button>
+
+      <button type="button" className="auth-link" onClick={onRegister}>
+        Crear una cuenta
+      </button>
+
+      <button type="button" className="auth-link" onClick={onForgotPassword}>
+        ¿Olvidaste tu contraseña?
       </button>
     </form>
   );

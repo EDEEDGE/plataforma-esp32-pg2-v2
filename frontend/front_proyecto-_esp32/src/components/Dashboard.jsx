@@ -2,10 +2,11 @@ import { useState } from 'react';
 import '../styles/dashboard.css';
 import Sidebar from './Sidebar.jsx';
 import UserManager from './UserManager.jsx';
+import ProfileForm from './ProfileForm.jsx';
 
 // Dashboard presenta el panel principal para usuarios autenticados.
 // Incluye un sidebar, una sección de datos y el módulo de usuarios.
-export default function Dashboard({ user, onLogout }) {
+export default function Dashboard({ user, onLogout, onUserUpdated }) {
   const [selectedPage, setSelectedPage] = useState('summary');
 
   return (
@@ -20,13 +21,21 @@ export default function Dashboard({ user, onLogout }) {
       <section className="dashboard-main">
         <div className="dashboard-top">
           <div>
-            <p className="eyebrow">{selectedPage === 'summary' ? 'Resumen' : 'Usuarios'}</p>
+            <p className="eyebrow">
+              {selectedPage === 'summary'
+                ? 'Resumen'
+                : selectedPage === 'users'
+                  ? 'Usuarios'
+                  : 'Mi perfil'}
+            </p>
             <h2>Hola, {user.name}</h2>
           </div>
           <p className="dashboard-help">
             {selectedPage === 'summary'
               ? 'Monitorea tus dispositivos ESP32 y despliega actualizaciones desde aquí.'
-              : 'Gestiona los usuarios del sistema desde este panel.'}
+              : selectedPage === 'users'
+                ? 'Gestiona los usuarios del sistema desde este panel.'
+                : 'Consulta y actualiza tus datos personales.'}
           </p>
         </div>
 
@@ -70,8 +79,14 @@ export default function Dashboard({ user, onLogout }) {
               </article>
             </div>
           </>
+        ) : selectedPage === 'users' ? (
+          <UserManager onSessionExpired={onLogout} />
         ) : (
-          <UserManager />
+          <ProfileForm
+            user={user}
+            onUserUpdated={onUserUpdated}
+            onSessionExpired={onLogout}
+          />
         )}
       </section>
     </div>
