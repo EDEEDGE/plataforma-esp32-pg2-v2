@@ -103,6 +103,30 @@ button {
   border-radius: 14px;
 }
 
+.form-message {
+  color: #dbeafe;
+  background: rgba(37, 99, 235, 0.18);
+  border: 1px solid rgba(147, 197, 253, 0.55);
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+}
+
+.auth-link {
+  padding: 0.25rem;
+  background: transparent;
+  color: #1e3a8a;
+  box-shadow: none;
+  font-weight: 700;
+}
+
+.auth-link:hover {
+  background: transparent;
+  color: #1d4ed8;
+  box-shadow: none;
+  transform: none;
+  text-decoration: underline;
+}
+
 @media (max-width: 520px) {
   .auth-card {
     width: min(100%, 100%);

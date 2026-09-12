@@ -1,55 +1,77 @@
-const USERS_STORAGE_KEY = 'demoUsers';
+import { ApiError, AUTH_FAILURE_EVENT, buildAuthHeaders } from './auth.js';
 
-const initialUsers = [
-  { id: 1, name: 'Juan Pérez', username: 'juan', role: 'admin' },
-  { id: 2, name: 'María López', username: 'maria', role: 'editor' },
-  { id: 3, name: 'Carlos Díaz', username: 'carlos', role: 'viewer' }
-];
+const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api`;
 
-const loadUsers = () => {
+const getToken = () => localStorage.getItem('authToken');
+
+const request = async (path, options = {}) => {
+  const response = await fetch(`${API_URL}${path}`, {
+    ...options,
+    headers: {
+      ...buildAuthHeaders(getToken()),
+      ...options.headers,
+    },
+  });
+  let data = {};
+
   try {
-    const stored = localStorage.getItem(USERS_STORAGE_KEY);
-    if (stored) {
-      return JSON.parse(stored);
-    }
+    data = await response.json();
   } catch {
-    // ignore
+    data = {};
   }
-  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(initialUsers));
-  return initialUsers;
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      window.dispatchEvent(new CustomEvent(AUTH_FAILURE_EVENT));
+    }
+    throw new ApiError(data.message || 'Error en la solicitud de usuarios', response.status);
+  }
+
+  return data;
 };
 
-const saveUsers = (users) => {
-  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
-};
-
-const delay = (value) => new Promise((resolve) => setTimeout(() => resolve(value), 250));
+const normalizeUser = (user) => ({
+  id: user.id,
+  name: [user.firstName, user.lastName].filter(Boolean).join(' ').trim() || user.username || 'Usuario',
+  username: user.username,
+  email: user.email,
+  role: user.role,
+  firstName: user.firstName,
+  lastName: user.lastName,
+  isActive: user.isActive,
+  createdAt: user.createdAt,
+});
 
 export async function getUsers() {
-  return delay(loadUsers());
+  const data = await request('/users');
+  return (data.users || []).map(normalizeUser);
 }
 
-export async function createUser(userData) {
-  const users = loadUsers();
-  const nextId = users.length ? Math.max(...users.map((user) => user.id)) + 1 : 1;
-  const newUser = { id: nextId, ...userData };
-  const updated = [...users, newUser];
-  saveUsers(updated);
-  return delay(newUser);
+export async function getUserById(userId) {
+  const data = await request(`/users/${userId}`);
+  return normalizeUser(data.user);
 }
 
-export async function updateUser(userId, updates) {
-  const users = loadUsers();
-  const updated = users.map((user) =>
-    user.id === userId ? { ...user, ...updates } : user
-  );
-  saveUsers(updated);
-  return delay(updated.find((user) => user.id === userId));
+export async function updateMyProfile(profile) {
+  const data = await request('/users/me', {
+    method: 'PUT',
+    body: JSON.stringify(profile),
+  });
+  return normalizeUser(data.user);
 }
 
-export async function deleteUser(userId) {
-  const users = loadUsers();
-  const updated = users.filter((user) => user.id !== userId);
-  saveUsers(updated);
-  return delay(true);
+export async function updateUserStatus(userId, isActive) {
+  const data = await request(`/users/${userId}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ isActive }),
+  });
+  return normalizeUser(data.user);
+}
+
+export async function updateUserRole(userId, role) {
+  const data = await request(`/users/${userId}/role`, {
+    method: 'PATCH',
+    body: JSON.stringify({ role }),
+  });
+  return normalizeUser(data.user);
 }
