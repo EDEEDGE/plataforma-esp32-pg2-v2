@@ -1,0 +1,365 @@
+[
+  {
+    "id": "table.room_members",
+    "label": "Create table \"room_members\"",
+    "summary": "Creates table \"room_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "room_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"room_members\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_members\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"room_members\"",
+        "sql": "CREATE TABLE \"public\".\"room_members\" (\n  \"created_at\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"role\" text DEFAULT 'MEMBER' NOT NULL,\n  \"room_id\" text NOT NULL,\n  \"user_id\" text NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"room_members_role_check_50a44636\" CHECK (\"role\" IN ('OWNER', 'ADMIN', 'MEMBER'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"room_members\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_members\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.rooms",
+    "label": "Create table \"rooms\"",
+    "summary": "Creates table \"rooms\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "rooms"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"rooms\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"rooms\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"rooms\"",
+        "sql": "CREATE TABLE \"public\".\"rooms\" (\n  \"created_at\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text,\n  \"id\" text NOT NULL,\n  \"is_active\" bool DEFAULT true NOT NULL,\n  \"name\" text NOT NULL,\n  \"owner_id\" text NOT NULL,\n  \"updated_at\" timestamptz DEFAULT (now()) NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"rooms\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"rooms\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.room_members.room_members_room_id_user_id_key",
+    "label": "Add unique constraint on \"room_members\" (room_id, user_id)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "room_members_room_id_user_id_key",
+        "table": "room_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"room_members_room_id_user_id_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_members_room_id_user_id_key",
+          "public",
+          "\"public\".\"room_members\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"room_members_room_id_user_id_key\"",
+        "sql": "ALTER TABLE \"public\".\"room_members\" ADD CONSTRAINT \"room_members_room_id_user_id_key\" UNIQUE (\"room_id\", \"user_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"room_members_room_id_user_id_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_members_room_id_user_id_key",
+          "public",
+          "\"public\".\"room_members\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.room_members.room_members_room_id_idx_c32a1e8c",
+    "label": "Create index \"room_members_room_id_idx_c32a1e8c\" on \"room_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "room_members_room_id_idx_c32a1e8c",
+        "table": "room_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"room_members_room_id_idx_c32a1e8c\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_members_room_id_idx_c32a1e8c\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"room_members_room_id_idx_c32a1e8c\"",
+        "sql": "CREATE INDEX \"room_members_room_id_idx_c32a1e8c\" ON \"public\".\"room_members\" (\"room_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"room_members_room_id_idx_c32a1e8c\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_members_room_id_idx_c32a1e8c\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.room_members.room_members_user_id_idx_6c952402",
+    "label": "Create index \"room_members_user_id_idx_6c952402\" on \"room_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "room_members_user_id_idx_6c952402",
+        "table": "room_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"room_members_user_id_idx_6c952402\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_members_user_id_idx_6c952402\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"room_members_user_id_idx_6c952402\"",
+        "sql": "CREATE INDEX \"room_members_user_id_idx_6c952402\" ON \"public\".\"room_members\" (\"user_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"room_members_user_id_idx_6c952402\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_members_user_id_idx_6c952402\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.rooms.rooms_owner_id_idx_ade9f347",
+    "label": "Create index \"rooms_owner_id_idx_ade9f347\" on \"rooms\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "rooms_owner_id_idx_ade9f347",
+        "table": "rooms"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"rooms_owner_id_idx_ade9f347\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"rooms_owner_id_idx_ade9f347\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"rooms_owner_id_idx_ade9f347\"",
+        "sql": "CREATE INDEX \"rooms_owner_id_idx_ade9f347\" ON \"public\".\"rooms\" (\"owner_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"rooms_owner_id_idx_ade9f347\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"rooms_owner_id_idx_ade9f347\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.room_members.room_members_room_id_fkey",
+    "label": "Add foreign key \"room_members_room_id_fkey\" on \"room_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "room_members_room_id_fkey",
+        "table": "room_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"room_members_room_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_members_room_id_fkey",
+          "public",
+          "\"public\".\"room_members\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"room_members_room_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"room_members\"\nADD CONSTRAINT \"room_members_room_id_fkey\"\nFOREIGN KEY (\"room_id\")\nREFERENCES \"public\".\"rooms\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"room_members_room_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_members_room_id_fkey",
+          "public",
+          "\"public\".\"room_members\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.room_members.room_members_user_id_fkey",
+    "label": "Add foreign key \"room_members_user_id_fkey\" on \"room_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "room_members_user_id_fkey",
+        "table": "room_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"room_members_user_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_members_user_id_fkey",
+          "public",
+          "\"public\".\"room_members\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"room_members_user_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"room_members\"\nADD CONSTRAINT \"room_members_user_id_fkey\"\nFOREIGN KEY (\"user_id\")\nREFERENCES \"public\".\"users\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"room_members_user_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_members_user_id_fkey",
+          "public",
+          "\"public\".\"room_members\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.rooms.rooms_owner_id_fkey",
+    "label": "Add foreign key \"rooms_owner_id_fkey\" on \"rooms\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "rooms_owner_id_fkey",
+        "table": "rooms"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"rooms_owner_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "rooms_owner_id_fkey",
+          "public",
+          "\"public\".\"rooms\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"rooms_owner_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"rooms\"\nADD CONSTRAINT \"rooms_owner_id_fkey\"\nFOREIGN KEY (\"owner_id\")\nREFERENCES \"public\".\"users\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"rooms_owner_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "rooms_owner_id_fkey",
+          "public",
+          "\"public\".\"rooms\""
+        ]
+      }
+    ]
+  }
+]

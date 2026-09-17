@@ -33,7 +33,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'e8ba9b0abf9b1765acc05f53857d1fedd6455b720c94c91ddb05f8967c15cc72'>;
+  StorageHashBase<'eb9e1a3a24f5e240918af8a37f9c8af28f82d52a8330b8fad411048d2d6828c4'>;
 export type ExecutionHash =
   ExecutionHashBase<'0cd858cd6a8c8fa8e7cedd1b5696177400708932f9901335f79ee08e281613ba'>;
 export type ProfileHash =
@@ -252,7 +252,7 @@ export type FieldOutputTypes = {
     readonly Room: {
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly name: CodecTypes['pg/text@1']['output'];
-      readonly nameKey: CodecTypes['pg/text@1']['output'];
+      readonly nameKey: CodecTypes['pg/text@1']['output'] | null;
       readonly description: CodecTypes['pg/text@1']['output'] | null;
       readonly ownerId: CodecTypes['pg/text@1']['output'];
       readonly isActive: CodecTypes['pg/bool@1']['output'];
@@ -294,7 +294,7 @@ export type FieldInputTypes = {
     readonly Room: {
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly name: CodecTypes['pg/text@1']['input'];
-      readonly nameKey: CodecTypes['pg/text@1']['input'];
+      readonly nameKey: CodecTypes['pg/text@1']['input'] | null;
       readonly description: CodecTypes['pg/text@1']['input'] | null;
       readonly ownerId: CodecTypes['pg/text@1']['input'];
       readonly isActive: CodecTypes['pg/bool@1']['input'];
@@ -346,7 +346,7 @@ export type StorageColumnTypes = {
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly is_active: CodecTypes['pg/bool@1']['output'];
       readonly name: CodecTypes['pg/text@1']['output'];
-      readonly name_key: CodecTypes['pg/text@1']['output'];
+      readonly name_key: CodecTypes['pg/text@1']['output'] | null;
       readonly owner_id: CodecTypes['pg/text@1']['output'];
       readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
     };
@@ -388,7 +388,7 @@ export type StorageColumnInputTypes = {
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly is_active: CodecTypes['pg/bool@1']['input'];
       readonly name: CodecTypes['pg/text@1']['input'];
-      readonly name_key: CodecTypes['pg/text@1']['input'];
+      readonly name_key: CodecTypes['pg/text@1']['input'] | null;
       readonly owner_id: CodecTypes['pg/text@1']['input'];
       readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
     };
@@ -575,7 +575,7 @@ type ContractBase = Omit<
                 readonly name_key: {
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
+                  readonly nullable: true;
                 };
                 readonly description: {
                   readonly nativeType: 'text';
@@ -610,7 +610,7 @@ type ContractBase = Omit<
                 };
               };
               primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [{ readonly columns: readonly ['owner_id', 'name_key'] }];
+              uniques: readonly [];
               indexes: readonly [
                 {
                   readonly name: 'rooms_owner_id_idx_ade9f347';
@@ -820,7 +820,7 @@ type ContractBase = Omit<
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly nameKey: {
-                readonly nullable: false;
+                readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly description: {

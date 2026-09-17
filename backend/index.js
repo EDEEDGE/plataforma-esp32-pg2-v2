@@ -9,6 +9,7 @@ import cors from 'cors';
 //importar rutas a los modulos
 import authRoutes from './src/modules/auth/index.js';
 import usersRoutes from './src/modules/users/index.js';
+import roomsRoutes from './src/modules/rooms/index.js';
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(express.json());
 //rutas principales de la API
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/rooms', roomsRoutes);
 
 app.get('/', (req, res) => {
   res.json({
