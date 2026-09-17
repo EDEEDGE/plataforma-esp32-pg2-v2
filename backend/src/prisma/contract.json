@@ -8,6 +8,10 @@
       "model": "PasswordResetToken",
       "namespace": "public"
     },
+    "room_invitations": {
+      "model": "RoomInvitation",
+      "namespace": "public"
+    },
     "room_members": {
       "model": "RoomMember",
       "namespace": "public"
@@ -204,6 +208,21 @@
               }
             },
             "relations": {
+              "invitations": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "roomId"
+                  ]
+                },
+                "to": {
+                  "model": "RoomInvitation",
+                  "namespace": "public"
+                }
+              },
               "members": {
                 "cardinality": "1:N",
                 "on": {
@@ -264,6 +283,154 @@
               },
               "namespaceId": "public",
               "table": "rooms"
+            }
+          },
+          "RoomInvitation": {
+            "fields": {
+              "acceptedAt": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "expiresAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "invitedById": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "invitedEmail": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "rejectedAt": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "role": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "RoomRole",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "roomId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "tokenHash": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "invitedBy": {
+                "cardinality": "N:1",
+                "on": {
+                  "localFields": [
+                    "invitedById"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "User",
+                  "namespace": "public"
+                }
+              },
+              "room": {
+                "cardinality": "N:1",
+                "on": {
+                  "localFields": [
+                    "roomId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Room",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "acceptedAt": {
+                  "column": "accepted_at"
+                },
+                "createdAt": {
+                  "column": "created_at"
+                },
+                "expiresAt": {
+                  "column": "expires_at"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "invitedById": {
+                  "column": "invited_by_id"
+                },
+                "invitedEmail": {
+                  "column": "invited_email"
+                },
+                "rejectedAt": {
+                  "column": "rejected_at"
+                },
+                "role": {
+                  "column": "role"
+                },
+                "roomId": {
+                  "column": "room_id"
+                },
+                "tokenHash": {
+                  "column": "token_hash"
+                }
+              },
+              "namespaceId": "public",
+              "table": "room_invitations"
             }
           },
           "RoomMember": {
@@ -495,6 +662,21 @@
                   "model": "RoomMember",
                   "namespace": "public"
                 }
+              },
+              "sentRoomInvitations": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "invitedById"
+                  ]
+                },
+                "to": {
+                  "model": "RoomInvitation",
+                  "namespace": "public"
+                }
               }
             },
             "storage": {
@@ -609,6 +791,155 @@
                   ],
                   "name": "password_reset_tokens_user_id_idx_6c952402",
                   "prefix": "password_reset_tokens_user_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "token_hash"
+                  ]
+                }
+              ]
+            },
+            "room_invitations": {
+              "checks": [
+                {
+                  "expression": "\"role\" IN ('OWNER', 'ADMIN', 'MEMBER')",
+                  "name": "room_invitations_role_check_50a44636",
+                  "prefix": "room_invitations_role_check"
+                }
+              ],
+              "columns": {
+                "accepted_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": true
+                },
+                "created_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "expires_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "invited_by_id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "invited_email": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "rejected_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": true
+                },
+                "role": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "MEMBER"
+                  },
+                  "nativeType": "text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "RoomRole",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "room_id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "token_hash": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "room_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "room_invitations"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "rooms"
+                  }
+                },
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "invited_by_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "room_invitations"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "users"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "invited_by_id"
+                  ],
+                  "name": "room_invitations_invited_by_id_idx_80b34397",
+                  "prefix": "room_invitations_invited_by_id_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "invited_email"
+                  ],
+                  "name": "room_invitations_invited_email_idx_7405cf73",
+                  "prefix": "room_invitations_invited_email_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "room_id"
+                  ],
+                  "name": "room_invitations_room_id_idx_c32a1e8c",
+                  "prefix": "room_invitations_room_id_idx",
                   "unique": false
                 }
               ],
@@ -973,10 +1304,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "e8ba9b0abf9b1765acc05f53857d1fedd6455b720c94c91ddb05f8967c15cc72"
+    "storageHash": "583f5958283219512c5f0a67f4c3d3d77a1d3bc11cf05c744e5843bd4219e624"
   },
   "execution": {
-    "executionHash": "0cd858cd6a8c8fa8e7cedd1b5696177400708932f9901335f79ee08e281613ba",
+    "executionHash": "c87ef112336570835e09319a705be768aa2db3c93f4bd441e3129599366a4785",
     "mutations": {
       "defaults": [
         {
@@ -988,6 +1319,17 @@
             "column": "id",
             "namespace": "public",
             "table": "password_reset_tokens"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "id",
+            "namespace": "public",
+            "table": "room_invitations"
           }
         },
         {

@@ -4,10 +4,18 @@ import {
   createRoom,
   getMyRooms,
   getRoomById,
-  updateRoom,
+  updateRoom
+} from '../controllers/rooms.controller.js';
+
+import {
   getRoomMembers,
   addRoomMember
-} from '../controllers/rooms.controller.js';
+} from '../controllers/roomMembers.controller.js';
+
+import {
+  inviteRoomMember,
+  acceptRoomInvitation
+} from '../controllers/roomInvitations.controller.js';
 
 import { authMiddleware } from '../../../middlewares/auth.middleware.js';
 
@@ -49,5 +57,18 @@ router.post(
   addRoomMember
 );
 
+//invitaciones a salas
+router.post(
+  '/:id/invitations',
+  authMiddleware,
+  inviteRoomMember
+);
+
+//ruta para aceptar las invitaciones enviadas
+router.post(
+  '/invitations/accept',
+  authMiddleware,
+  acceptRoomInvitation
+);
 
 export default router;

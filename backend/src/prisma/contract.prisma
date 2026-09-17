@@ -39,7 +39,7 @@ model User {
   roomMembers RoomMember[]
 
   @@map("users")
-
+  sentRoomInvitations RoomInvitation[] @relation("InvitationSender")
   
 }
 
@@ -78,10 +78,13 @@ model Room {
 
   owner   User         @relation("RoomOwner", fields: [ownerId], references: [id])
   members RoomMember[]
+  invitations RoomInvitation[]//relacion de las invitaciones
 
   @@unique([ownerId, nameKey])
   @@index([ownerId])
   @@map("rooms")
+
+  
 }
 
 model RoomMember {
@@ -101,4 +104,42 @@ model RoomMember {
   @@index([roomId])
   @@index([userId])
   @@map("room_members")
+}
+
+model RoomInvitation {
+  id String @id @default(uuid())
+
+  roomId      String @map("room_id")
+  invitedById String @map("invited_by_id")
+
+  invitedEmail String @map("invited_email")
+
+  role RoomRole @default(MEMBER)
+
+  tokenHash String @unique @map("token_hash")
+
+  expiresAt  DateTime  @map("expires_at")
+  acceptedAt DateTime? @map("accepted_at")
+  rejectedAt DateTime? @map("rejected_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  room Room @relation(
+    fields: [roomId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  invitedBy User @relation(
+    "InvitationSender",
+    fields: [invitedById],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  @@index([roomId])
+  @@index([invitedById])
+  @@index([invitedEmail])
+
+  @@map("room_invitations")
 }
