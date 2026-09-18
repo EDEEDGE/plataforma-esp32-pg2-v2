@@ -1,0 +1,44 @@
+[
+  {
+    "id": "column.public.rooms.name_key",
+    "label": "Add column \"name_key\" to \"rooms\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "name_key",
+        "table": "rooms"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"name_key\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "rooms",
+          "name_key"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"name_key\"",
+        "sql": "ALTER TABLE \"public\".\"rooms\" ADD COLUMN \"name_key\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"name_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "rooms",
+          "name_key"
+        ]
+      }
+    ]
+  }
+]

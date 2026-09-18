@@ -13,7 +13,7 @@ import {
 const router = express.Router();
 
 router.put('/change-password', authMiddleware, changePassword);//cambio de contraseña
-router.post('/forgot-password', forgotPassword);
-router.post('/reset-password', resetPassword);
+router.post('/forgot-password', forgotPassword);//se olvido la contraseña 
+router.post('/reset-password', resetPassword); //cambiar la contraseña
 
 export default router;

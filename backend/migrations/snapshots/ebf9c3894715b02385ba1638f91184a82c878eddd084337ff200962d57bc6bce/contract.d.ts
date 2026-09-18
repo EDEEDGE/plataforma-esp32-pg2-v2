@@ -33,9 +33,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'583f5958283219512c5f0a67f4c3d3d77a1d3bc11cf05c744e5843bd4219e624'>;
+  StorageHashBase<'ebf9c3894715b02385ba1638f91184a82c878eddd084337ff200962d57bc6bce'>;
 export type ExecutionHash =
-  ExecutionHashBase<'c87ef112336570835e09319a705be768aa2db3c93f4bd441e3129599366a4785'>;
+  ExecutionHashBase<'0cd858cd6a8c8fa8e7cedd1b5696177400708932f9901335f79ee08e281613ba'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -252,24 +252,11 @@ export type FieldOutputTypes = {
     readonly Room: {
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly name: CodecTypes['pg/text@1']['output'];
-      readonly nameKey: CodecTypes['pg/text@1']['output'];
       readonly description: CodecTypes['pg/text@1']['output'] | null;
       readonly ownerId: CodecTypes['pg/text@1']['output'];
       readonly isActive: CodecTypes['pg/bool@1']['output'];
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
-    };
-    readonly RoomInvitation: {
-      readonly id: CodecTypes['pg/text@1']['output'];
-      readonly roomId: CodecTypes['pg/text@1']['output'];
-      readonly invitedById: CodecTypes['pg/text@1']['output'];
-      readonly invitedEmail: CodecTypes['pg/text@1']['output'];
-      readonly role: 'OWNER' | 'ADMIN' | 'MEMBER';
-      readonly tokenHash: CodecTypes['pg/text@1']['output'];
-      readonly expiresAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
-      readonly acceptedAt: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
-      readonly rejectedAt: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
-      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     };
     readonly RoomMember: {
       readonly id: CodecTypes['pg/text@1']['output'];
@@ -306,24 +293,11 @@ export type FieldInputTypes = {
     readonly Room: {
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly name: CodecTypes['pg/text@1']['input'];
-      readonly nameKey: CodecTypes['pg/text@1']['input'];
       readonly description: CodecTypes['pg/text@1']['input'] | null;
       readonly ownerId: CodecTypes['pg/text@1']['input'];
       readonly isActive: CodecTypes['pg/bool@1']['input'];
       readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
-    };
-    readonly RoomInvitation: {
-      readonly id: CodecTypes['pg/text@1']['input'];
-      readonly roomId: CodecTypes['pg/text@1']['input'];
-      readonly invitedById: CodecTypes['pg/text@1']['input'];
-      readonly invitedEmail: CodecTypes['pg/text@1']['input'];
-      readonly role: 'OWNER' | 'ADMIN' | 'MEMBER';
-      readonly tokenHash: CodecTypes['pg/text@1']['input'];
-      readonly expiresAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
-      readonly acceptedAt: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
-      readonly rejectedAt: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
-      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
     };
     readonly RoomMember: {
       readonly id: CodecTypes['pg/text@1']['input'];
@@ -357,18 +331,6 @@ export type StorageColumnTypes = {
       readonly used_at: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
       readonly user_id: CodecTypes['pg/text@1']['output'];
     };
-    readonly room_invitations: {
-      readonly accepted_at: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
-      readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
-      readonly expires_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
-      readonly id: CodecTypes['pg/text@1']['output'];
-      readonly invited_by_id: CodecTypes['pg/text@1']['output'];
-      readonly invited_email: CodecTypes['pg/text@1']['output'];
-      readonly rejected_at: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
-      readonly role: 'OWNER' | 'ADMIN' | 'MEMBER';
-      readonly room_id: CodecTypes['pg/text@1']['output'];
-      readonly token_hash: CodecTypes['pg/text@1']['output'];
-    };
     readonly room_members: {
       readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
       readonly id: CodecTypes['pg/text@1']['output'];
@@ -382,7 +344,6 @@ export type StorageColumnTypes = {
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly is_active: CodecTypes['pg/bool@1']['output'];
       readonly name: CodecTypes['pg/text@1']['output'];
-      readonly name_key: CodecTypes['pg/text@1']['output'];
       readonly owner_id: CodecTypes['pg/text@1']['output'];
       readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
     };
@@ -411,18 +372,6 @@ export type StorageColumnInputTypes = {
       readonly used_at: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
       readonly user_id: CodecTypes['pg/text@1']['input'];
     };
-    readonly room_invitations: {
-      readonly accepted_at: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
-      readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
-      readonly expires_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
-      readonly id: CodecTypes['pg/text@1']['input'];
-      readonly invited_by_id: CodecTypes['pg/text@1']['input'];
-      readonly invited_email: CodecTypes['pg/text@1']['input'];
-      readonly rejected_at: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
-      readonly role: 'OWNER' | 'ADMIN' | 'MEMBER';
-      readonly room_id: CodecTypes['pg/text@1']['input'];
-      readonly token_hash: CodecTypes['pg/text@1']['input'];
-    };
     readonly room_members: {
       readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
       readonly id: CodecTypes['pg/text@1']['input'];
@@ -436,7 +385,6 @@ export type StorageColumnInputTypes = {
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly is_active: CodecTypes['pg/bool@1']['input'];
       readonly name: CodecTypes['pg/text@1']['input'];
-      readonly name_key: CodecTypes['pg/text@1']['input'];
       readonly owner_id: CodecTypes['pg/text@1']['input'];
       readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
     };
@@ -523,113 +471,6 @@ type ContractBase = Omit<
                     readonly namespaceId: 'public' & NamespaceId;
                     readonly tableName: 'password_reset_tokens';
                     readonly columns: readonly ['user_id'];
-                  };
-                  readonly target: {
-                    readonly namespaceId: 'public' & NamespaceId;
-                    readonly tableName: 'users';
-                    readonly columns: readonly ['id'];
-                  };
-                },
-              ];
-            };
-            readonly room_invitations: {
-              columns: {
-                readonly id: {
-                  readonly nativeType: 'text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                };
-                readonly room_id: {
-                  readonly nativeType: 'text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                };
-                readonly invited_by_id: {
-                  readonly nativeType: 'text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                };
-                readonly invited_email: {
-                  readonly nativeType: 'text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                };
-                readonly role: {
-                  readonly nativeType: 'text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                  readonly default: {
-                    readonly kind: 'literal';
-                    readonly value: DefaultLiteralValue<'pg/text@1', 'MEMBER'>;
-                  };
-                };
-                readonly token_hash: {
-                  readonly nativeType: 'text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                };
-                readonly expires_at: {
-                  readonly nativeType: 'timestamptz';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                  readonly nullable: false;
-                };
-                readonly accepted_at: {
-                  readonly nativeType: 'timestamptz';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                  readonly nullable: true;
-                };
-                readonly rejected_at: {
-                  readonly nativeType: 'timestamptz';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                  readonly nullable: true;
-                };
-                readonly created_at: {
-                  readonly nativeType: 'timestamptz';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                  readonly nullable: false;
-                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
-                };
-              };
-              primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [{ readonly columns: readonly ['token_hash'] }];
-              indexes: readonly [
-                {
-                  readonly name: 'room_invitations_room_id_idx_c32a1e8c';
-                  readonly prefix: 'room_invitations_room_id_idx';
-                  readonly columns: readonly ['room_id'];
-                  readonly unique: false;
-                },
-                {
-                  readonly name: 'room_invitations_invited_by_id_idx_80b34397';
-                  readonly prefix: 'room_invitations_invited_by_id_idx';
-                  readonly columns: readonly ['invited_by_id'];
-                  readonly unique: false;
-                },
-                {
-                  readonly name: 'room_invitations_invited_email_idx_7405cf73';
-                  readonly prefix: 'room_invitations_invited_email_idx';
-                  readonly columns: readonly ['invited_email'];
-                  readonly unique: false;
-                },
-              ];
-              foreignKeys: readonly [
-                {
-                  readonly source: {
-                    readonly namespaceId: 'public' & NamespaceId;
-                    readonly tableName: 'room_invitations';
-                    readonly columns: readonly ['room_id'];
-                  };
-                  readonly target: {
-                    readonly namespaceId: 'public' & NamespaceId;
-                    readonly tableName: 'rooms';
-                    readonly columns: readonly ['id'];
-                  };
-                },
-                {
-                  readonly source: {
-                    readonly namespaceId: 'public' & NamespaceId;
-                    readonly tableName: 'room_invitations';
-                    readonly columns: readonly ['invited_by_id'];
                   };
                   readonly target: {
                     readonly namespaceId: 'public' & NamespaceId;
@@ -727,11 +568,6 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
                 };
-                readonly name_key: {
-                  readonly nativeType: 'text';
-                  readonly codecId: 'pg/text@1';
-                  readonly nullable: false;
-                };
                 readonly description: {
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
@@ -765,7 +601,7 @@ type ContractBase = Omit<
                 };
               };
               primaryKey: { readonly columns: readonly ['id'] };
-              uniques: readonly [{ readonly columns: readonly ['owner_id', 'name_key'] }];
+              uniques: readonly [];
               indexes: readonly [
                 {
                   readonly name: 'rooms_owner_id_idx_ade9f347';
@@ -900,10 +736,6 @@ type ContractBase = Omit<
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'RoomMember';
     };
-    readonly room_invitations: {
-      readonly namespace: 'public' & NamespaceId;
-      readonly model: 'RoomInvitation';
-    };
   };
   readonly domain: {
     readonly namespaces: {
@@ -978,10 +810,6 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
-              readonly nameKey: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
               readonly description: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -1010,17 +838,6 @@ type ContractBase = Omit<
               };
             };
             readonly relations: {
-              readonly invitations: {
-                readonly to: {
-                  readonly namespace: 'public' & NamespaceId;
-                  readonly model: 'RoomInvitation';
-                };
-                readonly cardinality: '1:N';
-                readonly on: {
-                  readonly localFields: readonly ['id'];
-                  readonly targetFields: readonly ['roomId'];
-                };
-              };
               readonly members: {
                 readonly to: {
                   readonly namespace: 'public' & NamespaceId;
@@ -1047,102 +864,11 @@ type ContractBase = Omit<
               readonly fields: {
                 readonly id: { readonly column: 'id' };
                 readonly name: { readonly column: 'name' };
-                readonly nameKey: { readonly column: 'name_key' };
                 readonly description: { readonly column: 'description' };
                 readonly ownerId: { readonly column: 'owner_id' };
                 readonly isActive: { readonly column: 'is_active' };
                 readonly createdAt: { readonly column: 'created_at' };
                 readonly updatedAt: { readonly column: 'updated_at' };
-              };
-            };
-          };
-          readonly RoomInvitation: {
-            readonly fields: {
-              readonly id: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-              readonly roomId: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-              readonly invitedById: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-              readonly invitedEmail: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-              readonly role: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-              readonly tokenHash: {
-                readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
-              };
-              readonly expiresAt: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                };
-              };
-              readonly acceptedAt: {
-                readonly nullable: true;
-                readonly type: {
-                  readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                };
-              };
-              readonly rejectedAt: {
-                readonly nullable: true;
-                readonly type: {
-                  readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                };
-              };
-              readonly createdAt: {
-                readonly nullable: false;
-                readonly type: {
-                  readonly kind: 'scalar';
-                  readonly codecId: 'pg/timestamptz-temporal@1';
-                };
-              };
-            };
-            readonly relations: {
-              readonly invitedBy: {
-                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
-                readonly cardinality: 'N:1';
-                readonly on: {
-                  readonly localFields: readonly ['invitedById'];
-                  readonly targetFields: readonly ['id'];
-                };
-              };
-              readonly room: {
-                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'Room' };
-                readonly cardinality: 'N:1';
-                readonly on: {
-                  readonly localFields: readonly ['roomId'];
-                  readonly targetFields: readonly ['id'];
-                };
-              };
-            };
-            readonly storage: {
-              readonly table: 'room_invitations';
-              readonly namespaceId: 'public';
-              readonly fields: {
-                readonly id: { readonly column: 'id' };
-                readonly roomId: { readonly column: 'room_id' };
-                readonly invitedById: { readonly column: 'invited_by_id' };
-                readonly invitedEmail: { readonly column: 'invited_email' };
-                readonly role: { readonly column: 'role' };
-                readonly tokenHash: { readonly column: 'token_hash' };
-                readonly expiresAt: { readonly column: 'expires_at' };
-                readonly acceptedAt: { readonly column: 'accepted_at' };
-                readonly rejectedAt: { readonly column: 'rejected_at' };
-                readonly createdAt: { readonly column: 'created_at' };
               };
             };
           };
@@ -1286,17 +1012,6 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['userId'];
                 };
               };
-              readonly sentRoomInvitations: {
-                readonly to: {
-                  readonly namespace: 'public' & NamespaceId;
-                  readonly model: 'RoomInvitation';
-                };
-                readonly cardinality: '1:N';
-                readonly on: {
-                  readonly localFields: readonly ['id'];
-                  readonly targetFields: readonly ['invitedById'];
-                };
-              };
             };
             readonly storage: {
               readonly table: 'users';
@@ -1364,14 +1079,6 @@ type ContractBase = Omit<
           readonly ref: {
             readonly namespace: 'public';
             readonly table: 'password_reset_tokens';
-            readonly column: 'id';
-          };
-          readonly onCreate: { readonly kind: 'generator'; readonly id: 'uuidv4' };
-        },
-        {
-          readonly ref: {
-            readonly namespace: 'public';
-            readonly table: 'room_invitations';
             readonly column: 'id';
           };
           readonly onCreate: { readonly kind: 'generator'; readonly id: 'uuidv4' };
