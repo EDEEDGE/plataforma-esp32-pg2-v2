@@ -195,6 +195,12 @@ export const updateRoom = async (req, res) => {
       });
     }
 
+    if (!room.isActive) {
+      return res.status(409).json({
+        message: 'La sala está desactivada'
+      });
+    }
+
     // Verificar que el usuario pertenezca a la sala
     const membership = await db.orm.public.RoomMember.first({
       roomId: id,
@@ -267,9 +273,94 @@ export const updateRoom = async (req, res) => {
   }
 };
 
+// Activar o desactivar una sala
+export const updateRoomStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isActive } = req.body;
 
-//proximamente...
-//updateRoomStatus
+    // Validar que venga un booleano
+    if (typeof isActive !== 'boolean') {
+      return res.status(400).json({
+        message: 'El estado de la sala debe ser true o false'
+      });
+    }
+
+    // Buscar la sala
+    const room = await db.orm.public.Room.first({
+      id
+    });
+
+    if (!room) {
+      return res.status(404).json({
+        message: 'Sala no encontrada'
+      });
+    }
+
+    // Verificar membresía del usuario actual
+    const membership =
+      await db.orm.public.RoomMember.first({
+        roomId: id,
+        userId: req.user.id
+      });
+
+    if (!membership) {
+      return res.status(403).json({
+        message: 'No tienes acceso a esta sala'
+      });
+    }
+
+    // Solo el OWNER puede cambiar el estado
+    if (membership.role !== 'OWNER') {
+      return res.status(403).json({
+        message: 'Solo el propietario puede cambiar el estado de la sala'
+      });
+    }
+
+    // Evitar actualización innecesaria
+    if (room.isActive === isActive) {
+      return res.status(409).json({
+        message: isActive
+          ? 'La sala ya está activa'
+          : 'La sala ya está desactivada'
+      });
+    }
+
+    // Actualizar estado
+    const updatedRoom =
+      await db.orm.public.Room
+        .where({
+          id
+        })
+        .update({
+          isActive,
+          updatedAt: Temporal.Now.instant()
+        });
+
+    return res.status(200).json({
+      message: isActive
+        ? 'Sala activada correctamente'
+        : 'Sala desactivada correctamente',
+
+      room: {
+        id: updatedRoom.id,
+        name: updatedRoom.name,
+        isActive: updatedRoom.isActive,
+        updatedAt: updatedRoom.updatedAt
+      }
+    });
+
+  } catch (error) {
+    console.error(
+      'Error al cambiar estado de la sala:',
+      error
+    );
+
+    return res.status(500).json({
+      message: 'Error interno del servidor'
+    });
+  }
+};
 
 
 
