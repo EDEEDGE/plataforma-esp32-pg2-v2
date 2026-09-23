@@ -40,6 +40,7 @@ model User {
 
   @@map("users")
   sentRoomInvitations RoomInvitation[] @relation("InvitationSender")
+  createdProjects Project[] @relation("ProjectCreator")
   
 }
 
@@ -79,6 +80,7 @@ model Room {
   owner   User         @relation("RoomOwner", fields: [ownerId], references: [id])
   members RoomMember[]
   invitations RoomInvitation[]//relacion de las invitaciones
+  projects Project[]
 
   @@unique([ownerId, nameKey])
   @@index([ownerId])
@@ -142,4 +144,38 @@ model RoomInvitation {
   @@index([invitedEmail])
 
   @@map("room_invitations")
+}
+
+model Project {
+  id String @id @default(uuid())
+
+  roomId      String @map("room_id")
+  createdById String @map("created_by_id")
+
+  name        String
+  nameKey     String @map("name_key")
+  description String?
+
+  isActive Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  room Room @relation(
+    fields: [roomId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  createdBy User @relation(
+    "ProjectCreator",
+    fields: [createdById],
+    references: [id]
+  )
+
+  @@unique([roomId, nameKey])
+  @@index([roomId])
+  @@index([createdById])
+
+  @@map("projects")
 }

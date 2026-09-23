@@ -10,6 +10,7 @@ import cors from 'cors';
 import authRoutes from './src/modules/auth/index.js';
 import usersRoutes from './src/modules/users/index.js';
 import roomsRoutes from './src/modules/rooms/index.js';
+import projectsRoutes from './src/modules/projects/index.js';
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/rooms', roomsRoutes);
+app.use('/api', projectsRoutes);
 
 app.get('/', (req, res) => {
   res.json({
