@@ -11,6 +11,7 @@ import authRoutes from './src/modules/auth/index.js';
 import usersRoutes from './src/modules/users/index.js';
 import roomsRoutes from './src/modules/rooms/index.js';
 import projectsRoutes from './src/modules/projects/index.js';
+import devicesRoutes from './src/modules/devices/index.js';
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/rooms', roomsRoutes);
 app.use('/api', projectsRoutes);
+app.use('/api', devicesRoutes);
 
 app.get('/', (req, res) => {
   res.json({

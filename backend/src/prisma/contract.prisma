@@ -15,6 +15,13 @@ enum RoomRole {
   MEMBER = "MEMBER"
 }
 
+enum DeviceType {
+  @@type("pg/text@1")
+
+  ESP32   = "ESP32"
+  ESP8266 = "ESP8266"
+}
+
 model User {
   id String @id @default(uuid())
 
@@ -41,6 +48,7 @@ model User {
   @@map("users")
   sentRoomInvitations RoomInvitation[] @relation("InvitationSender")
   createdProjects Project[] @relation("ProjectCreator")
+  createdDevices Device[] @relation("DeviceCreator")
   
 }
 
@@ -173,9 +181,101 @@ model Project {
     references: [id]
   )
 
+  devices Device[]
+
   @@unique([roomId, nameKey])
   @@index([roomId])
   @@index([createdById])
 
   @@map("projects")
+}
+
+//modelo para registrar dispositivo esp32
+model Device {
+  id String @id @default(uuid())
+
+  projectId   String @map("project_id")
+  createdById String @map("created_by_id")
+
+  name    String
+  nameKey String @map("name_key")
+
+  deviceType DeviceType @map("device_type")
+
+  hardwareId String? @unique @map("hardware_id")
+
+  isPaired Boolean @default(false) @map("is_paired")
+  isActive Boolean @default(true) @map("is_active")
+
+  lastSeenAt DateTime? @map("last_seen_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  project Project @relation(
+    fields: [projectId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  createdBy User @relation(
+    "DeviceCreator",
+    fields: [createdById],
+    references: [id]
+  )
+
+  pairingTokens DevicePairingToken[]
+  credentials DeviceCredential[]
+
+  @@unique([projectId, nameKey])
+  @@index([projectId])
+  @@index([createdById])
+
+  @@map("devices")
+}
+
+model DevicePairingToken {
+  id String @id @default(uuid())
+
+  deviceId String @map("device_id")
+
+  tokenHash String @unique @map("token_hash")
+
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  device Device @relation(
+    fields: [deviceId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  @@index([deviceId])
+
+  @@map("device_pairing_tokens")
+}
+
+model DeviceCredential {
+  id String @id @default(uuid())
+
+  deviceId String @map("device_id")
+
+  credentialHash String @unique @map("credential_hash")
+
+  lastUsedAt DateTime? @map("last_used_at")
+  revokedAt  DateTime? @map("revoked_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  device Device @relation(
+    fields: [deviceId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  @@index([deviceId])
+
+  @@map("device_credentials")
 }
