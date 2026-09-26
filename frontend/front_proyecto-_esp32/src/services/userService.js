@@ -1,34 +1,4 @@
-import { ApiError, AUTH_FAILURE_EVENT, buildAuthHeaders } from './auth.js';
-
-const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api`;
-
-const getToken = () => localStorage.getItem('authToken');
-
-const request = async (path, options = {}) => {
-  const response = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers: {
-      ...buildAuthHeaders(getToken()),
-      ...options.headers,
-    },
-  });
-  let data = {};
-
-  try {
-    data = await response.json();
-  } catch {
-    data = {};
-  }
-
-  if (!response.ok) {
-    if (response.status === 401) {
-      window.dispatchEvent(new CustomEvent(AUTH_FAILURE_EVENT));
-    }
-    throw new ApiError(data.message || 'Error en la solicitud de usuarios', response.status);
-  }
-
-  return data;
-};
+import { request } from './http.js';
 
 const normalizeUser = (user) => ({
   id: user.id,
@@ -43,19 +13,27 @@ const normalizeUser = (user) => ({
 });
 
 export async function getUsers() {
-  const data = await request('/users');
+  const data = await request('/users', {
+    auth: true,
+    fallbackMessage: 'Error en la solicitud de usuarios',
+  });
   return (data.users || []).map(normalizeUser);
 }
 
 export async function getUserById(userId) {
-  const data = await request(`/users/${userId}`);
+  const data = await request(`/users/${userId}`, {
+    auth: true,
+    fallbackMessage: 'Error en la solicitud de usuarios',
+  });
   return normalizeUser(data.user);
 }
 
 export async function updateMyProfile(profile) {
   const data = await request('/users/me', {
     method: 'PUT',
+    auth: true,
     body: JSON.stringify(profile),
+    fallbackMessage: 'Error en la solicitud de usuarios',
   });
   return normalizeUser(data.user);
 }
@@ -63,7 +41,9 @@ export async function updateMyProfile(profile) {
 export async function updateUserStatus(userId, isActive) {
   const data = await request(`/users/${userId}/status`, {
     method: 'PATCH',
+    auth: true,
     body: JSON.stringify({ isActive }),
+    fallbackMessage: 'Error en la solicitud de usuarios',
   });
   return normalizeUser(data.user);
 }
@@ -71,7 +51,9 @@ export async function updateUserStatus(userId, isActive) {
 export async function updateUserRole(userId, role) {
   const data = await request(`/users/${userId}/role`, {
     method: 'PATCH',
+    auth: true,
     body: JSON.stringify({ role }),
+    fallbackMessage: 'Error en la solicitud de usuarios',
   });
   return normalizeUser(data.user);
 }

@@ -1,33 +1,6 @@
-const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api`;
+import { request } from './http.js';
 
-export const AUTH_FAILURE_EVENT = 'auth:session-expired';
-
-class ApiError extends Error {
-  constructor(message, status) {
-    super(message);
-    this.name = 'ApiError';
-    this.status = status;
-  }
-}
-
-const parseResponse = async (response, fallbackMessage) => {
-  let data = {};
-
-  try {
-    data = await response.json();
-  } catch {
-    data = {};
-  }
-
-  if (!response.ok) {
-    if (response.status === 401) {
-      window.dispatchEvent(new CustomEvent(AUTH_FAILURE_EVENT));
-    }
-    throw new ApiError(data.message || fallbackMessage, response.status);
-  }
-
-  return data;
-};
+export { ApiError, AUTH_FAILURE_EVENT, buildAuthHeaders } from './http.js';
 
 const normalizeUser = (user) => ({
   id: user.id,
@@ -41,14 +14,11 @@ const normalizeUser = (user) => ({
 });
 
 export async function login(email, password) {
-  const response = await fetch(`${API_URL}/auth/login`, {
+  const data = await request('/auth/login', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify({ email, password }),
+    fallbackMessage: 'Error al iniciar sesión',
   });
-  const data = await parseResponse(response, 'Error al iniciar sesión');
 
   return {
     token: data.token,
@@ -57,66 +27,46 @@ export async function login(email, password) {
 }
 
 export async function register(userData) {
-  const response = await fetch(`${API_URL}/auth/register`, {
+  return request('/auth/register', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(userData),
+    fallbackMessage: 'Error al registrar usuario',
   });
-
-  return parseResponse(response, 'Error al registrar usuario');
 }
 
 export async function getCurrentUser(token) {
-  const response = await fetch(`${API_URL}/auth/me`, {
+  const data = await request('/auth/me', {
     method: 'GET',
-    headers: buildAuthHeaders(token),
+    auth: true,
+    token,
+    fallbackMessage: 'No se pudo validar la sesión',
   });
-  const data = await parseResponse(response, 'No se pudo validar la sesión');
 
   return normalizeUser(data.user);
 }
 
 export async function changePassword(currentPassword, newPassword) {
-  const response = await fetch(`${API_URL}/auth/change-password`, {
+  return request('/auth/change-password', {
     method: 'PUT',
-    headers: buildAuthHeaders(localStorage.getItem('authToken')),
+    auth: true,
     body: JSON.stringify({ currentPassword, newPassword }),
+    fallbackMessage: 'No se pudo cambiar la contraseña',
+    shouldExpireSession: (data) => data.message !== 'La contraseña actual es incorrecta',
   });
-
-  return parseResponse(response, 'No se pudo cambiar la contraseña');
 }
 
 export async function requestPasswordReset(email) {
-  const response = await fetch(`${API_URL}/auth/forgot-password`, {
+  return request('/auth/forgot-password', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify({ email }),
+    fallbackMessage: 'No se pudo solicitar la recuperación',
   });
-
-  return parseResponse(response, 'No se pudo solicitar la recuperación');
 }
 
 export async function resetPassword(token, newPassword) {
-  const response = await fetch(`${API_URL}/auth/reset-password`, {
+  return request('/auth/reset-password', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify({ token, newPassword }),
+    fallbackMessage: 'No se pudo restablecer la contraseña',
   });
-
-  return parseResponse(response, 'No se pudo restablecer la contraseña');
 }
-
-export function buildAuthHeaders(token) {
-  return {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  };
-}
-
-export { ApiError };

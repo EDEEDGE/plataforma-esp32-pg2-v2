@@ -1,0 +1,1541 @@
+[
+  {
+    "id": "table.device_credentials",
+    "label": "Create table \"device_credentials\"",
+    "summary": "Creates table \"device_credentials\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "device_credentials"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"device_credentials\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"device_credentials\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"device_credentials\"",
+        "sql": "CREATE TABLE \"public\".\"device_credentials\" (\n  \"created_at\" timestamptz DEFAULT (now()) NOT NULL,\n  \"credential_hash\" text NOT NULL,\n  \"device_id\" text NOT NULL,\n  \"id\" text NOT NULL,\n  \"last_used_at\" timestamptz,\n  \"revoked_at\" timestamptz,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"device_credentials\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"device_credentials\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.device_pairing_tokens",
+    "label": "Create table \"device_pairing_tokens\"",
+    "summary": "Creates table \"device_pairing_tokens\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "device_pairing_tokens"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"device_pairing_tokens\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"device_pairing_tokens\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"device_pairing_tokens\"",
+        "sql": "CREATE TABLE \"public\".\"device_pairing_tokens\" (\n  \"created_at\" timestamptz DEFAULT (now()) NOT NULL,\n  \"device_id\" text NOT NULL,\n  \"expires_at\" timestamptz NOT NULL,\n  \"id\" text NOT NULL,\n  \"token_hash\" text NOT NULL,\n  \"used_at\" timestamptz,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"device_pairing_tokens\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"device_pairing_tokens\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.devices",
+    "label": "Create table \"devices\"",
+    "summary": "Creates table \"devices\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "devices"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"devices\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"devices\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"devices\"",
+        "sql": "CREATE TABLE \"public\".\"devices\" (\n  \"created_at\" timestamptz DEFAULT (now()) NOT NULL,\n  \"created_by_id\" text NOT NULL,\n  \"device_type\" text NOT NULL,\n  \"hardware_id\" text,\n  \"id\" text NOT NULL,\n  \"is_active\" bool DEFAULT true NOT NULL,\n  \"is_paired\" bool DEFAULT false NOT NULL,\n  \"last_seen_at\" timestamptz,\n  \"name\" text NOT NULL,\n  \"name_key\" text NOT NULL,\n  \"project_id\" text NOT NULL,\n  \"updated_at\" timestamptz DEFAULT (now()) NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"devices_device_type_check_50569f2c\" CHECK (\"device_type\" IN ('ESP32', 'ESP8266'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"devices\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"devices\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.projects",
+    "label": "Create table \"projects\"",
+    "summary": "Creates table \"projects\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "projects"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"projects\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"projects\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"projects\"",
+        "sql": "CREATE TABLE \"public\".\"projects\" (\n  \"created_at\" timestamptz DEFAULT (now()) NOT NULL,\n  \"created_by_id\" text NOT NULL,\n  \"description\" text,\n  \"id\" text NOT NULL,\n  \"is_active\" bool DEFAULT true NOT NULL,\n  \"name\" text NOT NULL,\n  \"name_key\" text NOT NULL,\n  \"room_id\" text NOT NULL,\n  \"updated_at\" timestamptz DEFAULT (now()) NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"projects\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"projects\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.room_invitations",
+    "label": "Create table \"room_invitations\"",
+    "summary": "Creates table \"room_invitations\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "room_invitations"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"room_invitations\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_invitations\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"room_invitations\"",
+        "sql": "CREATE TABLE \"public\".\"room_invitations\" (\n  \"accepted_at\" timestamptz,\n  \"created_at\" timestamptz DEFAULT (now()) NOT NULL,\n  \"expires_at\" timestamptz NOT NULL,\n  \"id\" text NOT NULL,\n  \"invited_by_id\" text NOT NULL,\n  \"invited_email\" text NOT NULL,\n  \"rejected_at\" timestamptz,\n  \"role\" text DEFAULT 'MEMBER' NOT NULL,\n  \"room_id\" text NOT NULL,\n  \"token_hash\" text NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"room_invitations_role_check_50a44636\" CHECK (\"role\" IN ('OWNER', 'ADMIN', 'MEMBER'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"room_invitations\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_invitations\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.room_members",
+    "label": "Create table \"room_members\"",
+    "summary": "Creates table \"room_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "room_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"room_members\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_members\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"room_members\"",
+        "sql": "CREATE TABLE \"public\".\"room_members\" (\n  \"created_at\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"role\" text DEFAULT 'MEMBER' NOT NULL,\n  \"room_id\" text NOT NULL,\n  \"user_id\" text NOT NULL,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"room_members_role_check_50a44636\" CHECK (\"role\" IN ('OWNER', 'ADMIN', 'MEMBER'))\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"room_members\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_members\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.rooms",
+    "label": "Create table \"rooms\"",
+    "summary": "Creates table \"rooms\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "rooms"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"rooms\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"rooms\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"rooms\"",
+        "sql": "CREATE TABLE \"public\".\"rooms\" (\n  \"created_at\" timestamptz DEFAULT (now()) NOT NULL,\n  \"description\" text,\n  \"id\" text NOT NULL,\n  \"is_active\" bool DEFAULT true NOT NULL,\n  \"name\" text NOT NULL,\n  \"name_key\" text NOT NULL,\n  \"owner_id\" text NOT NULL,\n  \"updated_at\" timestamptz DEFAULT (now()) NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"rooms\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"rooms\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.device_credentials.device_credentials_credential_hash_key",
+    "label": "Add unique constraint on \"device_credentials\" (credential_hash)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "device_credentials_credential_hash_key",
+        "table": "device_credentials"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"device_credentials_credential_hash_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "device_credentials_credential_hash_key",
+          "public",
+          "\"public\".\"device_credentials\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"device_credentials_credential_hash_key\"",
+        "sql": "ALTER TABLE \"public\".\"device_credentials\" ADD CONSTRAINT \"device_credentials_credential_hash_key\" UNIQUE (\"credential_hash\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"device_credentials_credential_hash_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "device_credentials_credential_hash_key",
+          "public",
+          "\"public\".\"device_credentials\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.device_pairing_tokens.device_pairing_tokens_token_hash_key",
+    "label": "Add unique constraint on \"device_pairing_tokens\" (token_hash)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "device_pairing_tokens_token_hash_key",
+        "table": "device_pairing_tokens"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"device_pairing_tokens_token_hash_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "device_pairing_tokens_token_hash_key",
+          "public",
+          "\"public\".\"device_pairing_tokens\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"device_pairing_tokens_token_hash_key\"",
+        "sql": "ALTER TABLE \"public\".\"device_pairing_tokens\" ADD CONSTRAINT \"device_pairing_tokens_token_hash_key\" UNIQUE (\"token_hash\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"device_pairing_tokens_token_hash_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "device_pairing_tokens_token_hash_key",
+          "public",
+          "\"public\".\"device_pairing_tokens\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.devices.devices_hardware_id_key",
+    "label": "Add unique constraint on \"devices\" (hardware_id)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "devices_hardware_id_key",
+        "table": "devices"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"devices_hardware_id_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "devices_hardware_id_key",
+          "public",
+          "\"public\".\"devices\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"devices_hardware_id_key\"",
+        "sql": "ALTER TABLE \"public\".\"devices\" ADD CONSTRAINT \"devices_hardware_id_key\" UNIQUE (\"hardware_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"devices_hardware_id_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "devices_hardware_id_key",
+          "public",
+          "\"public\".\"devices\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.devices.devices_project_id_name_key_key",
+    "label": "Add unique constraint on \"devices\" (project_id, name_key)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "devices_project_id_name_key_key",
+        "table": "devices"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"devices_project_id_name_key_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "devices_project_id_name_key_key",
+          "public",
+          "\"public\".\"devices\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"devices_project_id_name_key_key\"",
+        "sql": "ALTER TABLE \"public\".\"devices\" ADD CONSTRAINT \"devices_project_id_name_key_key\" UNIQUE (\"project_id\", \"name_key\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"devices_project_id_name_key_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "devices_project_id_name_key_key",
+          "public",
+          "\"public\".\"devices\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.projects.projects_room_id_name_key_key",
+    "label": "Add unique constraint on \"projects\" (room_id, name_key)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "projects_room_id_name_key_key",
+        "table": "projects"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"projects_room_id_name_key_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "projects_room_id_name_key_key",
+          "public",
+          "\"public\".\"projects\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"projects_room_id_name_key_key\"",
+        "sql": "ALTER TABLE \"public\".\"projects\" ADD CONSTRAINT \"projects_room_id_name_key_key\" UNIQUE (\"room_id\", \"name_key\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"projects_room_id_name_key_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "projects_room_id_name_key_key",
+          "public",
+          "\"public\".\"projects\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.room_invitations.room_invitations_token_hash_key",
+    "label": "Add unique constraint on \"room_invitations\" (token_hash)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "room_invitations_token_hash_key",
+        "table": "room_invitations"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"room_invitations_token_hash_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_invitations_token_hash_key",
+          "public",
+          "\"public\".\"room_invitations\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"room_invitations_token_hash_key\"",
+        "sql": "ALTER TABLE \"public\".\"room_invitations\" ADD CONSTRAINT \"room_invitations_token_hash_key\" UNIQUE (\"token_hash\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"room_invitations_token_hash_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_invitations_token_hash_key",
+          "public",
+          "\"public\".\"room_invitations\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.room_members.room_members_room_id_user_id_key",
+    "label": "Add unique constraint on \"room_members\" (room_id, user_id)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "room_members_room_id_user_id_key",
+        "table": "room_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"room_members_room_id_user_id_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_members_room_id_user_id_key",
+          "public",
+          "\"public\".\"room_members\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"room_members_room_id_user_id_key\"",
+        "sql": "ALTER TABLE \"public\".\"room_members\" ADD CONSTRAINT \"room_members_room_id_user_id_key\" UNIQUE (\"room_id\", \"user_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"room_members_room_id_user_id_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_members_room_id_user_id_key",
+          "public",
+          "\"public\".\"room_members\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.rooms.rooms_owner_id_name_key_key",
+    "label": "Add unique constraint on \"rooms\" (owner_id, name_key)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "rooms_owner_id_name_key_key",
+        "table": "rooms"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"rooms_owner_id_name_key_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "rooms_owner_id_name_key_key",
+          "public",
+          "\"public\".\"rooms\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"rooms_owner_id_name_key_key\"",
+        "sql": "ALTER TABLE \"public\".\"rooms\" ADD CONSTRAINT \"rooms_owner_id_name_key_key\" UNIQUE (\"owner_id\", \"name_key\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"rooms_owner_id_name_key_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "rooms_owner_id_name_key_key",
+          "public",
+          "\"public\".\"rooms\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.device_credentials.device_credentials_device_id_idx_8f329912",
+    "label": "Create index \"device_credentials_device_id_idx_8f329912\" on \"device_credentials\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "device_credentials_device_id_idx_8f329912",
+        "table": "device_credentials"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"device_credentials_device_id_idx_8f329912\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"device_credentials_device_id_idx_8f329912\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"device_credentials_device_id_idx_8f329912\"",
+        "sql": "CREATE INDEX \"device_credentials_device_id_idx_8f329912\" ON \"public\".\"device_credentials\" (\"device_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"device_credentials_device_id_idx_8f329912\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"device_credentials_device_id_idx_8f329912\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.device_pairing_tokens.device_pairing_tokens_device_id_idx_8f329912",
+    "label": "Create index \"device_pairing_tokens_device_id_idx_8f329912\" on \"device_pairing_tokens\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "device_pairing_tokens_device_id_idx_8f329912",
+        "table": "device_pairing_tokens"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"device_pairing_tokens_device_id_idx_8f329912\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"device_pairing_tokens_device_id_idx_8f329912\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"device_pairing_tokens_device_id_idx_8f329912\"",
+        "sql": "CREATE INDEX \"device_pairing_tokens_device_id_idx_8f329912\" ON \"public\".\"device_pairing_tokens\" (\"device_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"device_pairing_tokens_device_id_idx_8f329912\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"device_pairing_tokens_device_id_idx_8f329912\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.devices.devices_created_by_id_idx_2b1d9a03",
+    "label": "Create index \"devices_created_by_id_idx_2b1d9a03\" on \"devices\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "devices_created_by_id_idx_2b1d9a03",
+        "table": "devices"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"devices_created_by_id_idx_2b1d9a03\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"devices_created_by_id_idx_2b1d9a03\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"devices_created_by_id_idx_2b1d9a03\"",
+        "sql": "CREATE INDEX \"devices_created_by_id_idx_2b1d9a03\" ON \"public\".\"devices\" (\"created_by_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"devices_created_by_id_idx_2b1d9a03\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"devices_created_by_id_idx_2b1d9a03\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.devices.devices_project_id_idx_6ad92603",
+    "label": "Create index \"devices_project_id_idx_6ad92603\" on \"devices\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "devices_project_id_idx_6ad92603",
+        "table": "devices"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"devices_project_id_idx_6ad92603\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"devices_project_id_idx_6ad92603\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"devices_project_id_idx_6ad92603\"",
+        "sql": "CREATE INDEX \"devices_project_id_idx_6ad92603\" ON \"public\".\"devices\" (\"project_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"devices_project_id_idx_6ad92603\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"devices_project_id_idx_6ad92603\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.projects.projects_created_by_id_idx_2b1d9a03",
+    "label": "Create index \"projects_created_by_id_idx_2b1d9a03\" on \"projects\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "projects_created_by_id_idx_2b1d9a03",
+        "table": "projects"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"projects_created_by_id_idx_2b1d9a03\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"projects_created_by_id_idx_2b1d9a03\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"projects_created_by_id_idx_2b1d9a03\"",
+        "sql": "CREATE INDEX \"projects_created_by_id_idx_2b1d9a03\" ON \"public\".\"projects\" (\"created_by_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"projects_created_by_id_idx_2b1d9a03\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"projects_created_by_id_idx_2b1d9a03\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.projects.projects_room_id_idx_c32a1e8c",
+    "label": "Create index \"projects_room_id_idx_c32a1e8c\" on \"projects\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "projects_room_id_idx_c32a1e8c",
+        "table": "projects"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"projects_room_id_idx_c32a1e8c\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"projects_room_id_idx_c32a1e8c\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"projects_room_id_idx_c32a1e8c\"",
+        "sql": "CREATE INDEX \"projects_room_id_idx_c32a1e8c\" ON \"public\".\"projects\" (\"room_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"projects_room_id_idx_c32a1e8c\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"projects_room_id_idx_c32a1e8c\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.room_invitations.room_invitations_invited_by_id_idx_80b34397",
+    "label": "Create index \"room_invitations_invited_by_id_idx_80b34397\" on \"room_invitations\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "room_invitations_invited_by_id_idx_80b34397",
+        "table": "room_invitations"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"room_invitations_invited_by_id_idx_80b34397\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_invitations_invited_by_id_idx_80b34397\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"room_invitations_invited_by_id_idx_80b34397\"",
+        "sql": "CREATE INDEX \"room_invitations_invited_by_id_idx_80b34397\" ON \"public\".\"room_invitations\" (\"invited_by_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"room_invitations_invited_by_id_idx_80b34397\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_invitations_invited_by_id_idx_80b34397\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.room_invitations.room_invitations_invited_email_idx_7405cf73",
+    "label": "Create index \"room_invitations_invited_email_idx_7405cf73\" on \"room_invitations\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "room_invitations_invited_email_idx_7405cf73",
+        "table": "room_invitations"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"room_invitations_invited_email_idx_7405cf73\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_invitations_invited_email_idx_7405cf73\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"room_invitations_invited_email_idx_7405cf73\"",
+        "sql": "CREATE INDEX \"room_invitations_invited_email_idx_7405cf73\" ON \"public\".\"room_invitations\" (\"invited_email\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"room_invitations_invited_email_idx_7405cf73\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_invitations_invited_email_idx_7405cf73\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.room_invitations.room_invitations_room_id_idx_c32a1e8c",
+    "label": "Create index \"room_invitations_room_id_idx_c32a1e8c\" on \"room_invitations\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "room_invitations_room_id_idx_c32a1e8c",
+        "table": "room_invitations"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"room_invitations_room_id_idx_c32a1e8c\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_invitations_room_id_idx_c32a1e8c\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"room_invitations_room_id_idx_c32a1e8c\"",
+        "sql": "CREATE INDEX \"room_invitations_room_id_idx_c32a1e8c\" ON \"public\".\"room_invitations\" (\"room_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"room_invitations_room_id_idx_c32a1e8c\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_invitations_room_id_idx_c32a1e8c\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.room_members.room_members_room_id_idx_c32a1e8c",
+    "label": "Create index \"room_members_room_id_idx_c32a1e8c\" on \"room_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "room_members_room_id_idx_c32a1e8c",
+        "table": "room_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"room_members_room_id_idx_c32a1e8c\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_members_room_id_idx_c32a1e8c\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"room_members_room_id_idx_c32a1e8c\"",
+        "sql": "CREATE INDEX \"room_members_room_id_idx_c32a1e8c\" ON \"public\".\"room_members\" (\"room_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"room_members_room_id_idx_c32a1e8c\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_members_room_id_idx_c32a1e8c\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.room_members.room_members_user_id_idx_6c952402",
+    "label": "Create index \"room_members_user_id_idx_6c952402\" on \"room_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "room_members_user_id_idx_6c952402",
+        "table": "room_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"room_members_user_id_idx_6c952402\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_members_user_id_idx_6c952402\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"room_members_user_id_idx_6c952402\"",
+        "sql": "CREATE INDEX \"room_members_user_id_idx_6c952402\" ON \"public\".\"room_members\" (\"user_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"room_members_user_id_idx_6c952402\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"room_members_user_id_idx_6c952402\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.rooms.rooms_owner_id_idx_ade9f347",
+    "label": "Create index \"rooms_owner_id_idx_ade9f347\" on \"rooms\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "rooms_owner_id_idx_ade9f347",
+        "table": "rooms"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"rooms_owner_id_idx_ade9f347\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"rooms_owner_id_idx_ade9f347\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"rooms_owner_id_idx_ade9f347\"",
+        "sql": "CREATE INDEX \"rooms_owner_id_idx_ade9f347\" ON \"public\".\"rooms\" (\"owner_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"rooms_owner_id_idx_ade9f347\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"rooms_owner_id_idx_ade9f347\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.device_credentials.device_credentials_device_id_fkey",
+    "label": "Add foreign key \"device_credentials_device_id_fkey\" on \"device_credentials\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "device_credentials_device_id_fkey",
+        "table": "device_credentials"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"device_credentials_device_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "device_credentials_device_id_fkey",
+          "public",
+          "\"public\".\"device_credentials\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"device_credentials_device_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"device_credentials\"\nADD CONSTRAINT \"device_credentials_device_id_fkey\"\nFOREIGN KEY (\"device_id\")\nREFERENCES \"public\".\"devices\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"device_credentials_device_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "device_credentials_device_id_fkey",
+          "public",
+          "\"public\".\"device_credentials\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.device_pairing_tokens.device_pairing_tokens_device_id_fkey",
+    "label": "Add foreign key \"device_pairing_tokens_device_id_fkey\" on \"device_pairing_tokens\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "device_pairing_tokens_device_id_fkey",
+        "table": "device_pairing_tokens"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"device_pairing_tokens_device_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "device_pairing_tokens_device_id_fkey",
+          "public",
+          "\"public\".\"device_pairing_tokens\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"device_pairing_tokens_device_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"device_pairing_tokens\"\nADD CONSTRAINT \"device_pairing_tokens_device_id_fkey\"\nFOREIGN KEY (\"device_id\")\nREFERENCES \"public\".\"devices\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"device_pairing_tokens_device_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "device_pairing_tokens_device_id_fkey",
+          "public",
+          "\"public\".\"device_pairing_tokens\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.devices.devices_project_id_fkey",
+    "label": "Add foreign key \"devices_project_id_fkey\" on \"devices\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "devices_project_id_fkey",
+        "table": "devices"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"devices_project_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "devices_project_id_fkey",
+          "public",
+          "\"public\".\"devices\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"devices_project_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"devices\"\nADD CONSTRAINT \"devices_project_id_fkey\"\nFOREIGN KEY (\"project_id\")\nREFERENCES \"public\".\"projects\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"devices_project_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "devices_project_id_fkey",
+          "public",
+          "\"public\".\"devices\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.devices.devices_created_by_id_fkey",
+    "label": "Add foreign key \"devices_created_by_id_fkey\" on \"devices\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "devices_created_by_id_fkey",
+        "table": "devices"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"devices_created_by_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "devices_created_by_id_fkey",
+          "public",
+          "\"public\".\"devices\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"devices_created_by_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"devices\"\nADD CONSTRAINT \"devices_created_by_id_fkey\"\nFOREIGN KEY (\"created_by_id\")\nREFERENCES \"public\".\"users\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"devices_created_by_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "devices_created_by_id_fkey",
+          "public",
+          "\"public\".\"devices\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.projects.projects_room_id_fkey",
+    "label": "Add foreign key \"projects_room_id_fkey\" on \"projects\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "projects_room_id_fkey",
+        "table": "projects"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"projects_room_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "projects_room_id_fkey",
+          "public",
+          "\"public\".\"projects\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"projects_room_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"projects\"\nADD CONSTRAINT \"projects_room_id_fkey\"\nFOREIGN KEY (\"room_id\")\nREFERENCES \"public\".\"rooms\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"projects_room_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "projects_room_id_fkey",
+          "public",
+          "\"public\".\"projects\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.projects.projects_created_by_id_fkey",
+    "label": "Add foreign key \"projects_created_by_id_fkey\" on \"projects\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "projects_created_by_id_fkey",
+        "table": "projects"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"projects_created_by_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "projects_created_by_id_fkey",
+          "public",
+          "\"public\".\"projects\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"projects_created_by_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"projects\"\nADD CONSTRAINT \"projects_created_by_id_fkey\"\nFOREIGN KEY (\"created_by_id\")\nREFERENCES \"public\".\"users\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"projects_created_by_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "projects_created_by_id_fkey",
+          "public",
+          "\"public\".\"projects\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.room_invitations.room_invitations_room_id_fkey",
+    "label": "Add foreign key \"room_invitations_room_id_fkey\" on \"room_invitations\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "room_invitations_room_id_fkey",
+        "table": "room_invitations"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"room_invitations_room_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_invitations_room_id_fkey",
+          "public",
+          "\"public\".\"room_invitations\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"room_invitations_room_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"room_invitations\"\nADD CONSTRAINT \"room_invitations_room_id_fkey\"\nFOREIGN KEY (\"room_id\")\nREFERENCES \"public\".\"rooms\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"room_invitations_room_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_invitations_room_id_fkey",
+          "public",
+          "\"public\".\"room_invitations\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.room_invitations.room_invitations_invited_by_id_fkey",
+    "label": "Add foreign key \"room_invitations_invited_by_id_fkey\" on \"room_invitations\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "room_invitations_invited_by_id_fkey",
+        "table": "room_invitations"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"room_invitations_invited_by_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_invitations_invited_by_id_fkey",
+          "public",
+          "\"public\".\"room_invitations\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"room_invitations_invited_by_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"room_invitations\"\nADD CONSTRAINT \"room_invitations_invited_by_id_fkey\"\nFOREIGN KEY (\"invited_by_id\")\nREFERENCES \"public\".\"users\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"room_invitations_invited_by_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_invitations_invited_by_id_fkey",
+          "public",
+          "\"public\".\"room_invitations\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.room_members.room_members_room_id_fkey",
+    "label": "Add foreign key \"room_members_room_id_fkey\" on \"room_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "room_members_room_id_fkey",
+        "table": "room_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"room_members_room_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_members_room_id_fkey",
+          "public",
+          "\"public\".\"room_members\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"room_members_room_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"room_members\"\nADD CONSTRAINT \"room_members_room_id_fkey\"\nFOREIGN KEY (\"room_id\")\nREFERENCES \"public\".\"rooms\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"room_members_room_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_members_room_id_fkey",
+          "public",
+          "\"public\".\"room_members\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.room_members.room_members_user_id_fkey",
+    "label": "Add foreign key \"room_members_user_id_fkey\" on \"room_members\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "room_members_user_id_fkey",
+        "table": "room_members"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"room_members_user_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_members_user_id_fkey",
+          "public",
+          "\"public\".\"room_members\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"room_members_user_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"room_members\"\nADD CONSTRAINT \"room_members_user_id_fkey\"\nFOREIGN KEY (\"user_id\")\nREFERENCES \"public\".\"users\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"room_members_user_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "room_members_user_id_fkey",
+          "public",
+          "\"public\".\"room_members\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.rooms.rooms_owner_id_fkey",
+    "label": "Add foreign key \"rooms_owner_id_fkey\" on \"rooms\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "rooms_owner_id_fkey",
+        "table": "rooms"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"rooms_owner_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "rooms_owner_id_fkey",
+          "public",
+          "\"public\".\"rooms\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"rooms_owner_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"rooms\"\nADD CONSTRAINT \"rooms_owner_id_fkey\"\nFOREIGN KEY (\"owner_id\")\nREFERENCES \"public\".\"users\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"rooms_owner_id_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "rooms_owner_id_fkey",
+          "public",
+          "\"public\".\"rooms\""
+        ]
+      }
+    ]
+  }
+]

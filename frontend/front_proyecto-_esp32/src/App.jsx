@@ -4,6 +4,7 @@ import LoginForm from './components/LoginForm.jsx';
 import RegisterForm from './components/RegisterForm.jsx';
 import ForgotPasswordForm from './components/ForgotPasswordForm.jsx';
 import ResetPasswordForm from './components/ResetPasswordForm.jsx';
+import RoomInvitationPage from './components/RoomInvitationPage.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import NotFound from './components/NotFound.jsx';
 import {
@@ -93,6 +94,16 @@ function App() {
       // response.token se guarda en localStorage para futuras llamadas autenticadas
       localStorage.setItem('authUser', JSON.stringify(response.user));
       localStorage.setItem('authToken', response.token);
+      const invitationToken = sessionStorage.getItem('pendingRoomInvitationToken');
+      if (invitationToken) {
+        sessionStorage.removeItem('pendingRoomInvitationToken');
+        window.history.pushState(
+          {},
+          '',
+          `/room-invitation?token=${encodeURIComponent(invitationToken)}`
+        );
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      }
     } catch (err) {
       setError(err.message || 'Error al iniciar sesión');
     } finally {
@@ -223,6 +234,58 @@ function App() {
                       error={registrationError}
                       onBackToLogin={showLogin}
                     />
+                  </div>
+                )
+              }
+            />
+
+            <Route
+              path="/room-invitation"
+              element={
+                user ? (
+                  <RoomInvitationPage
+                    token={new URLSearchParams(window.location.search).get('token')}
+                    onComplete={() => {
+                      window.history.pushState({}, '', '/dashboard');
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }}
+                  />
+                ) : (
+                  <div className="login-view">
+                    <section className="auth-card">
+                      <div className="auth-header">
+                        <p className="eyebrow">Salas compartidas</p>
+                        <h2>Inicia sesión para continuar</h2>
+                        <p>
+                          Acepta o rechaza la invitación con la cuenta que recibió el correo.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const token = new URLSearchParams(window.location.search).get('token');
+                          if (token) {
+                            sessionStorage.setItem('pendingRoomInvitationToken', token);
+                          }
+                          showLogin();
+                        }}
+                      >
+                        Ir a iniciar sesión
+                      </button>
+                      <button
+                        type="button"
+                        className="auth-link"
+                        onClick={() => {
+                          const token = new URLSearchParams(window.location.search).get('token');
+                          if (token) {
+                            sessionStorage.setItem('pendingRoomInvitationToken', token);
+                          }
+                          showRegister();
+                        }}
+                      >
+                        Crear una cuenta
+                      </button>
+                    </section>
                   </div>
                 )
               }

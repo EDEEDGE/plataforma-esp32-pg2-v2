@@ -3,11 +3,19 @@ import '../styles/dashboard.css';
 import Sidebar from './Sidebar.jsx';
 import UserManager from './UserManager.jsx';
 import ProfileForm from './ProfileForm.jsx';
+import RoomsPage from './RoomsPage.jsx';
+import RoomDetailPage from './RoomDetailPage.jsx';
 
 // Dashboard presenta el panel principal para usuarios autenticados.
 // Incluye un sidebar, una sección de datos y el módulo de usuarios.
 export default function Dashboard({ user, onLogout, onUserUpdated }) {
   const [selectedPage, setSelectedPage] = useState('summary');
+  const [selectedRoomId, setSelectedRoomId] = useState(null);
+
+  const handleSelectPage = (page) => {
+    setSelectedPage(page);
+    setSelectedRoomId(null);
+  };
 
   return (
     <div className="dashboard-layout">
@@ -15,7 +23,7 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
         user={user}
         onLogout={onLogout}
         selectedPage={selectedPage}
-        onSelectPage={setSelectedPage}
+        onSelectPage={handleSelectPage}
       />
 
       <section className="dashboard-main">
@@ -24,18 +32,22 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
             <p className="eyebrow">
               {selectedPage === 'summary'
                 ? 'Resumen'
-                : selectedPage === 'users'
-                  ? 'Usuarios'
-                  : 'Mi perfil'}
+                : selectedPage === 'rooms'
+                  ? 'Salas'
+                  : selectedPage === 'users'
+                    ? 'Usuarios'
+                    : 'Mi perfil'}
             </p>
             <h2>Hola, {user.name}</h2>
           </div>
           <p className="dashboard-help">
             {selectedPage === 'summary'
               ? 'Monitorea tus dispositivos ESP32 y despliega actualizaciones desde aquí.'
-              : selectedPage === 'users'
-                ? 'Gestiona los usuarios del sistema desde este panel.'
-                : 'Consulta y actualiza tus datos personales.'}
+              : selectedPage === 'rooms'
+                ? 'Consulta y crea las salas donde organizas tus proyectos y dispositivos.'
+                : selectedPage === 'users'
+                  ? 'Gestiona los usuarios del sistema desde este panel.'
+                  : 'Consulta y actualiza tus datos personales.'}
           </p>
         </div>
 
@@ -79,6 +91,16 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
               </article>
             </div>
           </>
+        ) : selectedPage === 'rooms' ? (
+          selectedRoomId ? (
+            <RoomDetailPage
+              roomId={selectedRoomId}
+              userId={user.id}
+              onBack={() => setSelectedRoomId(null)}
+            />
+          ) : (
+            <RoomsPage onOpenRoom={setSelectedRoomId} />
+          )
         ) : selectedPage === 'users' ? (
           <UserManager onSessionExpired={onLogout} />
         ) : (

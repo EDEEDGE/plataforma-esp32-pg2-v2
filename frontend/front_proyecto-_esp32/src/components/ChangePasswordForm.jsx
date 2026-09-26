@@ -16,7 +16,7 @@ export default function ChangePasswordForm({ onPasswordChanged, onSessionExpired
       await changePassword(currentPassword, newPassword);
       onPasswordChanged();
     } catch (err) {
-      if (err instanceof ApiError && err.status === 401) {
+      if (err instanceof ApiError && err.sessionExpired) {
         onSessionExpired();
       } else {
         setError(err.message || 'No se pudo cambiar la contraseña');
