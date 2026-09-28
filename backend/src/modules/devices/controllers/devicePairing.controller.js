@@ -97,24 +97,19 @@ export const generatePairingCode = async (req, res) => {
         })
         .all();
 
-    // Verificar si todavía existe un código válido
-    const activeToken = previousTokens.find((pairingToken) => {
-      return (
-        !pairingToken.usedAt &&
-        Temporal.Instant.compare(
-          pairingToken.expiresAt,
-          now
-        ) > 0
-      );
-    });
-
-    if (activeToken) {
-      return res.status(409).json({
-        message: 'Ya existe un código de vinculación activo para este dispositivo'
-      });
+    // Eliminar códigos anteriores que no hayan sido utilizados
+    // De esta forma solo habrá un código pendiente válido a la vez
+    for (const pairingToken of previousTokens) {
+      if (!pairingToken.usedAt) {
+        await db.orm.public.DevicePairingToken
+          .where({
+            id: pairingToken.id
+          })
+          .delete();
+      }
     }
 
-    // Generar código
+    // Generar nuevo código
     const rawCode = randomBytes(4)
       .toString('hex')
       .toUpperCase();
@@ -133,7 +128,7 @@ export const generatePairingCode = async (req, res) => {
       minutes: 15
     });
 
-    // Guardar código temporal
+    // Guardar nuevo código temporal
     await db.orm.public.DevicePairingToken.create({
       deviceId,
       tokenHash,
