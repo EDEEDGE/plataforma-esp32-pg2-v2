@@ -15,6 +15,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1142.0",
     "@prisma/client": "^7.10.0",
     "@prisma/orm-postgres": "^8.0.0-rc.8",
     "bcryptjs": "^3.0.3",
@@ -22,6 +23,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "multer": "^2.4.0",
     "nodemailer": "^9.0.6",
     "temporal-polyfill": "^1.0.4"
   },

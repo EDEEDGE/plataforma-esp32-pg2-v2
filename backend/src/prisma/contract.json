@@ -16,6 +16,14 @@
       "model": "Device",
       "namespace": "public"
     },
+    "firmware_files": {
+      "model": "FirmwareFile",
+      "namespace": "public"
+    },
+    "firmware_versions": {
+      "model": "FirmwareVersion",
+      "namespace": "public"
+    },
     "password_reset_tokens": {
       "model": "PasswordResetToken",
       "namespace": "public"
@@ -462,6 +470,266 @@
               "table": "device_pairing_tokens"
             }
           },
+          "FirmwareFile": {
+            "fields": {
+              "contentType": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "deviceType": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "DeviceType",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "firmwareVersionId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "objectKey": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "originalName": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "sha256": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "sizeBytes": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "firmwareVersion": {
+                "cardinality": "N:1",
+                "on": {
+                  "localFields": [
+                    "firmwareVersionId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "FirmwareVersion",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "contentType": {
+                  "column": "content_type"
+                },
+                "createdAt": {
+                  "column": "created_at"
+                },
+                "deviceType": {
+                  "column": "device_type"
+                },
+                "firmwareVersionId": {
+                  "column": "firmware_version_id"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "objectKey": {
+                  "column": "object_key"
+                },
+                "originalName": {
+                  "column": "original_name"
+                },
+                "sha256": {
+                  "column": "sha256"
+                },
+                "sizeBytes": {
+                  "column": "size_bytes"
+                }
+              },
+              "namespaceId": "public",
+              "table": "firmware_files"
+            }
+          },
+          "FirmwareVersion": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdById": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "description": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "isActive": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "projectId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "version": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "createdBy": {
+                "cardinality": "N:1",
+                "on": {
+                  "localFields": [
+                    "createdById"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "User",
+                  "namespace": "public"
+                }
+              },
+              "files": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "firmwareVersionId"
+                  ]
+                },
+                "to": {
+                  "model": "FirmwareFile",
+                  "namespace": "public"
+                }
+              },
+              "project": {
+                "cardinality": "N:1",
+                "on": {
+                  "localFields": [
+                    "projectId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Project",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "created_at"
+                },
+                "createdById": {
+                  "column": "created_by_id"
+                },
+                "description": {
+                  "column": "description"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "isActive": {
+                  "column": "is_active"
+                },
+                "projectId": {
+                  "column": "project_id"
+                },
+                "updatedAt": {
+                  "column": "updated_at"
+                },
+                "version": {
+                  "column": "version"
+                }
+              },
+              "namespaceId": "public",
+              "table": "firmware_versions"
+            }
+          },
           "PasswordResetToken": {
             "fields": {
               "createdAt": {
@@ -643,6 +911,21 @@
                 },
                 "to": {
                   "model": "Device",
+                  "namespace": "public"
+                }
+              },
+              "firmwareVersions": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "projectId"
+                  ]
+                },
+                "to": {
+                  "model": "FirmwareVersion",
                   "namespace": "public"
                 }
               },
@@ -1196,6 +1479,21 @@
                   "namespace": "public"
                 }
               },
+              "createdFirmwareVersions": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "createdById"
+                  ]
+                },
+                "to": {
+                  "model": "FirmwareVersion",
+                  "namespace": "public"
+                }
+              },
               "createdProjects": {
                 "cardinality": "1:N",
                 "on": {
@@ -1639,6 +1937,245 @@
                   "columns": [
                     "project_id",
                     "name_key"
+                  ]
+                }
+              ]
+            },
+            "firmware_files": {
+              "checks": [
+                {
+                  "expression": "\"device_type\" IN ('ESP32', 'ESP8266')",
+                  "name": "firmware_files_device_type_check_50569f2c",
+                  "prefix": "firmware_files_device_type_check"
+                }
+              ],
+              "columns": {
+                "content_type": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "application/octet-stream"
+                  },
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "created_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "device_type": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "DeviceType",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "firmware_version_id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "object_key": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "original_name": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "sha256": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "size_bytes": {
+                  "codecId": "pg/int4@1",
+                  "nativeType": "int4",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "firmware_version_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "firmware_files"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "firmware_versions"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "firmware_version_id"
+                  ],
+                  "name": "firmware_files_firmware_version_id_idx_88cb0360",
+                  "prefix": "firmware_files_firmware_version_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "object_key"
+                  ]
+                },
+                {
+                  "columns": [
+                    "firmware_version_id",
+                    "device_type"
+                  ]
+                }
+              ]
+            },
+            "firmware_versions": {
+              "columns": {
+                "created_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "created_by_id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "description": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "is_active": {
+                  "codecId": "pg/bool@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": true
+                  },
+                  "nativeType": "bool",
+                  "nullable": false
+                },
+                "project_id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "updated_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "version": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "project_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "firmware_versions"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "projects"
+                  }
+                },
+                {
+                  "source": {
+                    "columns": [
+                      "created_by_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "firmware_versions"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "users"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "created_by_id"
+                  ],
+                  "name": "firmware_versions_created_by_id_idx_2b1d9a03",
+                  "prefix": "firmware_versions_created_by_id_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "project_id"
+                  ],
+                  "name": "firmware_versions_project_id_idx_6ad92603",
+                  "prefix": "firmware_versions_project_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "project_id",
+                    "version"
                   ]
                 }
               ]
@@ -2353,10 +2890,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "90716676a77cfd5dcb4ec9a88a2cc488eaa87c4ab69fa1d65e6bf6fa7b1d2e73"
+    "storageHash": "6e6538b5e4d95b4e13758bf5f803084108b7bb9ed9fcab90c07fea03b6cd9ca0"
   },
   "execution": {
-    "executionHash": "00bccc3be513ce48c156eb7b85c159e18c1ad69ee00bded736d710931e5ad979",
+    "executionHash": "25bd8b21edbde566e1bfb90443cd89d46ec3fca6184ec91e6ad203376de3eb68",
     "mutations": {
       "defaults": [
         {
@@ -2390,6 +2927,28 @@
             "column": "id",
             "namespace": "public",
             "table": "devices"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "id",
+            "namespace": "public",
+            "table": "firmware_files"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "id",
+            "namespace": "public",
+            "table": "firmware_versions"
           }
         },
         {
