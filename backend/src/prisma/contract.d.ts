@@ -33,9 +33,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'6e6538b5e4d95b4e13758bf5f803084108b7bb9ed9fcab90c07fea03b6cd9ca0'>;
+  StorageHashBase<'db538c1304c2949117125873dc499f739b7d8bcb8fa90325c71fc2b2b6d42cf9'>;
 export type ExecutionHash =
-  ExecutionHashBase<'25bd8b21edbde566e1bfb90443cd89d46ec3fca6184ec91e6ad203376de3eb68'>;
+  ExecutionHashBase<'ef5ff377d6cca6760928fbfa40f2e608717afcad3a7abe46da891370a70e5bf8'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -241,6 +241,24 @@ type DefaultLiteralValue<CodecId extends string, Encoded> = CodecId extends keyo
 
 export type FieldOutputTypes = {
   readonly public: {
+    readonly Deployment: {
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly projectId: CodecTypes['pg/text@1']['output'];
+      readonly firmwareVersionId: CodecTypes['pg/text@1']['output'];
+      readonly createdById: CodecTypes['pg/text@1']['output'];
+      readonly targetAll: CodecTypes['pg/bool@1']['output'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
+    readonly DeploymentDevice: {
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly deploymentId: CodecTypes['pg/text@1']['output'];
+      readonly deviceId: CodecTypes['pg/text@1']['output'];
+      readonly status: CodecTypes['pg/text@1']['output'];
+      readonly errorMessage: CodecTypes['pg/text@1']['output'] | null;
+      readonly assignedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly installedAt: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
     readonly Device: {
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly projectId: CodecTypes['pg/text@1']['output'];
@@ -357,6 +375,24 @@ export type FieldOutputTypes = {
 };
 export type FieldInputTypes = {
   readonly public: {
+    readonly Deployment: {
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly projectId: CodecTypes['pg/text@1']['input'];
+      readonly firmwareVersionId: CodecTypes['pg/text@1']['input'];
+      readonly createdById: CodecTypes['pg/text@1']['input'];
+      readonly targetAll: CodecTypes['pg/bool@1']['input'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
+    readonly DeploymentDevice: {
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly deploymentId: CodecTypes['pg/text@1']['input'];
+      readonly deviceId: CodecTypes['pg/text@1']['input'];
+      readonly status: CodecTypes['pg/text@1']['input'];
+      readonly errorMessage: CodecTypes['pg/text@1']['input'] | null;
+      readonly assignedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly installedAt: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
     readonly Device: {
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly projectId: CodecTypes['pg/text@1']['input'];
@@ -473,6 +509,24 @@ export type FieldInputTypes = {
 };
 export type StorageColumnTypes = {
   readonly public: {
+    readonly deployment_devices: {
+      readonly assigned_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly deployment_id: CodecTypes['pg/text@1']['output'];
+      readonly device_id: CodecTypes['pg/text@1']['output'];
+      readonly error_message: CodecTypes['pg/text@1']['output'] | null;
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly installed_at: CodecTypes['pg/timestamptz-temporal@1']['output'] | null;
+      readonly status: CodecTypes['pg/text@1']['output'];
+      readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    };
+    readonly deployments: {
+      readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly created_by_id: CodecTypes['pg/text@1']['output'];
+      readonly firmware_version_id: CodecTypes['pg/text@1']['output'];
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly project_id: CodecTypes['pg/text@1']['output'];
+      readonly target_all: CodecTypes['pg/bool@1']['output'];
+    };
     readonly device_credentials: {
       readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['output'];
       readonly credential_hash: CodecTypes['pg/text@1']['output'];
@@ -589,6 +643,24 @@ export type StorageColumnTypes = {
 };
 export type StorageColumnInputTypes = {
   readonly public: {
+    readonly deployment_devices: {
+      readonly assigned_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly deployment_id: CodecTypes['pg/text@1']['input'];
+      readonly device_id: CodecTypes['pg/text@1']['input'];
+      readonly error_message: CodecTypes['pg/text@1']['input'] | null;
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly installed_at: CodecTypes['pg/timestamptz-temporal@1']['input'] | null;
+      readonly status: CodecTypes['pg/text@1']['input'];
+      readonly updated_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
+    };
+    readonly deployments: {
+      readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly created_by_id: CodecTypes['pg/text@1']['input'];
+      readonly firmware_version_id: CodecTypes['pg/text@1']['input'];
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly project_id: CodecTypes['pg/text@1']['input'];
+      readonly target_all: CodecTypes['pg/bool@1']['input'];
+    };
     readonly device_credentials: {
       readonly created_at: CodecTypes['pg/timestamptz-temporal@1']['input'];
       readonly credential_hash: CodecTypes['pg/text@1']['input'];
@@ -721,6 +793,197 @@ type ContractBase = Omit<
         readonly kind: 'postgres-schema';
         readonly entries: {
           readonly table: {
+            readonly deployment_devices: {
+              columns: {
+                readonly id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly deployment_id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly device_id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly status: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', 'PENDING'>;
+                  };
+                };
+                readonly error_message: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                };
+                readonly assigned_at: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly installed_at: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: true;
+                };
+                readonly updated_at: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [{ readonly columns: readonly ['deployment_id', 'device_id'] }];
+              indexes: readonly [
+                {
+                  readonly name: 'deployment_devices_deployment_id_idx_117bf120';
+                  readonly prefix: 'deployment_devices_deployment_id_idx';
+                  readonly columns: readonly ['deployment_id'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'deployment_devices_device_id_idx_8f329912';
+                  readonly prefix: 'deployment_devices_device_id_idx';
+                  readonly columns: readonly ['device_id'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'deployment_devices';
+                    readonly columns: readonly ['deployment_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'deployments';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'deployment_devices';
+                    readonly columns: readonly ['device_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'devices';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
+            readonly deployments: {
+              columns: {
+                readonly id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly project_id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly firmware_version_id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly created_by_id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly target_all: {
+                  readonly nativeType: 'bool';
+                  readonly codecId: 'pg/bool@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/bool@1', false>;
+                  };
+                };
+                readonly created_at: {
+                  readonly nativeType: 'timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'deployments_project_id_idx_6ad92603';
+                  readonly prefix: 'deployments_project_id_idx';
+                  readonly columns: readonly ['project_id'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'deployments_firmware_version_id_idx_88cb0360';
+                  readonly prefix: 'deployments_firmware_version_id_idx';
+                  readonly columns: readonly ['firmware_version_id'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'deployments_created_by_id_idx_2b1d9a03';
+                  readonly prefix: 'deployments_created_by_id_idx';
+                  readonly columns: readonly ['created_by_id'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'deployments';
+                    readonly columns: readonly ['project_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'projects';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'deployments';
+                    readonly columns: readonly ['firmware_version_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'firmware_versions';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'deployments';
+                    readonly columns: readonly ['created_by_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'users';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
             readonly device_credentials: {
               columns: {
                 readonly id: {
@@ -1681,11 +1944,188 @@ type ContractBase = Omit<
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'FirmwareFile';
     };
+    readonly deployments: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'Deployment';
+    };
+    readonly deployment_devices: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'DeploymentDevice';
+    };
   };
   readonly domain: {
     readonly namespaces: {
       readonly public: {
         readonly models: {
+          readonly Deployment: {
+            readonly fields: {
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly projectId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly firmwareVersionId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly createdById: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly targetAll: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+            };
+            readonly relations: {
+              readonly createdBy: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
+                readonly cardinality: 'N:1';
+                readonly on: {
+                  readonly localFields: readonly ['createdById'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+              readonly devices: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'DeploymentDevice';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['deploymentId'];
+                };
+              };
+              readonly firmwareVersion: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'FirmwareVersion';
+                };
+                readonly cardinality: 'N:1';
+                readonly on: {
+                  readonly localFields: readonly ['firmwareVersionId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+              readonly project: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Project';
+                };
+                readonly cardinality: 'N:1';
+                readonly on: {
+                  readonly localFields: readonly ['projectId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'deployments';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly id: { readonly column: 'id' };
+                readonly projectId: { readonly column: 'project_id' };
+                readonly firmwareVersionId: { readonly column: 'firmware_version_id' };
+                readonly createdById: { readonly column: 'created_by_id' };
+                readonly targetAll: { readonly column: 'target_all' };
+                readonly createdAt: { readonly column: 'created_at' };
+              };
+            };
+          };
+          readonly DeploymentDevice: {
+            readonly fields: {
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly deploymentId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly deviceId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly status: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly errorMessage: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly assignedAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+              readonly installedAt: {
+                readonly nullable: true;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+              readonly updatedAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+            };
+            readonly relations: {
+              readonly deployment: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Deployment';
+                };
+                readonly cardinality: 'N:1';
+                readonly on: {
+                  readonly localFields: readonly ['deploymentId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+              readonly device: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Device';
+                };
+                readonly cardinality: 'N:1';
+                readonly on: {
+                  readonly localFields: readonly ['deviceId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'deployment_devices';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly id: { readonly column: 'id' };
+                readonly deploymentId: { readonly column: 'deployment_id' };
+                readonly deviceId: { readonly column: 'device_id' };
+                readonly status: { readonly column: 'status' };
+                readonly errorMessage: { readonly column: 'error_message' };
+                readonly assignedAt: { readonly column: 'assigned_at' };
+                readonly installedAt: { readonly column: 'installed_at' };
+                readonly updatedAt: { readonly column: 'updated_at' };
+              };
+            };
+          };
           readonly Device: {
             readonly fields: {
               readonly id: {
@@ -1759,6 +2199,17 @@ type ContractBase = Omit<
                 readonly to: {
                   readonly namespace: 'public' & NamespaceId;
                   readonly model: 'DeviceCredential';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['deviceId'];
+                };
+              };
+              readonly deploymentDevices: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'DeploymentDevice';
                 };
                 readonly cardinality: '1:N';
                 readonly on: {
@@ -2053,6 +2504,17 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['id'];
                 };
               };
+              readonly deployments: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Deployment';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['firmwareVersionId'];
+                };
+              };
               readonly files: {
                 readonly to: {
                   readonly namespace: 'public' & NamespaceId;
@@ -2202,6 +2664,17 @@ type ContractBase = Omit<
                 readonly on: {
                   readonly localFields: readonly ['createdById'];
                   readonly targetFields: readonly ['id'];
+                };
+              };
+              readonly deployments: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Deployment';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['projectId'];
                 };
               };
               readonly devices: {
@@ -2550,6 +3023,17 @@ type ContractBase = Omit<
               };
             };
             readonly relations: {
+              readonly createdDeployments: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Deployment';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['createdById'];
+                };
+              };
               readonly createdDevices: {
                 readonly to: {
                   readonly namespace: 'public' & NamespaceId;
@@ -2694,6 +3178,22 @@ type ContractBase = Omit<
     readonly executionHash: ExecutionHash;
     readonly mutations: {
       readonly defaults: readonly [
+        {
+          readonly ref: {
+            readonly namespace: 'public';
+            readonly table: 'deployment_devices';
+            readonly column: 'id';
+          };
+          readonly onCreate: { readonly kind: 'generator'; readonly id: 'uuidv4' };
+        },
+        {
+          readonly ref: {
+            readonly namespace: 'public';
+            readonly table: 'deployments';
+            readonly column: 'id';
+          };
+          readonly onCreate: { readonly kind: 'generator'; readonly id: 'uuidv4' };
+        },
         {
           readonly ref: {
             readonly namespace: 'public';

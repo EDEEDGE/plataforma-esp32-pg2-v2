@@ -50,6 +50,7 @@ model User {
   createdProjects Project[] @relation("ProjectCreator")
   createdDevices Device[] @relation("DeviceCreator")
   createdFirmwareVersions FirmwareVersion[] @relation("FirmwareVersionCreator")
+  createdDeployments Deployment[] @relation("DeploymentCreator")
   
 }
 
@@ -184,6 +185,7 @@ model Project {
 
   devices Device[]
   firmwareVersions FirmwareVersion[]
+  deployments Deployment[]
 
   @@unique([roomId, nameKey])
   @@index([roomId])
@@ -228,6 +230,7 @@ model Device {
 
   pairingTokens DevicePairingToken[]
   credentials DeviceCredential[]
+  deploymentDevices DeploymentDevice[]
 
   @@unique([projectId, nameKey])
   @@index([projectId])
@@ -307,6 +310,7 @@ model FirmwareVersion {
   )
 
   files FirmwareFile[]
+  deployments Deployment[]
 
   @@unique([projectId, version])
   @@index([projectId])
@@ -337,4 +341,70 @@ model FirmwareFile {
   @@unique([firmwareVersionId, deviceType])
   @@index([firmwareVersionId])
   @@map("firmware_files")
+}
+
+model Deployment {
+  id                String   @id @default(uuid())
+  projectId         String   @map("project_id")
+  firmwareVersionId String   @map("firmware_version_id")
+  createdById       String   @map("created_by_id")
+
+  targetAll         Boolean  @default(false) @map("target_all")
+
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  project Project @relation(
+    fields: [projectId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  firmwareVersion FirmwareVersion @relation(
+    fields: [firmwareVersionId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  createdBy User @relation(
+    "DeploymentCreator",
+    fields: [createdById],
+    references: [id]
+  )
+
+  devices DeploymentDevice[]
+
+  @@index([projectId])
+  @@index([firmwareVersionId])
+  @@index([createdById])
+  @@map("deployments")
+}
+
+model DeploymentDevice {
+  id           String   @id @default(uuid())
+  deploymentId String   @map("deployment_id")
+  deviceId     String   @map("device_id")
+
+  status       String   @default("PENDING")
+  errorMessage String?  @map("error_message")
+
+  assignedAt   DateTime @default(now()) @map("assigned_at")
+  installedAt  DateTime? @map("installed_at")
+  updatedAt    DateTime @default(now()) @map("updated_at")
+
+  deployment Deployment @relation(
+    fields: [deploymentId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  device Device @relation(
+    fields: [deviceId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  @@unique([deploymentId, deviceId])
+  @@index([deploymentId])
+  @@index([deviceId])
+  @@map("deployment_devices")
 }

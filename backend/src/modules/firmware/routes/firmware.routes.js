@@ -12,6 +12,10 @@ import {
   uploadFirmwareFile
 } from '../controllers/firmwareFiles.controller.js';
 
+import {
+  createDeployment
+} from '../controllers/deployments.controller.js'
+
 //middleware para subir el archivo
 import {
   firmwareUpload
@@ -20,6 +24,16 @@ import {
 import {
   authMiddleware
 } from '../../../middlewares/auth.middleware.js';
+
+
+import {
+  checkFirmwareUpdate,
+  downloadDeviceFirmware
+} from '../controllers/deviceFirmware.controller.js';
+
+import {
+  deviceAuthMiddleware
+} from '../../../middlewares/deviceAuth.middleware.js';
 
 const router = express.Router();
 
@@ -67,4 +81,26 @@ router.post(
   uploadFirmwareFile
 );
 
+// Crear despliegue de firmware
+router.post(
+  '/projects/:projectId/deployments',
+  authMiddleware,
+  createDeployment
+);
+
+
+// ESP32 consulta si tiene una actualización pendiente
+router.get(
+  '/devices/firmware/check-update',
+  deviceAuthMiddleware,
+  checkFirmwareUpdate
+);
+
+
+// Descargar archivo .bin para el ESP32 / ESP8266
+router.get(
+  '/devices/firmware/files/:fileId/download',
+  deviceAuthMiddleware,
+  downloadDeviceFirmware
+);
 export default router;

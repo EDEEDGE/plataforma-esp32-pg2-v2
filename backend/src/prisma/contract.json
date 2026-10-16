@@ -4,6 +4,14 @@
   "target": "postgres",
   "profileHash": "3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2",
   "roots": {
+    "deployment_devices": {
+      "model": "DeploymentDevice",
+      "namespace": "public"
+    },
+    "deployments": {
+      "model": "Deployment",
+      "namespace": "public"
+    },
     "device_credentials": {
       "model": "DeviceCredential",
       "namespace": "public"
@@ -98,6 +106,260 @@
           }
         },
         "models": {
+          "Deployment": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdById": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "firmwareVersionId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "projectId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "targetAll": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "createdBy": {
+                "cardinality": "N:1",
+                "on": {
+                  "localFields": [
+                    "createdById"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "User",
+                  "namespace": "public"
+                }
+              },
+              "devices": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "deploymentId"
+                  ]
+                },
+                "to": {
+                  "model": "DeploymentDevice",
+                  "namespace": "public"
+                }
+              },
+              "firmwareVersion": {
+                "cardinality": "N:1",
+                "on": {
+                  "localFields": [
+                    "firmwareVersionId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "FirmwareVersion",
+                  "namespace": "public"
+                }
+              },
+              "project": {
+                "cardinality": "N:1",
+                "on": {
+                  "localFields": [
+                    "projectId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Project",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "created_at"
+                },
+                "createdById": {
+                  "column": "created_by_id"
+                },
+                "firmwareVersionId": {
+                  "column": "firmware_version_id"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "projectId": {
+                  "column": "project_id"
+                },
+                "targetAll": {
+                  "column": "target_all"
+                }
+              },
+              "namespaceId": "public",
+              "table": "deployments"
+            }
+          },
+          "DeploymentDevice": {
+            "fields": {
+              "assignedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "deploymentId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "deviceId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "errorMessage": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "installedAt": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "deployment": {
+                "cardinality": "N:1",
+                "on": {
+                  "localFields": [
+                    "deploymentId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Deployment",
+                  "namespace": "public"
+                }
+              },
+              "device": {
+                "cardinality": "N:1",
+                "on": {
+                  "localFields": [
+                    "deviceId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Device",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "assignedAt": {
+                  "column": "assigned_at"
+                },
+                "deploymentId": {
+                  "column": "deployment_id"
+                },
+                "deviceId": {
+                  "column": "device_id"
+                },
+                "errorMessage": {
+                  "column": "error_message"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "installedAt": {
+                  "column": "installed_at"
+                },
+                "status": {
+                  "column": "status"
+                },
+                "updatedAt": {
+                  "column": "updated_at"
+                }
+              },
+              "namespaceId": "public",
+              "table": "deployment_devices"
+            }
+          },
           "Device": {
             "fields": {
               "createdAt": {
@@ -219,6 +481,21 @@
                 },
                 "to": {
                   "model": "DeviceCredential",
+                  "namespace": "public"
+                }
+              },
+              "deploymentDevices": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "deviceId"
+                  ]
+                },
+                "to": {
+                  "model": "DeploymentDevice",
                   "namespace": "public"
                 }
               },
@@ -668,6 +945,21 @@
                   "namespace": "public"
                 }
               },
+              "deployments": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "firmwareVersionId"
+                  ]
+                },
+                "to": {
+                  "model": "Deployment",
+                  "namespace": "public"
+                }
+              },
               "files": {
                 "cardinality": "1:N",
                 "on": {
@@ -896,6 +1188,21 @@
                 },
                 "to": {
                   "model": "User",
+                  "namespace": "public"
+                }
+              },
+              "deployments": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "projectId"
+                  ]
+                },
+                "to": {
+                  "model": "Deployment",
                   "namespace": "public"
                 }
               },
@@ -1464,6 +1771,21 @@
               }
             },
             "relations": {
+              "createdDeployments": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "createdById"
+                  ]
+                },
+                "to": {
+                  "model": "Deployment",
+                  "namespace": "public"
+                }
+              },
               "createdDevices": {
                 "cardinality": "1:N",
                 "on": {
@@ -1619,6 +1941,255 @@
       "public": {
         "entries": {
           "table": {
+            "deployment_devices": {
+              "columns": {
+                "assigned_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "deployment_id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "device_id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "error_message": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "installed_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": true
+                },
+                "status": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "PENDING"
+                  },
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "updated_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "deployment_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "deployment_devices"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "deployments"
+                  }
+                },
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "device_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "deployment_devices"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "devices"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "deployment_id"
+                  ],
+                  "name": "deployment_devices_deployment_id_idx_117bf120",
+                  "prefix": "deployment_devices_deployment_id_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "device_id"
+                  ],
+                  "name": "deployment_devices_device_id_idx_8f329912",
+                  "prefix": "deployment_devices_device_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "deployment_id",
+                    "device_id"
+                  ]
+                }
+              ]
+            },
+            "deployments": {
+              "columns": {
+                "created_at": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "timestamptz",
+                  "nullable": false
+                },
+                "created_by_id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "firmware_version_id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "project_id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "target_all": {
+                  "codecId": "pg/bool@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nativeType": "bool",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "project_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "deployments"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "projects"
+                  }
+                },
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "firmware_version_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "deployments"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "firmware_versions"
+                  }
+                },
+                {
+                  "source": {
+                    "columns": [
+                      "created_by_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "deployments"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "users"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "created_by_id"
+                  ],
+                  "name": "deployments_created_by_id_idx_2b1d9a03",
+                  "prefix": "deployments_created_by_id_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "firmware_version_id"
+                  ],
+                  "name": "deployments_firmware_version_id_idx_88cb0360",
+                  "prefix": "deployments_firmware_version_id_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "project_id"
+                  ],
+                  "name": "deployments_project_id_idx_6ad92603",
+                  "prefix": "deployments_project_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
             "device_credentials": {
               "columns": {
                 "created_at": {
@@ -2890,12 +3461,34 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "6e6538b5e4d95b4e13758bf5f803084108b7bb9ed9fcab90c07fea03b6cd9ca0"
+    "storageHash": "db538c1304c2949117125873dc499f739b7d8bcb8fa90325c71fc2b2b6d42cf9"
   },
   "execution": {
-    "executionHash": "25bd8b21edbde566e1bfb90443cd89d46ec3fca6184ec91e6ad203376de3eb68",
+    "executionHash": "ef5ff377d6cca6760928fbfa40f2e608717afcad3a7abe46da891370a70e5bf8",
     "mutations": {
       "defaults": [
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "id",
+            "namespace": "public",
+            "table": "deployment_devices"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "id",
+            "namespace": "public",
+            "table": "deployments"
+          }
+        },
         {
           "onCreate": {
             "id": "uuidv4",
