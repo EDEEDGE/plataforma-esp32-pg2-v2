@@ -49,6 +49,8 @@ model User {
   sentRoomInvitations RoomInvitation[] @relation("InvitationSender")
   createdProjects Project[] @relation("ProjectCreator")
   createdDevices Device[] @relation("DeviceCreator")
+  createdFirmwareVersions FirmwareVersion[] @relation("FirmwareVersionCreator")
+  createdDeployments Deployment[] @relation("DeploymentCreator")
   
 }
 
@@ -182,6 +184,8 @@ model Project {
   )
 
   devices Device[]
+  firmwareVersions FirmwareVersion[]
+  deployments Deployment[]
 
   @@unique([roomId, nameKey])
   @@index([roomId])
@@ -226,6 +230,7 @@ model Device {
 
   pairingTokens DevicePairingToken[]
   credentials DeviceCredential[]
+  deploymentDevices DeploymentDevice[]
 
   @@unique([projectId, nameKey])
   @@index([projectId])
@@ -278,4 +283,128 @@ model DeviceCredential {
   @@index([deviceId])
 
   @@map("device_credentials")
+}
+
+model FirmwareVersion {
+  id          String   @id @default(uuid())
+  projectId   String   @map("project_id")
+  createdById String   @map("created_by_id")
+
+  version     String
+  description String?
+  isActive    Boolean  @default(true) @map("is_active")
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  project Project @relation(
+    fields: [projectId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  createdBy User @relation(
+    "FirmwareVersionCreator",
+    fields: [createdById],
+    references: [id]
+  )
+
+  files FirmwareFile[]
+  deployments Deployment[]
+
+  @@unique([projectId, version])
+  @@index([projectId])
+  @@index([createdById])
+  @@map("firmware_versions")
+}
+
+model FirmwareFile {
+  id                String     @id @default(uuid())
+  firmwareVersionId String     @map("firmware_version_id")
+
+  deviceType        DeviceType @map("device_type")
+
+  objectKey         String     @unique @map("object_key")
+  originalName      String     @map("original_name")
+  sizeBytes         Int        @map("size_bytes")
+  sha256            String
+  contentType       String     @default("application/octet-stream") @map("content_type")
+
+  createdAt         DateTime   @default(now()) @map("created_at")
+
+  firmwareVersion FirmwareVersion @relation(
+    fields: [firmwareVersionId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  @@unique([firmwareVersionId, deviceType])
+  @@index([firmwareVersionId])
+  @@map("firmware_files")
+}
+
+model Deployment {
+  id                String   @id @default(uuid())
+  projectId         String   @map("project_id")
+  firmwareVersionId String   @map("firmware_version_id")
+  createdById       String   @map("created_by_id")
+
+  targetAll         Boolean  @default(false) @map("target_all")
+
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  project Project @relation(
+    fields: [projectId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  firmwareVersion FirmwareVersion @relation(
+    fields: [firmwareVersionId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  createdBy User @relation(
+    "DeploymentCreator",
+    fields: [createdById],
+    references: [id]
+  )
+
+  devices DeploymentDevice[]
+
+  @@index([projectId])
+  @@index([firmwareVersionId])
+  @@index([createdById])
+  @@map("deployments")
+}
+
+model DeploymentDevice {
+  id           String   @id @default(uuid())
+  deploymentId String   @map("deployment_id")
+  deviceId     String   @map("device_id")
+
+  status       String   @default("PENDING")
+  errorMessage String?  @map("error_message")
+
+  assignedAt   DateTime @default(now()) @map("assigned_at")
+  installedAt  DateTime? @map("installed_at")
+  updatedAt    DateTime @default(now()) @map("updated_at")
+
+  deployment Deployment @relation(
+    fields: [deploymentId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  device Device @relation(
+    fields: [deviceId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  @@unique([deploymentId, deviceId])
+  @@index([deploymentId])
+  @@index([deviceId])
+  @@map("deployment_devices")
 }
