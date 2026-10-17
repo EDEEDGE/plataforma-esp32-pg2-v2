@@ -1,0 +1,290 @@
+.auth-experience {
+  --auth-panel-duration: 780ms;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: min(100%, 1040px);
+  min-height: 560px;
+  height: auto;
+  margin: 0 auto;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 34px;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 40px 90px rgba(15, 23, 42, 0.32);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  animation: auth-experience-enter 700ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.app-shell:has(.auth-experience) {
+  justify-content: flex-start;
+  gap: clamp(24px, 4vh, 38px);
+  padding: clamp(26px, 5vh, 48px) 24px;
+}
+
+.main-content:has(.auth-experience) {
+  width: min(100%, 1080px);
+  margin: 0 auto;
+}
+
+.auth-experience-form {
+  z-index: 1;
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: clamp(32px, 5vw, 58px);
+  transition: transform var(--auth-panel-duration) cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.auth-experience.is-register .auth-experience-form {
+  transform: translateX(100%);
+}
+
+.auth-experience .auth-card {
+  width: 100%;
+  max-width: 520px;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.auth-experience .auth-card::before,
+.auth-experience .auth-card::after {
+  display: none;
+}
+
+.auth-experience-panel {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  padding: clamp(30px, 5vw, 64px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 180px 32px 32px 180px;
+  background:
+    linear-gradient(145deg, rgba(59, 130, 246, 0.38), rgba(30, 41, 91, 0.62)),
+    rgba(15, 23, 42, 0.48);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24), 0 20px 55px rgba(15, 23, 42, 0.18);
+  text-align: center;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  transition:
+    transform var(--auth-panel-duration) cubic-bezier(0.76, 0, 0.24, 1),
+    border-radius var(--auth-panel-duration) cubic-bezier(0.76, 0, 0.24, 1),
+    background-color 300ms ease;
+}
+
+.auth-experience-panel::before {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 58%);
+  content: '';
+  pointer-events: none;
+}
+
+.auth-experience.is-register .auth-experience-panel {
+  transform: translateX(-100%);
+  border-radius: 32px 180px 180px 32px;
+}
+
+.auth-experience-panel-content {
+  position: relative;
+  width: min(100%, 390px);
+  color: #f8fafc;
+  animation: auth-panel-copy-enter 500ms ease both;
+}
+
+.auth-experience-eyebrow {
+  margin-bottom: 18px;
+  color: rgba(224, 231, 255, 0.9);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.auth-experience-panel h2 {
+  margin: 0 0 14px;
+  color: #fff;
+  font-size: clamp(1.9rem, 3vw, 2.7rem);
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+}
+
+.auth-experience-panel-content > p:not(.auth-experience-eyebrow) {
+  color: rgba(241, 245, 249, 0.88);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.auth-experience-action {
+  min-width: min(100%, 250px);
+  margin-top: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+  color: #fff;
+}
+
+.auth-experience-action:hover {
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+}
+
+.auth-experience-form .auth-header .eyebrow,
+.auth-experience-form .auth-header h2,
+.auth-experience-form .auth-header p:not(.eyebrow),
+.auth-experience-form .field span {
+  color: #f8fafc;
+}
+
+.auth-experience-form input {
+  border-color: rgba(255, 255, 255, 0.48);
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.auth-experience-form input::placeholder {
+  color: rgba(248, 250, 252, 0.74);
+}
+
+.auth-experience-form input:focus {
+  border-color: rgba(255, 255, 255, 0.85);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 0 0 4px rgba(147, 197, 253, 0.24);
+}
+
+.auth-experience-form .auth-link,
+.auth-experience-form .auth-link:hover {
+  color: #bfdbfe;
+}
+
+.auth-experience-form .form-error {
+  border-color: rgba(252, 165, 165, 0.76);
+  background: rgba(127, 29, 29, 0.62);
+  color: #fff1f2;
+}
+
+.auth-experience-form .form-message {
+  border-color: rgba(147, 197, 253, 0.72);
+  background: rgba(30, 64, 175, 0.5);
+  color: #eff6ff;
+}
+
+.auth-experience.is-recovery .auth-experience-form {
+  grid-column: 1;
+}
+
+.auth-experience.is-recovery .auth-card {
+  max-width: 460px;
+}
+
+@keyframes auth-experience-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.99);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes auth-panel-copy-enter {
+  from {
+    opacity: 0.5;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 760px) {
+  .auth-experience {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-radius: 28px;
+  }
+
+  .auth-experience-form {
+    order: 1;
+    padding: 30px clamp(22px, 6vw, 40px) 38px;
+    transform: none !important;
+  }
+
+  .auth-experience-panel {
+    position: relative;
+    inset: auto;
+    order: 0;
+    width: 100%;
+    min-height: 200px;
+    padding: 28px 24px;
+    border-radius: 28px 28px 100px 28px;
+    transform: none !important;
+    transition: border-radius 450ms ease;
+  }
+
+  .auth-experience.is-register .auth-experience-panel {
+    border-radius: 28px 28px 28px 100px;
+  }
+
+  .app-shell:has(.auth-experience) {
+    padding: 24px 14px 34px;
+  }
+
+  .auth-experience-panel-content {
+    animation: auth-panel-copy-enter 350ms ease both;
+  }
+}
+
+@media (max-width: 520px) {
+  .auth-experience {
+    border-radius: 24px;
+  }
+
+  .auth-experience-form {
+    padding: 26px 22px 30px;
+  }
+
+  .auth-experience .auth-card {
+    gap: 16px;
+  }
+
+  .auth-experience-panel {
+    min-height: 180px;
+  }
+
+  .auth-experience-action {
+    margin-top: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-experience,
+  .auth-experience-form,
+  .auth-experience-panel,
+  .auth-experience-panel-content {
+    animation: none;
+    transition: none;
+  }
+}

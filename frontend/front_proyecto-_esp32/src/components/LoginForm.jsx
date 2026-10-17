@@ -3,7 +3,7 @@ import '../styles/login.css';
 
 // LoginForm muestra el formulario de autenticación.
 // Recibe onSubmit, loading y error como propiedades desde App.
-export default function LoginForm({ onSubmit, loading, error, message, onRegister, onForgotPassword }) {
+export default function LoginForm({ onSubmit, loading, error, message, onForgotPassword }) {
   const [email, setEmail] = useState('admin@plataforma.com');
   const [password, setPassword] = useState('admin123456');
 
@@ -16,12 +16,12 @@ export default function LoginForm({ onSubmit, loading, error, message, onRegiste
   return (
     <form className="auth-card" onSubmit={handleSubmit}>
       <div className="auth-header">
-        <p className="eyebrow">Plataforma para actualizar ESP32</p>
+        <p className="eyebrow">Portal de usuario</p>
         <h2>Iniciar sesión</h2>
       </div>
 
       <label className="field" htmlFor="email-input">
-        <span>Correo</span>
+        <span>Correo electrónico</span>
         <input
           id="email-input"
           type="email"
@@ -59,15 +59,11 @@ export default function LoginForm({ onSubmit, loading, error, message, onRegiste
       ) : null}
 
       <button type="submit" disabled={loading}>
-        {loading ? 'Ingresando...' : 'Entrar'}
-      </button>
-
-      <button type="button" className="auth-link" onClick={onRegister}>
-        Crear una cuenta
+        {loading ? 'Verificando acceso...' : 'Iniciar sesión'}
       </button>
 
       <button type="button" className="auth-link" onClick={onForgotPassword}>
-        ¿Olvidaste tu contraseña?
+        ¿Necesitas recuperar tu contraseña?
       </button>
     </form>
   );

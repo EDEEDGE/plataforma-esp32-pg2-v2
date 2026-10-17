@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { resetPassword } from '../services/auth.js';
 import '../styles/login.css';
 
-export default function ResetPasswordForm({ token, onBackToLogin }) {
+export default function ResetPasswordForm({ token }) {
   const [newPassword, setNewPassword] = useState('');
   const [confirmation, setConfirmation] = useState('');
   const [loading, setLoading] = useState(false);
@@ -37,11 +37,11 @@ export default function ResetPasswordForm({ token, onBackToLogin }) {
   };
 
   return (
-    <form className="auth-card" onSubmit={handleSubmit}>
+    <form className="auth-card auth-recovery-form" onSubmit={handleSubmit}>
       <div className="auth-header">
-        <p className="eyebrow">Plataforma para actualizar ESP32</p>
-        <h2>Nueva contraseña</h2>
-        <p>Define una nueva contraseña para recuperar el acceso.</p>
+        <p className="eyebrow">Portal de usuario</p>
+        <h2>Actualiza tu contraseña</h2>
+        <p>Elige una contraseña segura para volver a acceder a tu cuenta.</p>
       </div>
       <label className="field" htmlFor="reset-password">
         <span>Nueva contraseña</span>
@@ -70,10 +70,7 @@ export default function ResetPasswordForm({ token, onBackToLogin }) {
       {error ? <p className="form-error" role="alert">{error}</p> : null}
       {message ? <p className="form-message" role="status">{message}</p> : null}
       <button type="submit" disabled={loading || Boolean(message)}>
-        {loading ? 'Guardando...' : 'Restablecer contraseña'}
-      </button>
-      <button type="button" className="auth-link" onClick={onBackToLogin}>
-        Volver al inicio de sesión
+        {loading ? 'Actualizando contraseña...' : 'Guardar nueva contraseña'}
       </button>
     </form>
   );
