@@ -282,7 +282,7 @@ export default function FirmwareVersions({
                   rows={2}
                 />
               </label>
-              <button type="submit" disabled={creating}>
+              <button type="submit" disabled={creating} aria-busy={creating}>
                 {creating ? 'Creando...' : 'Guardar versión'}
               </button>
             </form>
@@ -326,7 +326,11 @@ export default function FirmwareVersions({
                         />
                       </label>
                       <div className="room-project-actions">
-                        <button type="submit" disabled={savingVersionId === firmwareVersion.id}>
+                        <button
+                          type="submit"
+                          disabled={savingVersionId === firmwareVersion.id}
+                          aria-busy={savingVersionId === firmwareVersion.id}
+                        >
                           {savingVersionId === firmwareVersion.id ? 'Guardando...' : 'Guardar cambios'}
                         </button>
                         <button
@@ -373,6 +377,7 @@ export default function FirmwareVersions({
                             className={firmwareVersion.isActive ? 'danger-button' : 'secondary-button'}
                             onClick={() => handleToggleVersion(firmwareVersion)}
                             disabled={savingVersionId === firmwareVersion.id}
+                            aria-busy={savingVersionId === firmwareVersion.id}
                           >
                             {savingVersionId === firmwareVersion.id
                               ? 'Actualizando...'
@@ -423,6 +428,7 @@ export default function FirmwareVersions({
                           <button
                             type="submit"
                             disabled={uploadingKey.startsWith(`${firmwareVersion.id}:`)}
+                            aria-busy={uploadingKey.startsWith(`${firmwareVersion.id}:`)}
                           >
                             {uploadingKey.startsWith(`${firmwareVersion.id}:`)
                               ? 'Subiendo...'

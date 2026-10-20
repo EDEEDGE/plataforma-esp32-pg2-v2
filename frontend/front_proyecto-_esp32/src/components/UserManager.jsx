@@ -122,6 +122,7 @@ export default function UserManager({ onSessionExpired }) {
                       value={user.role}
                       onChange={(event) => handleRoleChange(user, event)}
                       disabled={savingId === user.id}
+                      aria-busy={savingId === user.id}
                       aria-label={`Rol de ${user.name}`}
                     >
                       <option value="USER">Usuario</option>
@@ -136,6 +137,7 @@ export default function UserManager({ onSessionExpired }) {
                     className={user.isActive ? 'danger-button' : ''}
                     onClick={() => handleStatusChange(user)}
                     disabled={savingId === user.id}
+                    aria-busy={savingId === user.id}
                   >
                     {user.isActive ? 'Desactivar' : 'Activar'}
                   </button>

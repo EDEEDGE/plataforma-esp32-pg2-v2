@@ -107,7 +107,11 @@ export default function RoomsPage({ onOpenRoom }) {
                 maxLength={500}
               />
             </label>
-            <button type="submit" disabled={saving || !form.name.trim()}>
+            <button
+              type="submit"
+              disabled={saving || !form.name.trim()}
+              aria-busy={saving}
+            >
               {saving ? 'Creando sala...' : 'Guardar sala'}
             </button>
           </form>

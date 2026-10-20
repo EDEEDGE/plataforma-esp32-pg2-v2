@@ -220,6 +220,7 @@ export default function FirmwareDeployments({
                   {error ? <p className="form-error rooms-feedback" role="alert">{error}</p> : null}
                   <button
                     type="submit"
+                    aria-busy={submitting}
                     disabled={
                       submitting
                       || !versionId

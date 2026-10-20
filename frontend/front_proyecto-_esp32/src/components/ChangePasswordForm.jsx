@@ -55,7 +55,7 @@ export default function ChangePasswordForm({ onPasswordChanged, onSessionExpired
           />
         </label>
         {error ? <p className="form-error" role="alert">{error}</p> : null}
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading} aria-busy={loading}>
           {loading ? 'Actualizando...' : 'Cambiar contraseña'}
         </button>
       </form>

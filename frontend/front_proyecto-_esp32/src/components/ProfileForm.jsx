@@ -69,7 +69,7 @@ export default function ProfileForm({ user, onUserUpdated, onSessionExpired }) {
         </label>
         {error ? <p className="form-error" role="alert">{error}</p> : null}
         {message ? <p className="form-message" role="status">{message}</p> : null}
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading} aria-busy={loading}>
           {loading ? 'Guardando...' : 'Guardar cambios'}
         </button>
         </form>

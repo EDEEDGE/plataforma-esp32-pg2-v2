@@ -93,7 +93,7 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
       />
 
       <section className="dashboard-main">
-        <div className="dashboard-top">
+        <div className="dashboard-top" key={`header-${selectedPage}`}>
           <div>
             <p className="eyebrow">Plataforma de dispositivos</p>
             <h2>{pageContent.title}</h2>
@@ -101,84 +101,101 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
           <p className="dashboard-help">{pageContent.description}</p>
         </div>
 
-        {selectedPage === 'summary' ? (
-          <>
-            <div className="dashboard-overview">
-              <article className="overview-card">
-                <p>Dispositivos registrados</p>
-                <strong>{overviewLoading ? '…' : overview?.deviceCount ?? '—'}</strong>
-              </article>
-              <article className="overview-card">
-                <p>Dispositivos activos</p>
-                <strong>{overviewLoading ? '…' : overview?.activeDeviceCount ?? '—'}</strong>
-              </article>
-              <article className="overview-card">
-                <p>Dispositivos vinculados</p>
-                <strong>{overviewLoading ? '…' : overview?.pairedDeviceCount ?? '—'}</strong>
-              </article>
-            </div>
+        <div
+          className="dashboard-section-content"
+          key={`content-${selectedPage}-${selectedRoomId || 'list'}`}
+        >
+          {selectedPage === 'summary' ? (
+            <>
+              <div className="dashboard-overview">
+                <article className="overview-card">
+                  <p>Dispositivos registrados</p>
+                  <strong>{overviewLoading ? '…' : overview?.deviceCount ?? '—'}</strong>
+                </article>
+                <article className="overview-card">
+                  <p>Dispositivos activos</p>
+                  <strong>{overviewLoading ? '…' : overview?.activeDeviceCount ?? '—'}</strong>
+                </article>
+                <article className="overview-card">
+                  <p>Dispositivos vinculados</p>
+                  <strong>{overviewLoading ? '…' : overview?.pairedDeviceCount ?? '—'}</strong>
+                </article>
+              </div>
 
-            {overviewError ? (
-              <article className="card">
-                <p className="form-error" role="alert">{overviewError}</p>
-                <button type="button" className="secondary-button" onClick={handleOverviewRefresh}>
-                  Reintentar carga
-                </button>
-              </article>
-            ) : null}
-            {!overviewError && overview && !overviewLoading ? (
-              <article className="card dashboard-communication-card">
-                <h3>Última comunicación reportada</h3>
-                <p>
-                  {overview.latestCommunication
-                    ? new Date(overview.latestCommunication).toLocaleString()
-                    : 'Ningún dispositivo ha reportado comunicación.'}
-                </p>
-                <button type="button" className="secondary-button" onClick={handleOverviewRefresh}>
-                  Actualizar resumen
-                </button>
-              </article>
-            ) : null}
+              {overviewError ? (
+                <article className="card">
+                  <p className="form-error" role="alert">{overviewError}</p>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={handleOverviewRefresh}
+                    disabled={overviewLoading}
+                    aria-busy={overviewLoading}
+                  >
+                    Reintentar carga
+                  </button>
+                </article>
+              ) : null}
+              {!overviewError && overview && !overviewLoading ? (
+                <article className="card dashboard-communication-card">
+                  <h3>Última comunicación reportada</h3>
+                  <p>
+                    {overview.latestCommunication
+                      ? new Date(overview.latestCommunication).toLocaleString()
+                      : 'Ningún dispositivo ha reportado comunicación.'}
+                  </p>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={handleOverviewRefresh}
+                    disabled={overviewLoading}
+                    aria-busy={overviewLoading}
+                  >
+                    Actualizar resumen
+                  </button>
+                </article>
+              ) : null}
 
-            <div className="dashboard-grid">
-              <article className="card">
-                <h3>Visibilidad de tus dispositivos</h3>
-                <p>
-                  Los indicadores reflejan los dispositivos disponibles en las salas y proyectos a los que
-                  tienes acceso.
-                </p>
-              </article>
+              <div className="dashboard-grid">
+                <article className="card">
+                  <h3>Visibilidad de tus dispositivos</h3>
+                  <p>
+                    Los indicadores reflejan los dispositivos disponibles en las salas y proyectos a los que
+                    tienes acceso.
+                  </p>
+                </article>
 
-              <article className="card">
-                <h3>Gestión de firmware</h3>
-                <p>
-                  Accede a Actualizaciones OTA para administrar versiones y preparar despliegues compatibles
-                  con tus placas.
-                </p>
-              </article>
-            </div>
-          </>
-        ) : selectedPage === 'rooms' ? (
-          selectedRoomId ? (
-            <RoomDetailPage
-              roomId={selectedRoomId}
-              userId={user.id}
-              onBack={() => setSelectedRoomId(null)}
-            />
+                <article className="card">
+                  <h3>Gestión de firmware</h3>
+                  <p>
+                    Accede a Actualizaciones OTA para administrar versiones y preparar despliegues compatibles
+                    con tus placas.
+                  </p>
+                </article>
+              </div>
+            </>
+          ) : selectedPage === 'rooms' ? (
+            selectedRoomId ? (
+              <RoomDetailPage
+                roomId={selectedRoomId}
+                userId={user.id}
+                onBack={() => setSelectedRoomId(null)}
+              />
+            ) : (
+              <RoomsPage onOpenRoom={setSelectedRoomId} />
+            )
+          ) : selectedPage === 'users' ? (
+            <UserManager onSessionExpired={onLogout} />
+          ) : selectedPage === 'updates' ? (
+            <FirmwareWorkspace />
           ) : (
-            <RoomsPage onOpenRoom={setSelectedRoomId} />
-          )
-        ) : selectedPage === 'users' ? (
-          <UserManager onSessionExpired={onLogout} />
-        ) : selectedPage === 'updates' ? (
-          <FirmwareWorkspace />
-        ) : (
-          <ProfileForm
-            user={user}
-            onUserUpdated={onUserUpdated}
-            onSessionExpired={onLogout}
-          />
-        )}
+            <ProfileForm
+              user={user}
+              onUserUpdated={onUserUpdated}
+              onSessionExpired={onLogout}
+            />
+          )}
+        </div>
       </section>
     </div>
   );

@@ -301,6 +301,7 @@ export default function ProjectDevices({
             className="secondary-button"
             onClick={handleRefresh}
             disabled={loading}
+            aria-busy={loading}
           >
             {loading ? 'Actualizando...' : 'Actualizar estado'}
           </button>
@@ -350,7 +351,11 @@ export default function ProjectDevices({
                 </select>
               </label>
               {formError ? <p className="form-error rooms-feedback" role="alert">{formError}</p> : null}
-              <button type="submit" disabled={saving || !form.name.trim()}>
+              <button
+                type="submit"
+                disabled={saving || !form.name.trim()}
+                aria-busy={saving}
+              >
                 {saving ? 'Registrando...' : 'Guardar dispositivo'}
               </button>
             </form>
@@ -416,7 +421,11 @@ export default function ProjectDevices({
                           <p className="form-error rooms-feedback" role="alert">{formError}</p>
                         ) : null}
                         <div className="room-project-actions">
-                          <button type="submit" disabled={savingDeviceId === device.id}>
+                          <button
+                            type="submit"
+                            disabled={savingDeviceId === device.id}
+                            aria-busy={savingDeviceId === device.id}
+                          >
                             {savingDeviceId === device.id ? 'Guardando...' : 'Guardar cambios'}
                           </button>
                           <button
@@ -473,6 +482,7 @@ export default function ProjectDevices({
                               className={device.isActive ? 'danger-button' : 'secondary-button'}
                               onClick={() => handleStatusChange(device)}
                               disabled={savingDeviceId === device.id}
+                              aria-busy={savingDeviceId === device.id}
                             >
                               {savingDeviceId === device.id
                                 ? 'Actualizando...'
@@ -489,6 +499,7 @@ export default function ProjectDevices({
                                   || pairingDeviceId === device.id
                                   || Boolean(pairingCode && !pairingExpired)
                                 }
+                                aria-busy={pairingDeviceId === device.id}
                               >
                                 {pairingDeviceId === device.id
                                   ? 'Generando código...'
@@ -502,6 +513,7 @@ export default function ProjectDevices({
                                 className="danger-button"
                                 onClick={() => handleResetPairing(device)}
                                 disabled={savingDeviceId === device.id}
+                                aria-busy={savingDeviceId === device.id}
                               >
                                 {savingDeviceId === device.id ? 'Desvinculando...' : 'Desvincular dispositivo'}
                               </button>
