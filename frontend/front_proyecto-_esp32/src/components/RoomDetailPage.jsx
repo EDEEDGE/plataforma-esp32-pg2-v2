@@ -18,6 +18,7 @@ import {
   updateProjectStatus,
 } from '../services/projectService.js';
 import ProjectDevices from './ProjectDevices.jsx';
+import FirmwareVersions from './FirmwareVersions.jsx';
 import '../styles/rooms.css';
 
 export default function RoomDetailPage({ roomId, userId, onBack }) {
@@ -624,6 +625,12 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
                       </>
                     )}
                     <ProjectDevices
+                      projectId={project.id}
+                      projectActive={project.isActive}
+                      roomActive={room.isActive}
+                      canManage={canManageProjects}
+                    />
+                    <FirmwareVersions
                       projectId={project.id}
                       projectActive={project.isActive}
                       roomActive={room.isActive}

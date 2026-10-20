@@ -11,9 +11,9 @@ export class ApiError extends Error {
   }
 }
 
-export function buildAuthHeaders(token) {
+export function buildAuthHeaders(token, includeJsonContentType = true) {
   return {
-    'Content-Type': 'application/json',
+    ...(includeJsonContentType ? { 'Content-Type': 'application/json' } : {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 }
@@ -26,10 +26,11 @@ export async function request(path, {
   ...options
 } = {}) {
   const authToken = auth ? token ?? localStorage.getItem('authToken') : undefined;
+  const isFormData = options.body instanceof FormData;
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
     headers: {
-      ...buildAuthHeaders(authToken),
+      ...buildAuthHeaders(authToken, !isFormData),
       ...options.headers,
     },
   });
