@@ -60,6 +60,29 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
     setSelectedRoomId(null);
   };
 
+  const pageContent = {
+    summary: {
+      title: `Bienvenido, ${user.name}`,
+      description: 'Consulta el estado de tus dispositivos y accede a las herramientas de gestión OTA.'
+    },
+    rooms: {
+      title: 'Salas y proyectos',
+      description: 'Organiza tus espacios de trabajo, proyectos y dispositivos.'
+    },
+    updates: {
+      title: 'Centro de actualizaciones',
+      description: 'Administra versiones de firmware y prepara despliegues para tus dispositivos.'
+    },
+    users: {
+      title: 'Gestión de usuarios',
+      description: 'Administra las cuentas y los niveles de acceso a la plataforma.'
+    },
+    profile: {
+      title: 'Tu perfil',
+      description: 'Mantén actualizados tus datos personales y credenciales de acceso.'
+    }
+  }[selectedPage];
+
   return (
     <div className="dashboard-layout">
       <Sidebar
@@ -72,30 +95,10 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
       <section className="dashboard-main">
         <div className="dashboard-top">
           <div>
-            <p className="eyebrow">
-              {selectedPage === 'summary'
-                ? 'Resumen ejecutivo'
-                : selectedPage === 'rooms'
-                  ? 'Salas y proyectos'
-                  : selectedPage === 'users'
-                    ? 'Gestión de usuarios'
-                    : selectedPage === 'updates'
-                      ? 'Actualizaciones OTA'
-                    : 'Mi perfil'}
-            </p>
-            <h2>Bienvenido, {user.name}</h2>
+            <p className="eyebrow">Plataforma de dispositivos</p>
+            <h2>{pageContent.title}</h2>
           </div>
-          <p className="dashboard-help">
-            {selectedPage === 'summary'
-              ? 'Consulta el estado general de tus dispositivos y accede a las herramientas de gestión OTA.'
-              : selectedPage === 'rooms'
-                ? 'Organiza tus proyectos y dispositivos en espacios de trabajo compartidos.'
-                : selectedPage === 'users'
-                  ? 'Administra los accesos y las cuentas de la plataforma.'
-                    : selectedPage === 'updates'
-                      ? 'Gestiona versiones de firmware y prepara despliegues para tus dispositivos.'
-                    : 'Revisa y actualiza la información de tu cuenta.'}
-          </p>
+          <p className="dashboard-help">{pageContent.description}</p>
         </div>
 
         {selectedPage === 'summary' ? (

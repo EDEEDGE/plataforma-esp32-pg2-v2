@@ -22,6 +22,12 @@ import FirmwareVersions from './FirmwareVersions.jsx';
 import FirmwareDeployments from './FirmwareDeployments.jsx';
 import '../styles/rooms.css';
 
+const getRoleLabel = (role) => ({
+  OWNER: 'Propietario',
+  ADMIN: 'Administrador',
+  MEMBER: 'Miembro',
+}[role] || role);
+
 export default function RoomDetailPage({ roomId, userId, onBack }) {
   const [room, setRoom] = useState(null);
   const [form, setForm] = useState({ name: '', description: '' });
@@ -386,7 +392,7 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
             </span>
           </div>
 
-          <p className="room-role">Tu rol: {room.role}</p>
+          <p className="room-role">Tu rol: {getRoleLabel(room.role)}</p>
 
           {!room.isActive ? (
             <p className="room-readonly-note" role="note">
@@ -703,12 +709,12 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
                               onChange={(event) => handleRoleChange(member, event.target.value)}
                               disabled={savingMemberId === member.id}
                             >
-                              <option value="MEMBER">MEMBER</option>
-                              <option value="ADMIN">ADMIN</option>
+                              <option value="MEMBER">Miembro</option>
+                              <option value="ADMIN">Administrador</option>
                             </select>
                           </label>
                         ) : (
-                          <span className="room-role">{member.role}</span>
+                          <span className="room-role">{getRoleLabel(member.role)}</span>
                         )}
                         {canRemove ? (
                           <button

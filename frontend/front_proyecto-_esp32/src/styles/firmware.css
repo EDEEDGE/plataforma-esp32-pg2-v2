@@ -16,7 +16,12 @@
 
 .firmware-workspace {
   display: grid;
-  gap: 18px;
+  gap: 20px;
+}
+
+.firmware-workspace > .card,
+.firmware-workspace-project {
+  border-color: rgba(191, 219, 254, 0.17);
 }
 
 .firmware-workspace-heading {
@@ -30,6 +35,7 @@
 .firmware-workspace-heading h3 {
   margin-bottom: 6px;
   color: #f8fafc;
+  letter-spacing: -0.025em;
 }
 
 .firmware-workspace-heading p {
@@ -39,6 +45,11 @@
 .firmware-workspace-heading .field {
   min-width: min(100%, 240px);
   margin: 0;
+}
+
+.firmware-workspace-heading .field span {
+  color: rgba(248, 250, 252, 0.78);
+  font-size: 0.9rem;
 }
 
 .firmware-workspace-heading select {
@@ -57,7 +68,7 @@
 
 .firmware-workspace-project {
   display: grid;
-  gap: 14px;
+  gap: 16px;
 }
 
 .firmware-workspace-project h4 {
@@ -119,7 +130,8 @@
   gap: 14px;
   padding: 14px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
+  border-radius: 18px;
+  border-color: rgba(191, 219, 254, 0.14);
   background: rgba(255, 255, 255, 0.04);
 }
 
@@ -224,6 +236,11 @@
   border-radius: 14px;
   background: rgba(59, 130, 246, 0.1);
   overflow-wrap: anywhere;
+}
+
+.firmware-manager > button,
+.project-devices > button {
+  min-height: 44px;
 }
 
 .firmware-deployment-result > div {

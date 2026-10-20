@@ -37,8 +37,8 @@ export default function ProfileForm({ user, onUserUpdated, onSessionExpired }) {
   return (
     <section className="dashboard-grid profile-grid">
       <article className="card profile-card">
-        <h3>Mi perfil</h3>
-        <p>Actualiza tu nombre de usuario y tus datos personales.</p>
+        <h3>Información personal</h3>
+        <p>Actualiza el nombre y los datos asociados a tu cuenta.</p>
         <form className="user-form" onSubmit={handleSubmit}>
         <label className="field" htmlFor="profile-username">
           <span>Usuario</span>

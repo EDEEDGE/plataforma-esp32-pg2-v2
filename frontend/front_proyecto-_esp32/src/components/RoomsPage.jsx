@@ -64,7 +64,7 @@ export default function RoomsPage({ onOpenRoom }) {
       <div className="rooms-toolbar">
         <div>
           <h3>Mis salas</h3>
-          <p>Organiza tus espacios y colabora con otros miembros.</p>
+          <p>Espacios de trabajo para reunir proyectos, dispositivos y colaboradores.</p>
         </div>
         <button
           type="button"
@@ -116,12 +116,12 @@ export default function RoomsPage({ onOpenRoom }) {
 
       {loading ? (
         <article className="card rooms-empty-state" role="status">
-          <p>Cargando tus salas...</p>
+          <p>Cargando tus espacios de trabajo...</p>
         </article>
       ) : rooms.length === 0 ? (
         <article className="card rooms-empty-state">
-          <h3>Aún no tienes salas</h3>
-          <p>Crea una sala para organizar proyectos y dispositivos.</p>
+          <h3>Comienza con tu primera sala</h3>
+          <p>Crea un espacio para organizar tus proyectos y dispositivos.</p>
         </article>
       ) : (
         <div className="rooms-grid">
@@ -140,7 +140,13 @@ export default function RoomsPage({ onOpenRoom }) {
                 {room.description || 'Sin descripción.'}
               </p>
               <div className="room-card-footer">
-                <span className="room-role">Tu rol: {room.role}</span>
+                <span className="room-role">
+                  Tu rol: {room.role === 'OWNER'
+                    ? 'Propietario'
+                    : room.role === 'ADMIN'
+                      ? 'Administrador'
+                      : 'Miembro'}
+                </span>
                 {room.createdAt ? (
                   <time dateTime={room.createdAt}>
                     Creada {new Date(room.createdAt).toLocaleDateString()}
