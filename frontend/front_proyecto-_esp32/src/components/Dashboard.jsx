@@ -74,27 +74,27 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
           <div>
             <p className="eyebrow">
               {selectedPage === 'summary'
-                ? 'Resumen'
+                ? 'Resumen ejecutivo'
                 : selectedPage === 'rooms'
-                  ? 'Salas'
+                  ? 'Salas y proyectos'
                   : selectedPage === 'users'
-                    ? 'Usuarios'
+                    ? 'Gestión de usuarios'
                     : selectedPage === 'updates'
                       ? 'Actualizaciones OTA'
                     : 'Mi perfil'}
             </p>
-            <h2>Hola, {user.name}</h2>
+            <h2>Bienvenido, {user.name}</h2>
           </div>
           <p className="dashboard-help">
             {selectedPage === 'summary'
-              ? 'Monitorea tus dispositivos ESP32 y despliega actualizaciones desde aquí.'
+              ? 'Consulta el estado general de tus dispositivos y accede a las herramientas de gestión OTA.'
               : selectedPage === 'rooms'
-                ? 'Consulta y crea las salas donde organizas tus proyectos y dispositivos.'
+                ? 'Organiza tus proyectos y dispositivos en espacios de trabajo compartidos.'
                 : selectedPage === 'users'
-                  ? 'Gestiona los usuarios del sistema desde este panel.'
+                  ? 'Administra los accesos y las cuentas de la plataforma.'
                     : selectedPage === 'updates'
-                      ? 'Administra versiones de firmware y crea despliegues para tus dispositivos.'
-                    : 'Consulta y actualiza tus datos personales.'}
+                      ? 'Gestiona versiones de firmware y prepara despliegues para tus dispositivos.'
+                    : 'Revisa y actualiza la información de tu cuenta.'}
           </p>
         </div>
 
@@ -139,13 +139,19 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
 
             <div className="dashboard-grid">
               <article className="card">
-                <h3>Estado de dispositivos</h3>
-                <p>Los totales se calculan con los dispositivos visibles en tus salas y proyectos.</p>
+                <h3>Visibilidad de tus dispositivos</h3>
+                <p>
+                  Los indicadores reflejan los dispositivos disponibles en las salas y proyectos a los que
+                  tienes acceso.
+                </p>
               </article>
 
               <article className="card">
-                <h3>Próximos pasos</h3>
-                <p>Abre Actualizaciones OTA para cargar firmware y asignarlo a dispositivos compatibles.</p>
+                <h3>Gestión de firmware</h3>
+                <p>
+                  Accede a Actualizaciones OTA para administrar versiones y preparar despliegues compatibles
+                  con tus placas.
+                </p>
               </article>
             </div>
           </>

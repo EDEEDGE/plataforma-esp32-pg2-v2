@@ -126,17 +126,36 @@
   border: 0;
   border-radius: 18px;
   padding: 1rem 1.1rem;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.045);
   color: rgba(248, 250, 252, 0.92);
+  font-weight: 600;
   cursor: pointer;
-  transition: background 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+  border: 1px solid rgba(255, 255, 255, 0.035);
 }
 
-.nav-item:hover,
-.nav-item.active {
-  background: rgba(59, 130, 246, 0.23);
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.08);
   transform: translateX(2px);
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+}
+
+.nav-item.active {
+  border-color: rgba(147, 197, 253, 0.22);
+  background: linear-gradient(110deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.16));
+  color: #fff;
+  box-shadow: inset 3px 0 0 #93c5fd, 0 12px 28px rgba(15, 23, 42, 0.1);
+}
+
+.nav-item:focus-visible,
+.logout-button:focus-visible {
+  outline: 2px solid rgba(191, 219, 254, 0.95);
+  outline-offset: 3px;
 }
 
 .sidebar-logout {
@@ -145,13 +164,25 @@
 
 .logout-button {
   width: 100%;
-  border: 0;
+  border: 1px solid rgba(248, 250, 252, 0.15);
   border-radius: 18px;
   padding: 1rem 1.1rem;
-  background: rgba(248, 113, 113, 0.95);
-  color: #ffffff;
-  font-weight: 700;
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(248, 250, 252, 0.72);
+  font-weight: 600;
   cursor: pointer;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.logout-button:hover {
+  border-color: rgba(248, 113, 113, 0.35);
+  background: rgba(248, 113, 113, 0.11);
+  color: #fecaca;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
 }
 
 .dashboard-main {

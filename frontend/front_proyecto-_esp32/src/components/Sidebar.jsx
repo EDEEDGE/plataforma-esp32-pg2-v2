@@ -11,8 +11,8 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
         <div className="sidebar-brand">
           <span className="brand-mark">ESP</span>
           <div>
-            <p className="brand-title">ESP32 Update</p>
-            <p className="brand-subtitle">Control y despliegue</p>
+            <p className="brand-title">Plataforma OTA</p>
+            <p className="brand-subtitle">Gestión segura de firmware</p>
           </div>
         </div>
 
@@ -29,9 +29,11 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
       </div>
 
       <div className="sidebar-profile">
-        <p className="sidebar-label">Usuario</p>
+        <p className="sidebar-label">Cuenta</p>
         <h3>{user.name}</h3>
-        <p className="sidebar-role">{user.role}</p>
+        <p className="sidebar-role">
+          {user.role === 'ADMIN' ? 'Administrador' : 'Usuario'}
+        </p>
       </div>
 
       <nav className="sidebar-nav" aria-label="Navegación principal" id="sidebar-navigation">
@@ -40,6 +42,7 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
             <button
               type="button"
               className={`nav-item${selectedPage === 'summary' ? ' active' : ''}`}
+              aria-current={selectedPage === 'summary' ? 'page' : undefined}
               onClick={() => onSelectPage('summary')}
             >
               Resumen
@@ -49,9 +52,20 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
             <button
               type="button"
               className={`nav-item${selectedPage === 'rooms' ? ' active' : ''}`}
+              aria-current={selectedPage === 'rooms' ? 'page' : undefined}
               onClick={() => onSelectPage('rooms')}
             >
-              Mis salas
+              Salas y proyectos
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              className={`nav-item${selectedPage === 'updates' ? ' active' : ''}`}
+              aria-current={selectedPage === 'updates' ? 'page' : undefined}
+              onClick={() => onSelectPage('updates')}
+            >
+              Actualizaciones OTA
             </button>
           </li>
           {user.role === 'ADMIN' ? (
@@ -59,9 +73,10 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
               <button
                 type="button"
                 className={`nav-item${selectedPage === 'users' ? ' active' : ''}`}
+                aria-current={selectedPage === 'users' ? 'page' : undefined}
                 onClick={() => onSelectPage('users')}
               >
-                Usuarios
+                Gestión de usuarios
               </button>
             </li>
           ) : null}
@@ -69,25 +84,17 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
             <button
               type="button"
               className={`nav-item${selectedPage === 'profile' ? ' active' : ''}`}
+              aria-current={selectedPage === 'profile' ? 'page' : undefined}
               onClick={() => onSelectPage('profile')}
             >
               Mi perfil
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              className={`nav-item${selectedPage === 'updates' ? ' active' : ''}`}
-              onClick={() => onSelectPage('updates')}
-            >
-              Actualizaciones
             </button>
           </li>
         </ul>
       </nav>
 
       <div className="sidebar-logout">
-        <button className="logout-button" onClick={onLogout}>
+        <button type="button" className="logout-button" onClick={onLogout}>
           Cerrar sesión
         </button>
       </div>
