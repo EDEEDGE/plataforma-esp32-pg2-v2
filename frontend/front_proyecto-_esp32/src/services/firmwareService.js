@@ -106,3 +106,22 @@ export async function uploadFirmwareFile(versionId, file, deviceType) {
     firmwareFile: data.firmwareFile,
   };
 }
+
+/** Assigns a firmware version to every eligible device or to selected devices. */
+export async function createFirmwareDeployment(projectId, deploymentData) {
+  const data = await request(`/projects/${projectId}/deployments`, {
+    method: 'POST',
+    auth: true,
+    body: JSON.stringify(deploymentData),
+    fallbackMessage: 'No se pudo crear el despliegue de firmware',
+  });
+
+  if (!data.deployment || !Array.isArray(data.deployment.devices)) {
+    throw new Error('La respuesta no contiene el despliegue y sus dispositivos.');
+  }
+
+  return {
+    message: data.message,
+    deployment: data.deployment,
+  };
+}

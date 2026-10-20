@@ -97,6 +97,105 @@
   color: var(--text-muted);
 }
 
+.firmware-deployment-form {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+}
+
+.firmware-deployment-form select {
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 16px;
+  padding: 0.8rem 1rem;
+  background: #17243b;
+  color: #f8fafc;
+}
+
+.firmware-target-all,
+.firmware-device-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #f8fafc;
+}
+
+.firmware-target-all input,
+.firmware-device-option input {
+  width: 18px;
+  height: 18px;
+  accent-color: #60a5fa;
+  flex: 0 0 auto;
+}
+
+.firmware-device-selection {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+}
+
+.firmware-device-selection legend {
+  padding: 0 6px;
+  color: #dbeafe;
+  font-weight: 700;
+}
+
+.firmware-device-option {
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.firmware-device-option span {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.firmware-device-option strong,
+.firmware-device-option small {
+  overflow-wrap: anywhere;
+}
+
+.firmware-device-option small {
+  color: var(--text-muted);
+}
+
+.firmware-deployment-result {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(147, 197, 253, 0.3);
+  border-radius: 14px;
+  background: rgba(59, 130, 246, 0.1);
+  overflow-wrap: anywhere;
+}
+
+.firmware-deployment-result > div {
+  display: grid;
+  gap: 4px;
+}
+
+.firmware-deployment-result ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.firmware-deployment-result li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .firmware-file-info {
   display: grid;
   gap: 4px;
