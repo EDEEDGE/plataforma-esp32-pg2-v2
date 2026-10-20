@@ -75,7 +75,11 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
             </button>
           </li>
           <li>
-            <button type="button" className="nav-item" disabled>
+            <button
+              type="button"
+              className={`nav-item${selectedPage === 'updates' ? ' active' : ''}`}
+              onClick={() => onSelectPage('updates')}
+            >
               Actualizaciones
             </button>
           </li>
