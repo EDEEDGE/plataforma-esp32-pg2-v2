@@ -269,4 +269,4 @@ export const downloadDeviceFirmware = async (req, res) => {
       message: 'Error interno del servidor'
     });
   }
-};
+}; 
