@@ -18,7 +18,15 @@ import {
   updateProjectStatus,
 } from '../services/projectService.js';
 import ProjectDevices from './ProjectDevices.jsx';
+import FirmwareVersions from './FirmwareVersions.jsx';
+import FirmwareDeployments from './FirmwareDeployments.jsx';
 import '../styles/rooms.css';
+
+const getRoleLabel = (role) => ({
+  OWNER: 'Propietario',
+  ADMIN: 'Administrador',
+  MEMBER: 'Miembro',
+}[role] || role);
 
 export default function RoomDetailPage({ roomId, userId, onBack }) {
   const [room, setRoom] = useState(null);
@@ -355,6 +363,7 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
             className={room.isActive ? 'danger-button' : ''}
             onClick={handleStatusChange}
             disabled={saving}
+            aria-busy={saving}
           >
             {saving
               ? 'Actualizando...'
@@ -384,7 +393,7 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
             </span>
           </div>
 
-          <p className="room-role">Tu rol: {room.role}</p>
+          <p className="room-role">Tu rol: {getRoleLabel(room.role)}</p>
 
           {!room.isActive ? (
             <p className="room-readonly-note" role="note">
@@ -416,7 +425,11 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
                 />
               </label>
               <div className="room-detail-actions">
-                <button type="submit" disabled={saving || !form.name.trim()}>
+                <button
+                  type="submit"
+                  disabled={saving || !form.name.trim()}
+                  aria-busy={saving}
+                >
                   {saving ? 'Guardando...' : 'Guardar cambios'}
                 </button>
                 <button
@@ -504,7 +517,11 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
                 {projectFormError ? (
                   <p className="form-error rooms-feedback" role="alert">{projectFormError}</p>
                 ) : null}
-                <button type="submit" disabled={creatingProject || !projectForm.name.trim()}>
+                <button
+                  type="submit"
+                  disabled={creatingProject || !projectForm.name.trim()}
+                  aria-busy={creatingProject}
+                >
                   {creatingProject ? 'Creando...' : 'Guardar proyecto'}
                 </button>
               </form>
@@ -563,7 +580,11 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
                           <p className="form-error rooms-feedback" role="alert">{projectFormError}</p>
                         ) : null}
                         <div className="room-project-actions">
-                          <button type="submit" disabled={savingProjectId === project.id}>
+                          <button
+                            type="submit"
+                            disabled={savingProjectId === project.id}
+                            aria-busy={savingProjectId === project.id}
+                          >
                             {savingProjectId === project.id ? 'Guardando...' : 'Guardar cambios'}
                           </button>
                           <button
@@ -612,6 +633,7 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
                               className={project.isActive ? 'danger-button' : 'secondary-button'}
                               onClick={() => handleProjectStatusChange(project)}
                               disabled={savingProjectId === project.id}
+                              aria-busy={savingProjectId === project.id}
                             >
                               {savingProjectId === project.id
                                 ? 'Actualizando...'
@@ -624,6 +646,18 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
                       </>
                     )}
                     <ProjectDevices
+                      projectId={project.id}
+                      projectActive={project.isActive}
+                      roomActive={room.isActive}
+                      canManage={canManageProjects}
+                    />
+                    <FirmwareVersions
+                      projectId={project.id}
+                      projectActive={project.isActive}
+                      roomActive={room.isActive}
+                      canManage={canManageProjects}
+                    />
+                    <FirmwareDeployments
                       projectId={project.id}
                       projectActive={project.isActive}
                       roomActive={room.isActive}
@@ -647,6 +681,7 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
                   className="danger-button"
                   onClick={handleLeaveRoom}
                   disabled={saving}
+                  aria-busy={saving}
                 >
                   Salir de la sala
                 </button>
@@ -688,13 +723,14 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
                               value={member.role}
                               onChange={(event) => handleRoleChange(member, event.target.value)}
                               disabled={savingMemberId === member.id}
+                              aria-busy={savingMemberId === member.id}
                             >
-                              <option value="MEMBER">MEMBER</option>
-                              <option value="ADMIN">ADMIN</option>
+                              <option value="MEMBER">Miembro</option>
+                              <option value="ADMIN">Administrador</option>
                             </select>
                           </label>
                         ) : (
-                          <span className="room-role">{member.role}</span>
+                          <span className="room-role">{getRoleLabel(member.role)}</span>
                         )}
                         {canRemove ? (
                           <button
@@ -702,6 +738,7 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
                             className="danger-button"
                             onClick={() => handleRemoveMember(member)}
                             disabled={savingMemberId === member.id}
+                            aria-busy={savingMemberId === member.id}
                           >
                             {savingMemberId === member.id ? 'Procesando...' : 'Eliminar'}
                           </button>
@@ -736,7 +773,11 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
                     disabled={!room.isActive || inviting}
                   />
                 </label>
-                <button type="submit" disabled={!room.isActive || inviting || !inviteEmail.trim()}>
+                <button
+                  type="submit"
+                  disabled={!room.isActive || inviting || !inviteEmail.trim()}
+                  aria-busy={inviting}
+                >
                   {inviting ? 'Enviando...' : 'Enviar invitación'}
                 </button>
               </form>
@@ -771,6 +812,7 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
                           className="secondary-button"
                           onClick={() => handleCancelInvitation(invitation)}
                           disabled={savingInvitationId === invitation.id}
+                          aria-busy={savingInvitationId === invitation.id}
                         >
                           {savingInvitationId === invitation.id ? 'Cancelando...' : 'Cancelar invitación'}
                         </button>

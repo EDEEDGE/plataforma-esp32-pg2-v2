@@ -71,14 +71,61 @@ DATABASE_URL="postgresql://user:password@localhost:5432/mydb"
 
 You can customize how your environment variables are loaded by changing or removing the `import 'dotenv/config'` line.
 
+## Local PostgreSQL setup
+
+You do not need to export or import a database backup for a new development
+database. The current schema is defined in
+[`src/prisma/contract.prisma`](src/prisma/contract.prisma).
+
+1. In pgAdmin, connect to your local PostgreSQL 18 server. Create a login role
+   named `plataforma_app` with a password you choose, then create a database
+   named `plataforma_esp32` owned by that role. Alternatively, run these
+   statements separately in Query Tool while connected to the `postgres`
+   database as an administrator:
+
+   ```sql
+   CREATE ROLE plataforma_app LOGIN PASSWORD 'choose_a_password';
+   CREATE DATABASE plataforma_esp32 OWNER plataforma_app ENCODING 'UTF8';
+   ```
+
+2. From the `backend` directory, copy `.env.example` to `.env` and replace
+   `replace_me` with the role's password. If the password contains URL-reserved
+   characters, URL-encode them in `DATABASE_URL`. Keep `.env` local; it is
+   ignored by Git.
+
+3. Install the backend dependencies and initialize the empty database with the
+   current contract:
+
+   ```powershell
+   npm ci
+   npx prisma db init
+   npx prisma db update --dry-run
+   npx prisma db update
+   npx prisma db verify
+   ```
+
+   Review the dry-run output before applying it. Run `db init` only once, and
+   only against this newly created, empty database. `db update` creates the
+   tables from the current contract; it does not restore any application data.
+
+4. Start the API:
+
+   ```powershell
+   npm run dev
+   ```
+
+   Open `http://localhost:3000/`; the API should respond with
+   `API OTA funcionando correctamente`.
+
 ## Quick reference
 
 ### Commands
 
 ```bash
 npx prisma contract emit       # Update contract.json and contract.d.ts
-npx prisma db init             # Create tables in the database
-npx prisma migration status    # Show migration status
+npx prisma db init             # Initialize an empty development database once
+npx prisma db update            # Apply the current contract to the database
+npx prisma db verify            # Verify the database matches the contract
 ```
 
 ### Files

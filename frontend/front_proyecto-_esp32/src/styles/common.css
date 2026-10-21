@@ -106,6 +106,15 @@ p {
   padding: 36px 0 56px;
 }
 
+.app-shell.dashboard-active {
+  justify-content: flex-start;
+  padding-top: 22px;
+}
+
+.app-shell.dashboard-active > .app-header {
+  display: none;
+}
+
 .main-content {
   width: 100%;
 }

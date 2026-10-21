@@ -1,0 +1,248 @@
+.dashboard-top,
+.dashboard-section-content {
+  animation: dashboard-enter 460ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.dashboard-section-content > * {
+  animation: section-enter 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.dashboard-section-content > *:nth-child(2) {
+  animation-delay: 45ms;
+}
+
+.dashboard-section-content > *:nth-child(3) {
+  animation-delay: 90ms;
+}
+
+.dashboard-overview > *,
+.dashboard-grid > *,
+.room-form-card,
+.rooms-grid > *,
+.room-project-list > *,
+.project-device-list > *,
+.room-member-list > *,
+.room-invitation-list > *,
+.user-list > *,
+.firmware-workspace-projects > *,
+.firmware-version-list > * {
+  animation: card-enter 460ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.firmware-manager-content,
+.project-devices-content {
+  animation: section-enter 380ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.dashboard-overview > *:nth-child(2),
+.dashboard-grid > *:nth-child(2),
+.rooms-grid > *:nth-child(2),
+.room-project-list > *:nth-child(2),
+.project-device-list > *:nth-child(2),
+.room-member-list > *:nth-child(2),
+.room-invitation-list > *:nth-child(2),
+.user-list > *:nth-child(2),
+.firmware-workspace-projects > *:nth-child(2),
+.firmware-version-list > *:nth-child(2) {
+  animation-delay: 55ms;
+}
+
+.dashboard-overview > *:nth-child(3),
+.rooms-grid > *:nth-child(3),
+.room-project-list > *:nth-child(3),
+.project-device-list > *:nth-child(3),
+.room-member-list > *:nth-child(3),
+.room-invitation-list > *:nth-child(3),
+.user-list > *:nth-child(3),
+.firmware-version-list > *:nth-child(3) {
+  animation-delay: 100ms;
+}
+
+.dashboard-main .card {
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background-color 220ms ease;
+}
+
+.dashboard-main .card:hover {
+  border-color: rgba(191, 219, 254, 0.28);
+  box-shadow: 0 36px 76px rgba(15, 23, 42, 0.24);
+}
+
+.dashboard-main .room-status,
+.dashboard-main .room-role,
+.dashboard-main .user-status {
+  transition:
+    color 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease;
+}
+
+.dashboard-main .user-status::before {
+  transition: box-shadow 220ms ease;
+}
+
+.dashboard-main button {
+  transition:
+    transform 180ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    opacity 180ms ease;
+}
+
+.dashboard-main button:active:not(:disabled) {
+  transform: translateY(1px) scale(0.985);
+}
+
+.dashboard-main button:focus-visible,
+.dashboard-main input:focus-visible,
+.dashboard-main select:focus-visible,
+.dashboard-main textarea:focus-visible {
+  outline: 2px solid rgba(191, 219, 254, 0.9);
+  outline-offset: 3px;
+}
+
+.dashboard-main input,
+.dashboard-main select,
+.dashboard-main textarea {
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.dashboard-main input:focus,
+.dashboard-main select:focus,
+.dashboard-main textarea:focus {
+  border-color: rgba(147, 197, 253, 0.72);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+.dashboard-main form {
+  animation: form-enter 360ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.dashboard-main [role="status"],
+.dashboard-main [role="alert"] {
+  animation: message-enter 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.dashboard-main p.room-secondary-text[role="status"] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dashboard-main p.room-secondary-text[role="status"]::before {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  border: 2px solid rgba(191, 219, 254, 0.28);
+  border-top-color: #bfdbfe;
+  border-radius: 50%;
+  content: '';
+  animation: motion-spin 760ms linear infinite;
+}
+
+.dashboard-main button[aria-busy="true"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: progress;
+}
+
+.dashboard-main button[aria-busy="true"]::after {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  content: '';
+  animation: motion-spin 720ms linear infinite;
+}
+
+.dashboard-main select[aria-busy="true"] {
+  cursor: progress;
+  border-color: rgba(147, 197, 253, 0.72);
+}
+
+@keyframes dashboard-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes section-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.995);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes form-enter {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes message-enter {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motion-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

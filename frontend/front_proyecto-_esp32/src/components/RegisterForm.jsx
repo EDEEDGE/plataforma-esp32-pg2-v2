@@ -9,7 +9,7 @@ const initialForm = {
   lastName: ''
 };
 
-export default function RegisterForm({ onSubmit, loading, error, onBackToLogin }) {
+export default function RegisterForm({ onSubmit, loading, error }) {
   const [form, setForm] = useState(initialForm);
 
   const handleChange = (event) => {
@@ -25,13 +25,13 @@ export default function RegisterForm({ onSubmit, loading, error, onBackToLogin }
   return (
     <form className="auth-card" onSubmit={handleSubmit}>
       <div className="auth-header">
-        <p className="eyebrow">Plataforma para actualizar ESP32</p>
+        <p className="eyebrow">Portal de usuario</p>
         <h2>Crear cuenta</h2>
-        <p>Regístrate para acceder a la plataforma.</p>
+        <p>Completa tus datos para acceder a la plataforma.</p>
       </div>
 
       <label className="field" htmlFor="register-username">
-        <span>Usuario</span>
+        <span>Nombre de usuario</span>
         <input
           id="register-username"
           name="username"
@@ -43,7 +43,7 @@ export default function RegisterForm({ onSubmit, loading, error, onBackToLogin }
       </label>
 
       <label className="field" htmlFor="register-email">
-        <span>Correo</span>
+        <span>Correo electrónico</span>
         <input
           id="register-email"
           name="email"
@@ -100,12 +100,9 @@ export default function RegisterForm({ onSubmit, loading, error, onBackToLogin }
       ) : null}
 
       <button type="submit" disabled={loading}>
-        {loading ? 'Registrando...' : 'Crear cuenta'}
+        {loading ? 'Creando cuenta...' : 'Crear mi cuenta'}
       </button>
 
-      <button type="button" className="auth-link" onClick={onBackToLogin}>
-        Ya tengo una cuenta
-      </button>
     </form>
   );
 }

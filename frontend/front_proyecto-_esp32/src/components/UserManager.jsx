@@ -86,8 +86,8 @@ export default function UserManager({ onSessionExpired }) {
   return (
     <section className="user-manager-grid">
       <article className="card user-manager-intro">
-        <h3>Usuarios</h3>
-        <p>Administra el estado y el rol de los usuarios del sistema.</p>
+        <h3>Control de acceso</h3>
+        <p>Gestiona los permisos y el estado de las cuentas de la plataforma.</p>
         {error ? (
           <p className="form-error" role="alert">
             {error}
@@ -96,11 +96,11 @@ export default function UserManager({ onSessionExpired }) {
       </article>
 
       <article className="card user-manager-list-card">
-        <h3>Lista de usuarios</h3>
+        <h3>Cuentas registradas</h3>
         {loading ? (
-          <p>Cargando usuarios...</p>
+          <p>Cargando cuentas...</p>
         ) : users.length === 0 ? (
-          <p>No hay usuarios registrados.</p>
+          <p>Aún no hay cuentas registradas.</p>
         ) : (
           <div className="user-list">
             {users.map((user) => (
@@ -122,10 +122,11 @@ export default function UserManager({ onSessionExpired }) {
                       value={user.role}
                       onChange={(event) => handleRoleChange(user, event)}
                       disabled={savingId === user.id}
+                      aria-busy={savingId === user.id}
                       aria-label={`Rol de ${user.name}`}
                     >
-                      <option value="USER">USER</option>
-                      <option value="ADMIN">ADMIN</option>
+                      <option value="USER">Usuario</option>
+                      <option value="ADMIN">Administrador</option>
                     </select>
                   </label>
                   <span className={`user-status ${user.isActive ? 'is-active' : 'is-inactive'}`}>
@@ -136,6 +137,7 @@ export default function UserManager({ onSessionExpired }) {
                     className={user.isActive ? 'danger-button' : ''}
                     onClick={() => handleStatusChange(user)}
                     disabled={savingId === user.id}
+                    aria-busy={savingId === user.id}
                   >
                     {user.isActive ? 'Desactivar' : 'Activar'}
                   </button>

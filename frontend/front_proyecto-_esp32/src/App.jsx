@@ -4,6 +4,7 @@ import LoginForm from './components/LoginForm.jsx';
 import RegisterForm from './components/RegisterForm.jsx';
 import ForgotPasswordForm from './components/ForgotPasswordForm.jsx';
 import ResetPasswordForm from './components/ResetPasswordForm.jsx';
+import AuthExperience from './components/AuthExperience.jsx';
 import RoomInvitationPage from './components/RoomInvitationPage.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import NotFound from './components/NotFound.jsx';
@@ -178,16 +179,15 @@ function App() {
                 user ? (
                   <Navigate to="/dashboard" replace />
                 ) : (
-                  <div className="login-view">
+                  <AuthExperience mode="login" onPanelAction={showRegister}>
                     <LoginForm
                       onSubmit={handleLogin}
                       loading={loading}
                       error={error}
                       message={successMessage}
-                      onRegister={showRegister}
                       onForgotPassword={showForgotPassword}
                     />
-                  </div>
+                  </AuthExperience>
                 )
               }
             />
@@ -198,9 +198,9 @@ function App() {
                 user ? (
                   <Navigate to="/dashboard" replace />
                 ) : (
-                  <div className="login-view">
-                    <ForgotPasswordForm onBackToLogin={showLogin} />
-                  </div>
+                  <AuthExperience mode="recovery" onPanelAction={showLogin}>
+                    <ForgotPasswordForm />
+                  </AuthExperience>
                 )
               }
             />
@@ -211,12 +211,11 @@ function App() {
                 user ? (
                   <Navigate to="/dashboard" replace />
                 ) : (
-                  <div className="login-view">
+                  <AuthExperience mode="recovery" onPanelAction={showLogin}>
                     <ResetPasswordForm
                       token={new URLSearchParams(window.location.search).get('token')}
-                      onBackToLogin={showLogin}
                     />
-                  </div>
+                  </AuthExperience>
                 )
               }
             />
@@ -227,14 +226,13 @@ function App() {
                 user ? (
                   <Navigate to="/dashboard" replace />
                 ) : (
-                  <div className="login-view">
+                  <AuthExperience mode="register" onPanelAction={showLogin}>
                     <RegisterForm
                       onSubmit={handleRegister}
                       loading={loading}
                       error={registrationError}
-                      onBackToLogin={showLogin}
                     />
-                  </div>
+                  </AuthExperience>
                 )
               }
             />

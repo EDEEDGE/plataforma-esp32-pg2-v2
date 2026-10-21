@@ -13,6 +13,12 @@
 .rooms-toolbar h3 {
   color: #f8fafc;
   font-size: 1.35rem;
+  letter-spacing: -0.025em;
+}
+
+.rooms-toolbar > button {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .rooms-toolbar p,
@@ -62,6 +68,7 @@
   display: grid;
   gap: 18px;
   align-content: start;
+  border-color: rgba(191, 219, 254, 0.17);
 }
 
 .room-card-heading,
@@ -115,6 +122,20 @@
   flex-wrap: wrap;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   padding-top: 14px;
+}
+
+.room-open-button,
+.room-detail-toolbar > button,
+.room-project-actions button,
+.room-invite-form > button {
+  min-height: 44px;
+}
+
+.room-project-item,
+.project-device-item,
+.room-member-item,
+.room-invitation-item {
+  border-color: rgba(191, 219, 254, 0.14);
 }
 
 .room-card-footer time {
@@ -197,6 +218,11 @@
   gap: 14px;
   padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.room-detail-section > h4,
+.room-detail-section > .room-section-heading h4 {
+  letter-spacing: -0.015em;
 }
 
 .room-project-list {
@@ -503,6 +529,7 @@
 
   .rooms-toolbar button {
     width: 100%;
+    flex: 0 1 auto;
   }
 
   .room-detail-toolbar,
@@ -519,6 +546,15 @@
   .room-detail-actions {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .room-section-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .room-section-heading > button {
+    width: 100%;
   }
 
   .room-member-item,

@@ -1,21 +1,87 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../styles/dashboard.css';
+import { getDeviceOverview } from '../services/dashboardService.js';
 import Sidebar from './Sidebar.jsx';
 import UserManager from './UserManager.jsx';
 import ProfileForm from './ProfileForm.jsx';
 import RoomsPage from './RoomsPage.jsx';
 import RoomDetailPage from './RoomDetailPage.jsx';
+import FirmwareWorkspace from './FirmwareWorkspace.jsx';
 
 // Dashboard presenta el panel principal para usuarios autenticados.
 // Incluye un sidebar, una sección de datos y el módulo de usuarios.
 export default function Dashboard({ user, onLogout, onUserUpdated }) {
   const [selectedPage, setSelectedPage] = useState('summary');
   const [selectedRoomId, setSelectedRoomId] = useState(null);
+  const [overview, setOverview] = useState(null);
+  const [overviewLoading, setOverviewLoading] = useState(true);
+  const [overviewError, setOverviewError] = useState('');
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getDeviceOverview()
+      .then((deviceOverview) => {
+        if (isMounted) {
+          setOverview(deviceOverview);
+        }
+      })
+      .catch((error) => {
+        if (isMounted) {
+          setOverviewError(error.message || 'No se pudo cargar el resumen de dispositivos.');
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setOverviewLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleOverviewRefresh = async () => {
+    setOverviewLoading(true);
+    setOverviewError('');
+
+    try {
+      setOverview(await getDeviceOverview());
+    } catch (error) {
+      setOverviewError(error.message || 'No se pudo actualizar el resumen de dispositivos.');
+    } finally {
+      setOverviewLoading(false);
+    }
+  };
 
   const handleSelectPage = (page) => {
     setSelectedPage(page);
     setSelectedRoomId(null);
   };
+
+  const pageContent = {
+    summary: {
+      title: `Bienvenido, ${user.name}`,
+      description: 'Consulta el estado de tus dispositivos y accede a las herramientas de gestión OTA.'
+    },
+    rooms: {
+      title: 'Salas y proyectos',
+      description: 'Organiza tus espacios de trabajo, proyectos y dispositivos.'
+    },
+    updates: {
+      title: 'Centro de actualizaciones',
+      description: 'Administra versiones de firmware y prepara despliegues para tus dispositivos.'
+    },
+    users: {
+      title: 'Gestión de usuarios',
+      description: 'Administra las cuentas y los niveles de acceso a la plataforma.'
+    },
+    profile: {
+      title: 'Tu perfil',
+      description: 'Mantén actualizados tus datos personales y credenciales de acceso.'
+    }
+  }[selectedPage];
 
   return (
     <div className="dashboard-layout">
@@ -27,89 +93,109 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
       />
 
       <section className="dashboard-main">
-        <div className="dashboard-top">
+        <div className="dashboard-top" key={`header-${selectedPage}`}>
           <div>
-            <p className="eyebrow">
-              {selectedPage === 'summary'
-                ? 'Resumen'
-                : selectedPage === 'rooms'
-                  ? 'Salas'
-                  : selectedPage === 'users'
-                    ? 'Usuarios'
-                    : 'Mi perfil'}
-            </p>
-            <h2>Hola, {user.name}</h2>
+            <p className="eyebrow">Plataforma de dispositivos</p>
+            <h2>{pageContent.title}</h2>
           </div>
-          <p className="dashboard-help">
-            {selectedPage === 'summary'
-              ? 'Monitorea tus dispositivos ESP32 y despliega actualizaciones desde aquí.'
-              : selectedPage === 'rooms'
-                ? 'Consulta y crea las salas donde organizas tus proyectos y dispositivos.'
-                : selectedPage === 'users'
-                  ? 'Gestiona los usuarios del sistema desde este panel.'
-                  : 'Consulta y actualiza tus datos personales.'}
-          </p>
+          <p className="dashboard-help">{pageContent.description}</p>
         </div>
 
-        {selectedPage === 'summary' ? (
-          <>
-            <div className="dashboard-overview">
-              <article className="overview-card">
-                <p>Dispositivos conectados</p>
-                <strong>14</strong>
-              </article>
-              <article className="overview-card">
-                <p>Actualizaciones pendientes</p>
-                <strong>3</strong>
-              </article>
-              <article className="overview-card">
-                <p>Tiempo de actividad</p>
-                <strong>99.7%</strong>
-              </article>
-            </div>
+        <div
+          className="dashboard-section-content"
+          key={`content-${selectedPage}-${selectedRoomId || 'list'}`}
+        >
+          {selectedPage === 'summary' ? (
+            <>
+              <div className="dashboard-overview">
+                <article className="overview-card">
+                  <p>Dispositivos registrados</p>
+                  <strong>{overviewLoading ? '…' : overview?.deviceCount ?? '—'}</strong>
+                </article>
+                <article className="overview-card">
+                  <p>Dispositivos activos</p>
+                  <strong>{overviewLoading ? '…' : overview?.activeDeviceCount ?? '—'}</strong>
+                </article>
+                <article className="overview-card">
+                  <p>Dispositivos vinculados</p>
+                  <strong>{overviewLoading ? '…' : overview?.pairedDeviceCount ?? '—'}</strong>
+                </article>
+              </div>
 
-            <div className="dashboard-grid">
-              <article className="card">
-                <h3>Estado del sistema</h3>
-                <p>Conexión con ESP32: <strong>Activa</strong></p>
-                <p>Última actualización: <strong>Hace 2 minutos</strong></p>
-              </article>
+              {overviewError ? (
+                <article className="card">
+                  <p className="form-error" role="alert">{overviewError}</p>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={handleOverviewRefresh}
+                    disabled={overviewLoading}
+                    aria-busy={overviewLoading}
+                  >
+                    Reintentar carga
+                  </button>
+                </article>
+              ) : null}
+              {!overviewError && overview && !overviewLoading ? (
+                <article className="card dashboard-communication-card">
+                  <h3>Última comunicación reportada</h3>
+                  <p>
+                    {overview.latestCommunication
+                      ? new Date(overview.latestCommunication).toLocaleString()
+                      : 'Ningún dispositivo ha reportado comunicación.'}
+                  </p>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={handleOverviewRefresh}
+                    disabled={overviewLoading}
+                    aria-busy={overviewLoading}
+                  >
+                    Actualizar resumen
+                  </button>
+                </article>
+              ) : null}
 
-              <article className="card">
-                <h3>Próximos pasos</h3>
-                <p>Prepara la ruta de actualización OTA para tus dispositivos.</p>
-              </article>
+              <div className="dashboard-grid">
+                <article className="card">
+                  <h3>Visibilidad de tus dispositivos</h3>
+                  <p>
+                    Los indicadores reflejan los dispositivos disponibles en las salas y proyectos a los que
+                    tienes acceso.
+                  </p>
+                </article>
 
-              <article className="card">
-                <h3>Medidas rápidas</h3>
-                <p>Revisa la integridad de la tabla de dispositivos antes de desplegar.</p>
-              </article>
-
-              <article className="card">
-                <h3>Notas</h3>
-                <p>Este panel es una vista inicial. El backend real conectará aquí los datos de los ESP32.</p>
-              </article>
-            </div>
-          </>
-        ) : selectedPage === 'rooms' ? (
-          selectedRoomId ? (
-            <RoomDetailPage
-              roomId={selectedRoomId}
-              userId={user.id}
-              onBack={() => setSelectedRoomId(null)}
-            />
+                <article className="card">
+                  <h3>Gestión de firmware</h3>
+                  <p>
+                    Accede a Actualizaciones OTA para administrar versiones y preparar despliegues compatibles
+                    con tus placas.
+                  </p>
+                </article>
+              </div>
+            </>
+          ) : selectedPage === 'rooms' ? (
+            selectedRoomId ? (
+              <RoomDetailPage
+                roomId={selectedRoomId}
+                userId={user.id}
+                onBack={() => setSelectedRoomId(null)}
+              />
+            ) : (
+              <RoomsPage onOpenRoom={setSelectedRoomId} />
+            )
+          ) : selectedPage === 'users' ? (
+            <UserManager onSessionExpired={onLogout} />
+          ) : selectedPage === 'updates' ? (
+            <FirmwareWorkspace />
           ) : (
-            <RoomsPage onOpenRoom={setSelectedRoomId} />
-          )
-        ) : selectedPage === 'users' ? (
-          <UserManager onSessionExpired={onLogout} />
-        ) : (
-          <ProfileForm
-            user={user}
-            onUserUpdated={onUserUpdated}
-            onSessionExpired={onLogout}
-          />
-        )}
+            <ProfileForm
+              user={user}
+              onUserUpdated={onUserUpdated}
+              onSessionExpired={onLogout}
+            />
+          )}
+        </div>
       </section>
     </div>
   );
