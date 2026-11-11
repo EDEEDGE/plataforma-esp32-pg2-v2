@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const storageRoot = resolve(
   dirname(fileURLToPath(import.meta.url)),
-  '../../../storage'
+  '../../../storage/firmware'
 );
 
 const resolveObjectPath = (objectKey) => {

@@ -28,7 +28,8 @@ import {
 
 import {
   checkFirmwareUpdate,
-  downloadDeviceFirmware
+  downloadDeviceFirmware,
+  confirmFirmwareInstallation
 } from '../controllers/deviceFirmware.controller.js';
 
 import {
@@ -103,4 +104,12 @@ router.get(
   deviceAuthMiddleware,
   downloadDeviceFirmware
 );
+
+// Confirmar instalación OTA después del reinicio
+router.post(
+  '/devices/firmware/confirm-installed',
+  deviceAuthMiddleware,
+  confirmFirmwareInstallation
+);
+
 export default router;

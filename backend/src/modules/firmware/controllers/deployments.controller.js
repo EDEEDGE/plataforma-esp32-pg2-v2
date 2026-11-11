@@ -1,5 +1,28 @@
 import { db } from '../../../prisma/db.ts';
 
+// Comparar versiones X.Y.Z
+const compararVersionesFirmware = (a, b) => {
+  const patron = /^\d{1,4}\.\d{1,4}\.\d{1,4}$/;
+
+  if (
+    typeof a !== 'string' ||
+    typeof b !== 'string' ||
+    !patron.test(a) ||
+    !patron.test(b)
+  ) {
+    return null;
+  }
+
+  const versionA = a.split('.').map(Number);
+  const versionB = b.split('.').map(Number);
+
+  for (let i = 0; i < 3; i++) {
+    if (versionA[i] > versionB[i]) return 1;
+    if (versionA[i] < versionB[i]) return -1;
+  }
+
+  return 0;
+};
 
 // Crear despliegue de firmware
 export const createDeployment = async (req, res) => {
@@ -215,31 +238,74 @@ export const createDeployment = async (req, res) => {
       });
     }
 
-    // Evitar que un dispositivo tenga la misma versión pendiente
+    // ============================================
+    // VALIDAR VERSIONES ANTES DEL DESPLIEGUE
+    // ============================================
+
+    // Evitar instalar versiones iguales o anteriores
     for (const device of selectedDevices) {
 
-      const pendingDeployments =
+      // Buscar historial de asignaciones del dispositivo
+      const assignments =
         await db.orm.public.DeploymentDevice
           .where({
-            deviceId: device.id,
-            status: 'PENDING'
+            deviceId: device.id
           })
           .all();
 
-      for (const pendingDevice of pendingDeployments) {
+      for (const assignment of assignments) {
 
-        const pendingDeployment =
+        // Solo revisar versiones instaladas y pendientes
+        if (
+          assignment.status !== 'INSTALLED' &&
+          assignment.status !== 'PENDING'
+        ) {
+          continue;
+        }
+
+        // Obtener el despliegue anterior
+        const previousDeployment =
           await db.orm.public.Deployment.first({
-            id: pendingDevice.deploymentId
+            id: assignment.deploymentId
           });
 
         if (
-          pendingDeployment &&
-          pendingDeployment.firmwareVersionId === firmwareVersionId
+          !previousDeployment ||
+          previousDeployment.projectId !== projectId
         ) {
+          continue;
+        }
+
+        // Obtener la versión del despliegue anterior
+        const previousVersion =
+          await db.orm.public.FirmwareVersion.first({
+            id: previousDeployment.firmwareVersionId
+          });
+
+        if (!previousVersion) {
+          continue;
+        }
+
+        // Comparar la nueva versión con la anterior
+        const comparison = compararVersionesFirmware(
+          firmwareVersion.version,
+          previousVersion.version
+        );
+
+        // Validar formato
+        if (comparison === null) {
+          return res.status(409).json({
+            message: 'Formato de versión no válido'
+          });
+        }
+
+        // Impedir versiones iguales o anteriores
+        if (comparison <= 0) {
           return res.status(409).json({
             message:
-              `El dispositivo ${device.name} ya tiene esta versión pendiente`
+              `El dispositivo ${device.name} tiene la versión ` +
+              `${previousVersion.version} en estado ${assignment.status}. ` +
+              `Debe seleccionar una versión superior.`
           });
         }
       }
