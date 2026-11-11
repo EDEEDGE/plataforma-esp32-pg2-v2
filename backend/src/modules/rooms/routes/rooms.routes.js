@@ -103,16 +103,17 @@ router.patch(
 );
 
 router.delete(
+  '/:id/members/me',
+  authMiddleware,
+  leaveRoom
+);
+
+router.delete(
   '/:id/members/:userId',
   authMiddleware,
   removeRoomMember
 );
 
-router.delete(
-  '/:id/members/me',
-  authMiddleware,
-  leaveRoom
-);
 
 router.patch(
   '/:id/status',

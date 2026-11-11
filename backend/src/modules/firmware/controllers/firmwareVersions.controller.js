@@ -388,6 +388,35 @@ export const updateFirmwareVersion = async (req, res) => {
       }
     }
 
+    // ============================================
+    // PROTEGER VERSIONES DE FIRMWARE PUBLICADAS
+    // ============================================
+
+    // Comprobar si realmente cambia el número de versión
+    if (normalizedVersion !== firmwareVersion.version) {
+
+      // Buscar archivos asociados a la versión
+      const firmwareFile =
+        await db.orm.public.FirmwareFile.first({
+          firmwareVersionId: firmwareVersion.id
+        });
+
+      // Buscar despliegues que utilizan esta versión
+      const deployment =
+        await db.orm.public.Deployment.first({
+          firmwareVersionId: firmwareVersion.id
+        });
+
+      // No permitir cambiar versiones ya publicadas
+      if (firmwareFile || deployment) {
+        return res.status(409).json({
+          message:
+            'No se puede cambiar el número de una versión ' +
+            'que ya tiene archivos o despliegues asociados'
+        });
+      }
+    }
+
     // Actualizar
     const updatedFirmwareVersion =
       await db.orm.public.FirmwareVersion

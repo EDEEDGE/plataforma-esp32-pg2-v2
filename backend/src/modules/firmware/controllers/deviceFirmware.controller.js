@@ -1,5 +1,31 @@
 import { db } from '../../../prisma/db.ts';
 import { getFile } from '../../../services/storage/storage.service.js';
+import { Temporal } from 'temporal-polyfill';
+
+// Comparar versiones con formato X.Y.Z
+const compararVersionesFirmware = (versionA, versionB) => {
+
+  const patron = /^\d{1,4}\.\d{1,4}\.\d{1,4}$/;
+
+  if (
+    typeof versionA !== 'string' ||
+    typeof versionB !== 'string' ||
+    !patron.test(versionA) ||
+    !patron.test(versionB)
+  ) {
+    return null;
+  }
+
+  const a = versionA.split('.').map(Number);
+  const b = versionB.split('.').map(Number);
+
+  for (let i = 0; i < 3; i++) {
+    if (a[i] > b[i]) return 1;
+    if (a[i] < b[i]) return -1;
+  }
+
+  return 0;
+};
 
 // Consultar si el dispositivo tiene una actualización pendiente
 export const checkFirmwareUpdate = async (req, res) => {
@@ -24,17 +50,85 @@ export const checkFirmwareUpdate = async (req, res) => {
       });
     }
 
-    /*
-      Si existen varias versiones diferentes pendientes,
-      se atiende primero la más antigua.
-    */
-    pendingUpdates.sort((a, b) =>
-      String(a.assignedAt).localeCompare(
-        String(b.assignedAt)
-      )
-    );
+    // ============================================
+    // SELECCIONAR LA VERSION MAS RECIENTE
+    // ============================================
 
-    const pendingUpdate = pendingUpdates[0];
+    const updatesWithVersion = [];
+
+    for (const pending of pendingUpdates) {
+
+      // Buscar despliegue
+      const pendingDeployment =
+        await db.orm.public.Deployment.first({
+          id: pending.deploymentId
+        });
+
+      if (
+        !pendingDeployment ||
+        pendingDeployment.projectId !== req.device.projectId
+      ) {
+        continue;
+      }
+
+      // Buscar version
+      const pendingVersion =
+        await db.orm.public.FirmwareVersion.first({
+          id: pendingDeployment.firmwareVersionId
+        });
+
+      if (
+        !pendingVersion ||
+        !pendingVersion.isActive ||
+        pendingVersion.projectId !== req.device.projectId
+      ) {
+        continue;
+      }
+
+      // Verificar formato de version
+      if (
+        compararVersionesFirmware(
+          pendingVersion.version,
+          pendingVersion.version
+        ) === null
+      ) {
+        continue;
+      }
+
+      updatesWithVersion.push({
+        assignment: pending,
+        version: pendingVersion.version
+      });
+    }
+
+    // No existen actualizaciones validas
+    if (updatesWithVersion.length === 0) {
+      return res.status(200).json({
+        updateAvailable: false,
+        message: 'No hay actualizaciones disponibles'
+      });
+    }
+
+    // Ordenar desde la version mayor
+    updatesWithVersion.sort((a, b) => {
+
+      const comparison = compararVersionesFirmware(
+        b.version,
+        a.version
+      );
+
+      if (comparison !== 0) {
+        return comparison;
+      }
+
+      // Si son iguales, utilizar la asignacion mas reciente
+      return String(b.assignment.assignedAt).localeCompare(
+        String(a.assignment.assignedAt)
+      );
+    });
+
+    // Seleccionar la actualizacion mas reciente
+    const pendingUpdate = updatesWithVersion[0].assignment;
 
 
     // Buscar Deployment
@@ -269,4 +363,207 @@ export const downloadDeviceFirmware = async (req, res) => {
       message: 'Error interno del servidor'
     });
   }
-}; 
+};
+
+
+// Confirmar una actualización OTA después de reiniciar
+export const confirmFirmwareInstallation = async (req, res) => {
+  try {
+    const device = req.device;
+
+    const {
+      deploymentDeviceId,
+      firmwareVersionId,
+      version
+    } = req.body ?? {};
+
+    if (
+      typeof deploymentDeviceId !== 'string' ||
+      typeof firmwareVersionId !== 'string' ||
+      typeof version !== 'string' ||
+      !deploymentDeviceId.trim() ||
+      !firmwareVersionId.trim() ||
+      !version.trim()
+    ) {
+      return res.status(400).json({
+        message: 'Faltan datos para confirmar la instalación'
+      });
+    }
+
+    // Buscar la actualización asignada
+    const deploymentDevice =
+      await db.orm.public.DeploymentDevice.first({
+        id: deploymentDeviceId
+      });
+
+    if (!deploymentDevice) {
+      return res.status(404).json({
+        message: 'Actualización asignada no encontrada'
+      });
+    }
+
+    // Asegurar que pertenece al ESP32 autenticado
+    if (deploymentDevice.deviceId !== device.id) {
+      return res.status(403).json({
+        message: 'La actualización no pertenece a este dispositivo'
+      });
+    }
+
+    // Comprobar el Deployment
+    const deployment =
+      await db.orm.public.Deployment.first({
+        id: deploymentDevice.deploymentId
+      });
+
+    if (
+      !deployment ||
+      deployment.projectId !== device.projectId ||
+      deployment.firmwareVersionId !== firmwareVersionId
+    ) {
+      return res.status(409).json({
+        message: 'Los datos del despliegue no coinciden'
+      });
+    }
+
+    // Comprobar la versión que el ESP32 dice haber instalado
+    const firmwareVersion =
+      await db.orm.public.FirmwareVersion.first({
+        id: deployment.firmwareVersionId
+      });
+
+    if (
+      !firmwareVersion ||
+      firmwareVersion.projectId !== device.projectId ||
+      firmwareVersion.version !== version
+    ) {
+      return res.status(409).json({
+        message: 'La versión confirmada no coincide'
+      });
+    }
+
+    // Permitir repetir una confirmación ya procesada
+    if (deploymentDevice.status === 'INSTALLED') {
+      return res.status(200).json({
+        message: 'Instalación confirmada anteriormente',
+        status: 'INSTALLED'
+      });
+    }
+
+    if (deploymentDevice.status !== 'PENDING') {
+      return res.status(409).json({
+        message: 'La actualización ya no está pendiente'
+      });
+    }
+
+    const now = Temporal.Now.instant();
+
+    // Actualizar solamente si continúa pendiente
+    const updated =
+      await db.orm.public.DeploymentDevice
+        .where({
+          id: deploymentDeviceId,
+          deviceId: device.id,
+          status: 'PENDING'
+        })
+        .update({
+          status: 'INSTALLED',
+          installedAt: now,
+          updatedAt: now,
+          errorMessage: null
+        });
+
+    if (!updated) {
+      return res.status(409).json({
+        message: 'El estado de la actualización cambió'
+      });
+    }
+
+    // ============================================
+    // CERRAR ACTUALIZACIONES OBSOLETAS
+    // ============================================
+
+    // La instalación nueva ya está confirmada.
+    // Esta limpieza no debe impedir responder HTTP 200.
+
+    try {
+
+      const pendingUpdates =
+        await db.orm.public.DeploymentDevice
+          .where({
+            deviceId: device.id,
+            status: 'PENDING'
+          })
+          .all();
+
+      for (const pending of pendingUpdates) {
+
+        const previousDeployment =
+          await db.orm.public.Deployment.first({
+            id: pending.deploymentId
+          });
+
+        if (
+          !previousDeployment ||
+          previousDeployment.projectId !== device.projectId
+        ) {
+          continue;
+        }
+
+        const previousVersion =
+          await db.orm.public.FirmwareVersion.first({
+            id: previousDeployment.firmwareVersionId
+          });
+
+        if (!previousVersion) {
+          continue;
+        }
+
+        const comparison = compararVersionesFirmware(
+          previousVersion.version,
+          firmwareVersion.version
+        );
+
+        // Solo sustituir versiones iguales o anteriores
+        if (comparison === null || comparison > 0) {
+          continue;
+        }
+
+        await db.orm.public.DeploymentDevice
+          .where({
+            id: pending.id,
+            deviceId: device.id,
+            status: 'PENDING'
+          })
+          .update({
+            status: 'SUPERSEDED',
+            updatedAt: now,
+            errorMessage: null
+          });
+      }
+
+    } catch (cleanupError) {
+
+      console.error(
+        'Error cerrando actualizaciones obsoletas:',
+        cleanupError
+      );
+    }
+
+    return res.status(200).json({
+      message: 'Instalación OTA confirmada correctamente',
+      deploymentDeviceId: updated.id,
+      status: updated.status,
+      installedAt: updated.installedAt
+    });
+
+  } catch (error) {
+    console.error(
+      'Error confirmando instalación OTA:',
+      error
+    );
+
+    return res.status(500).json({
+      message: 'Error interno del servidor'
+    });
+  }
+};
