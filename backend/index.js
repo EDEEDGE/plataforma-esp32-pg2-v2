@@ -13,6 +13,7 @@ import roomsRoutes from './src/modules/rooms/index.js';
 import projectsRoutes from './src/modules/projects/index.js';
 import devicesRoutes from './src/modules/devices/index.js';
 import firmwareRoutes from './src/modules/firmware/index.js';
+import reportsRoutes from './src/modules/reports/index.js';
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use('/api/rooms', roomsRoutes);
 app.use('/api', projectsRoutes);
 app.use('/api', devicesRoutes);
 app.use('/api', firmwareRoutes);
+app.use('/api', reportsRoutes);
 
 app.get('/', (req, res) => {
   res.json({
