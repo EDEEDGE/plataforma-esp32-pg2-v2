@@ -44,6 +44,8 @@
 
 .firmware-workspace-heading .field {
   min-width: min(100%, 240px);
+  width: min(100%, 320px);
+  flex: 0 1 320px;
   margin: 0;
 }
 
@@ -53,6 +55,8 @@
 }
 
 .firmware-workspace-heading select {
+  width: 100%;
+  min-width: 0;
   min-height: 44px;
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 16px;
