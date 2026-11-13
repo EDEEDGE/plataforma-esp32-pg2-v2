@@ -259,7 +259,7 @@ export default function FirmwareDeployments({
                     ))}
                   </ul>
                   <p className="room-secondary-text">
-                    La API actual no permite consultar el historial ni los resultados finales de OTA.
+                    Consulta el historial y el resultado de las instalaciones en la sección Reportes.
                   </p>
                 </section>
               ) : null}

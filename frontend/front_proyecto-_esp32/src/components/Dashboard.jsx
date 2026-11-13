@@ -7,6 +7,7 @@ import ProfileForm from './ProfileForm.jsx';
 import RoomsPage from './RoomsPage.jsx';
 import RoomDetailPage from './RoomDetailPage.jsx';
 import FirmwareWorkspace from './FirmwareWorkspace.jsx';
+import ReportsWorkspace from './ReportsWorkspace.jsx';
 
 // Dashboard presenta el panel principal para usuarios autenticados.
 // Incluye un sidebar, una sección de datos y el módulo de usuarios.
@@ -72,6 +73,10 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
     updates: {
       title: 'Centro de actualizaciones',
       description: 'Administra versiones de firmware y prepara despliegues para tus dispositivos.'
+    },
+    reports: {
+      title: 'Reportes',
+      description: 'Consulta el estado de tus dispositivos y el resultado de las actualizaciones OTA.'
     },
     users: {
       title: 'Gestión de usuarios',
@@ -188,6 +193,8 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
             <UserManager onSessionExpired={onLogout} />
           ) : selectedPage === 'updates' ? (
             <FirmwareWorkspace />
+          ) : selectedPage === 'reports' ? (
+            <ReportsWorkspace />
           ) : (
             <ProfileForm
               user={user}

@@ -68,6 +68,16 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
               Actualizaciones OTA
             </button>
           </li>
+          <li>
+            <button
+              type="button"
+              className={`nav-item${selectedPage === 'reports' ? ' active' : ''}`}
+              aria-current={selectedPage === 'reports' ? 'page' : undefined}
+              onClick={() => onSelectPage('reports')}
+            >
+              Reportes
+            </button>
+          </li>
           {user.role === 'ADMIN' ? (
             <li>
               <button
