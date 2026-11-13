@@ -190,7 +190,7 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
               <RoomsPage onOpenRoom={setSelectedRoomId} />
             )
           ) : selectedPage === 'users' ? (
-            <UserManager onSessionExpired={onLogout} />
+            <UserManager currentUserId={user.id} onSessionExpired={onLogout} />
           ) : selectedPage === 'updates' ? (
             <FirmwareWorkspace />
           ) : selectedPage === 'reports' ? (

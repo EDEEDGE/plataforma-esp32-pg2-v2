@@ -22,7 +22,7 @@ function mergeUserUpdate(currentUser, updatedUser) {
   };
 }
 
-export default function UserManager({ onSessionExpired }) {
+export default function UserManager({ currentUserId, onSessionExpired }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -140,7 +140,7 @@ export default function UserManager({ onSessionExpired }) {
                     <select
                       value={user.role}
                       onChange={(event) => handleRoleChange(user, event)}
-                      disabled={savingId === user.id}
+                      disabled={savingId === user.id || user.id === currentUserId}
                       aria-busy={savingId === user.id}
                       aria-label={`Rol de ${user.name}`}
                     >
@@ -155,11 +155,16 @@ export default function UserManager({ onSessionExpired }) {
                     type="button"
                     className={user.isActive ? 'danger-button' : ''}
                     onClick={() => handleStatusChange(user)}
-                    disabled={savingId === user.id}
+                    disabled={savingId === user.id || user.id === currentUserId}
                     aria-busy={savingId === user.id}
                   >
                     {user.isActive ? 'Desactivar' : 'Activar'}
                   </button>
+                  {user.id === currentUserId ? (
+                    <span className="user-self-note">
+                      No puedes cambiar tu propio rol ni desactivar tu cuenta.
+                    </span>
+                  ) : null}
                 </div>
               </article>
             ))}

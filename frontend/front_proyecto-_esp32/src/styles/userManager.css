@@ -76,6 +76,7 @@
 }
 
 .user-item {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -92,6 +93,13 @@
 .user-item:hover {
   background: rgba(59, 130, 246, 0.12);
   transform: translateY(-1px);
+}
+
+.user-self-note {
+  flex-basis: 100%;
+  color: rgba(248, 250, 252, 0.58);
+  font-size: 0.7rem;
+  text-align: right;
 }
 
 .user-identity {
@@ -213,7 +221,12 @@
 }
 
 .user-list button:disabled {
-  cursor: wait;
+  cursor: not-allowed;
+}
+
+.user-list select:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .profile-card {
