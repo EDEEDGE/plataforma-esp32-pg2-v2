@@ -4,8 +4,8 @@ import '../styles/login.css';
 // LoginForm muestra el formulario de autenticación.
 // Recibe onSubmit, loading y error como propiedades desde App.
 export default function LoginForm({ onSubmit, loading, error, message, onForgotPassword }) {
-  const [email, setEmail] = useState('admin@plataforma.com');
-  const [password, setPassword] = useState('admin123456');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   // Envía los datos del formulario al controlador padre.
   const handleSubmit = (event) => {
