@@ -12,6 +12,10 @@ const deviceTypes = ['ESP32', 'ESP8266'];
 const maxFirmwareSize = 8 * 1024 * 1024;
 
 function formatFileSize(sizeBytes) {
+  if (sizeBytes < 1024) {
+    return `${sizeBytes} bytes`;
+  }
+
   if (sizeBytes < 1024 * 1024) {
     return `${(sizeBytes / 1024).toFixed(1)} KB`;
   }
@@ -154,6 +158,11 @@ export default function FirmwareVersions({
 
     if (!uploadForm.file) {
       setActionError('Selecciona un archivo .bin antes de subirlo.');
+      return;
+    }
+
+    if (uploadForm.file.size === 0) {
+      setActionError('El archivo está vacío. Selecciona un firmware con contenido.');
       return;
     }
 
@@ -411,6 +420,10 @@ export default function FirmwareVersions({
                           </label>
                           <label className="field" htmlFor={`firmware-file-${firmwareVersion.id}`}>
                             <span>Archivo .bin (máximo 8 MB)</span>
+                            <small className="firmware-upload-hint">
+                              Selecciona el binario generado al compilar para esta placa. Un archivo de texto
+                              renombrado a .bin no es firmware válido para OTA.
+                            </small>
                             <input
                               id={`firmware-file-${firmwareVersion.id}`}
                               type="file"
