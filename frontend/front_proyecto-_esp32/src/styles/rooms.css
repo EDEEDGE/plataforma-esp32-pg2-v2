@@ -152,6 +152,7 @@
 .room-detail {
   display: grid;
   gap: 22px;
+  min-width: 0;
 }
 
 .room-detail-toolbar,
@@ -165,7 +166,9 @@
 
 .room-detail-card {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
+  min-width: 0;
 }
 
 .room-detail-card > button {
@@ -180,9 +183,16 @@
 
 .room-detail-description {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 6px;
+  min-width: 0;
   padding-top: 18px;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.room-detail-description p {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .room-detail-description h4 {
@@ -220,7 +230,9 @@
 
 .room-detail-section {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
+  min-width: 0;
   padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.14);
 }
@@ -232,12 +244,16 @@
 
 .room-project-list {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
+  min-width: 0;
 }
 
 .room-project-item {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
+  min-width: 0;
   padding: 16px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 18px;
@@ -299,8 +315,10 @@
 
 .project-devices-content {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   justify-items: start;
   gap: 12px;
+  min-width: 0;
 }
 
 .device-form {
@@ -319,12 +337,16 @@
 
 .project-device-list {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
+  min-width: 0;
 }
 
 .project-device-item {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
+  min-width: 0;
   padding: 14px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
