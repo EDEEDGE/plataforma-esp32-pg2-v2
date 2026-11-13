@@ -91,8 +91,64 @@ input:focus {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 0 0 4px rgba(59, 130, 246, 0.12);
 }
 
+.password-input-wrap {
+  position: relative;
+  min-width: 0;
+}
+
+.password-input-wrap input {
+  width: 100%;
+  padding-right: 3.5rem;
+}
+
+.password-visibility-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.65rem;
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #334155;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.password-visibility-toggle:hover {
+  transform: translateY(-50%);
+  background: rgba(15, 23, 42, 0.08);
+  box-shadow: none;
+}
+
+.password-visibility-toggle:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.password-visibility-toggle svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
 button {
   border-radius: 999px;
+}
+
+.auth-experience-form .password-visibility-toggle {
+  color: #f8fafc;
+}
+
+.auth-experience-form .password-visibility-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .form-error {
