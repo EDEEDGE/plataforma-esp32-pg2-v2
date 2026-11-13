@@ -269,7 +269,7 @@ export default function FirmwareVersions({
                   value={versionForm.version}
                   onChange={(event) => setVersionForm({ ...versionForm, version: event.target.value })}
                   placeholder="1.0.0"
-                  pattern="[0-9]+\\.[0-9]+\\.[0-9]+"
+                  pattern="[0-9]+\.[0-9]+\.[0-9]+"
                   required
                 />
               </label>
@@ -310,7 +310,7 @@ export default function FirmwareVersions({
                           id={`firmware-version-${firmwareVersion.id}`}
                           value={editingForm.version}
                           onChange={(event) => setEditingForm({ ...editingForm, version: event.target.value })}
-                          pattern="[0-9]+\\.[0-9]+\\.[0-9]+"
+                          pattern="[0-9]+\.[0-9]+\.[0-9]+"
                           required
                         />
                       </label>
