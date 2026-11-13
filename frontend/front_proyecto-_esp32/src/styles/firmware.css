@@ -236,16 +236,73 @@
 
 .firmware-deployment-form {
   display: grid;
-  justify-items: start;
-  gap: 14px;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 12px;
   margin: 0;
 }
 
+.firmware-deployment-form > .firmware-deployment-version {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.firmware-deployment-form .field span {
+  color: var(--text-muted);
+}
+
 .firmware-deployment-form > button {
+  grid-column: 1;
+  grid-row: 3;
+  justify-self: start;
+  align-self: end;
   min-width: 180px;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+}
+
+.firmware-deployment-target-all {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: start;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid rgba(191, 219, 254, 0.14);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.firmware-deployment-target-all:has(input:disabled) {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.firmware-deployment-form > .firmware-device-selection,
+.firmware-deployment-form > .room-readonly-note {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 100%;
+  min-width: 0;
+  align-self: stretch;
+}
+
+.firmware-deployment-form > .firmware-device-selection {
+  align-content: start;
+}
+
+.firmware-deployment-form > .rooms-feedback {
+  grid-column: 1 / -1;
+}
+
+.firmware-deployment-form > .room-readonly-note {
+  display: flex;
+  align-items: center;
 }
 
 .firmware-deployment-form select {
+  width: 100%;
   min-height: 44px;
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 16px;
@@ -383,6 +440,20 @@
 
   .firmware-version-actions {
     justify-content: flex-start;
+  }
+
+  .firmware-deployment-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .firmware-deployment-form > .firmware-deployment-version,
+  .firmware-deployment-form > .firmware-deployment-target-all,
+  .firmware-deployment-form > .firmware-device-selection,
+  .firmware-deployment-form > .room-readonly-note,
+  .firmware-deployment-form > button,
+  .firmware-deployment-form > .rooms-feedback {
+    grid-column: 1;
+    grid-row: auto;
   }
 
   .firmware-upload-form {

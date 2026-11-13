@@ -144,7 +144,10 @@ export default function FirmwareDeployments({
             <>
               {canCreateDeployment ? (
                 <form className="firmware-deployment-form" onSubmit={handleSubmit}>
-                  <label className="field" htmlFor={`deployment-version-${projectId}`}>
+                  <label
+                    className="field firmware-deployment-version"
+                    htmlFor={`deployment-version-${projectId}`}
+                  >
                     <span>Versión de firmware</span>
                     <select
                       id={`deployment-version-${projectId}`}
@@ -168,11 +171,15 @@ export default function FirmwareDeployments({
                     </select>
                   </label>
 
-                  <label className="firmware-target-all" htmlFor={`deployment-target-all-${projectId}`}>
+                  <label
+                    className="firmware-target-all firmware-deployment-target-all"
+                    htmlFor={`deployment-target-all-${projectId}`}
+                  >
                     <input
                       id={`deployment-target-all-${projectId}`}
                       type="checkbox"
                       checked={targetAll}
+                      disabled={eligibleDevices.length === 0}
                       onChange={(event) => {
                         setTargetAll(event.target.checked);
                         setDeploymentResult(null);
@@ -187,7 +194,8 @@ export default function FirmwareDeployments({
                       <legend>Selecciona los dispositivos destino</legend>
                       {eligibleDevices.length === 0 ? (
                         <p className="room-secondary-text">
-                          No hay dispositivos activos y vinculados disponibles para este proyecto.
+                          Registra un dispositivo en este proyecto, vincúlalo y asegúrate de que esté activo
+                          para habilitar los despliegues.
                         </p>
                       ) : (
                         eligibleDevices.map((device) => (
@@ -224,6 +232,7 @@ export default function FirmwareDeployments({
                     disabled={
                       submitting
                       || !versionId
+                      || eligibleDevices.length === 0
                       || (!targetAll && selectedDeviceIds.length === 0)
                     }
                   >
