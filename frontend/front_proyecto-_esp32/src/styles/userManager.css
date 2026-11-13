@@ -79,7 +79,7 @@
 .user-item {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+  grid-template-columns: minmax(150px, 0.8fr) minmax(0, 1.6fr);
   align-items: center;
   gap: 16px;
   min-width: 0;
@@ -109,7 +109,7 @@
 .user-identity {
   display: flex;
   align-items: center;
-  flex: 1 1 220px;
+  width: 100%;
   min-width: 0;
   gap: 12px;
 }
@@ -159,6 +159,7 @@
   align-items: center;
   justify-content: flex-start;
   flex-wrap: wrap;
+  width: 100%;
   gap: 10px 12px;
   min-width: 0;
 }
