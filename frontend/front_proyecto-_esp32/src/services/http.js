@@ -43,8 +43,10 @@ export async function request(path, {
   }
 
   if (!response.ok) {
+    const disabledAccount = response.status === 403
+      && data.message === 'La cuenta se encuentra desactivada';
     const sessionExpired = auth
-      && response.status === 401
+      && (response.status === 401 || disabledAccount)
       && shouldExpireSession(data);
 
     if (sessionExpired) {
