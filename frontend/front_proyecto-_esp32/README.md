@@ -1,64 +1,61 @@
-<<<<<<< HEAD
-# Front-end Arduino / ESP32
+# Plataforma OTA para ESP32
 
-Proyecto frontend construido con Vite + React para una plataforma de actualización y control de dispositivos ESP32.
+Frontend de la plataforma construido con React y Vite. Consume la API del backend para administrar cuentas, salas, proyectos, dispositivos y actualizaciones de firmware.
 
-## Estructura
+## Funciones conectadas
 
-- `index.html` — entrada principal.
-- `src/main.jsx` — arranque de la app y estilos globales.
-- `src/App.jsx` — control de autenticación, persistencia de sesión y rutas.
-- `src/components/` — componentes UI principales (`LoginForm`, `Dashboard`, `Sidebar`).
-- `src/styles/` — estilos separados por componente y comunes.
-- `src/services/auth.js` — servicio de autenticación preparado para un backend REST.
+- Registro, inicio y cierre de sesión; validación de sesión, perfil y recuperación de contraseña.
+- Administración de usuarios para cuentas con rol de administrador.
+- Creación y administración de salas, proyectos, miembros e invitaciones.
+- Registro, edición, activación y vinculación de dispositivos ESP32 y ESP8266.
+- Creación de versiones de firmware, carga de archivos `.bin` y asignación de despliegues OTA.
+- Reportes por proyecto con resumen, historial OTA y estado de los dispositivos.
+
+El frontend crea y asigna despliegues, pero no declara que una actualización terminó hasta que el dispositivo la confirma con el backend. Las llamadas de heartbeat, comprobación/descarga OTA y confirmación de instalación las realiza el dispositivo, no el navegador.
+
+## Requisitos
+
+- Node.js y npm.
+- Backend disponible en `http://localhost:3000` (o la URL que se configure).
 
 ## Uso local
 
-1. Instala dependencias:
+1. Instala las dependencias:
 
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
-2. Ejecuta en modo desarrollo:
+2. Opcionalmente, crea `.env.local` para configurar el origen del backend:
 
-```bash
-npm run dev
-```
+   ```dotenv
+   VITE_API_URL=http://localhost:3000
+   ```
 
-3. Construye el bundle:
+   La aplicación agrega `/api` a este valor. Si no se configura, usa `http://localhost:3000/api`.
 
-```bash
-npm run build
-```
+3. Inicia el servidor de desarrollo:
 
-4. Previsualiza el build:
+   ```bash
+   npm run dev
+   ```
 
-```bash
-npm run preview
-```
+4. Comprueba el código y genera el bundle de producción:
 
-## Calidad de proyecto
+   ```bash
+   npm run lint
+   npm run build
+   ```
 
-- `npm run lint` — ejecuta ESLint sobre archivos `.js` y `.jsx`.
-- `npm run format` — formatea código con Prettier.
+5. Para previsualizar el bundle:
 
-## Notas de implementación
+   ```bash
+   npm run preview
+   ```
 
-- La app usa un servicio de auth en `src/services/auth.js` con login simulado.
-- El backend real no está integrado todavía; el compañero debe reemplazar esta lógica por su API cuando esté listo.
-- El token y el usuario se guardan en `localStorage` para mantener la sesión tras recargas.
-- El dashboard es responsivo y mantiene un sidebar móvil desplegable.
-- La app ya tiene una página 404 para rutas no encontradas.
-- Los estilos se organizan por componente: `login.css`, `dashboard.css` y `common.css`.
+## Notas de integración
 
-## Siguientes pasos recomendados
-
-1. Integrar backend real con autenticación segura.
-2. Agregar rutas React Router para separar `/login` y `/dashboard`.
-3. Conectar un servicio real de actualización OTA sobre ESP32.
-4. Mantener calidad con `npm run lint` y `npm run format`.
-=======
-# front_proyecto-_esp32
-front-end para proyecto de esp32, se ira actualizado cada sierto tiempo
->>>>>>> d656f7b155af77f5088615e64296f5dcace35874
+- Las llamadas de la interfaz están centralizadas en `src/services/` y usan autenticación Bearer para las rutas protegidas.
+- La sesión del navegador se conserva en `localStorage`.
+- El backend debe configurar los enlaces enviados por correo para recuperación de contraseña e invitaciones con el origen público correcto del frontend; en desarrollo, su valor esperado es `http://localhost:5173`.
+- El estado final de una actualización OTA depende de que el dispositivo complete la instalación y confirme el resultado con el backend.
