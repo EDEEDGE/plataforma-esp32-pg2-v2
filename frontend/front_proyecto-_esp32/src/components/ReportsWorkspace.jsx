@@ -318,7 +318,7 @@ export default function ReportsWorkspace() {
               <p className="reports-empty-inline">Este proyecto aún no tiene dispositivos registrados.</p>
             ) : (
               <div className="reports-table-scroll">
-                <table className="reports-table">
+                <table className="reports-table reports-devices-table">
                   <thead>
                     <tr>
                       <th scope="col">Nombre</th>
