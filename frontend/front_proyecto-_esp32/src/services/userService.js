@@ -17,7 +17,12 @@ export async function getUsers() {
     auth: true,
     fallbackMessage: 'Error en la solicitud de usuarios',
   });
-  return (data.users || []).map(normalizeUser);
+
+  if (!Array.isArray(data.users)) {
+    throw new Error('La respuesta del servidor no contiene la lista de usuarios.');
+  }
+
+  return data.users.map(normalizeUser);
 }
 
 export async function getUserById(userId) {

@@ -7,6 +7,21 @@ import {
 import { ApiError } from '../services/auth.js';
 import '../styles/userManager.css';
 
+function mergeUserUpdate(currentUser, updatedUser) {
+  const mergedUser = { ...currentUser, ...updatedUser };
+  const firstName = updatedUser.firstName ?? currentUser.firstName;
+  const lastName = updatedUser.lastName ?? currentUser.lastName;
+
+  return {
+    ...mergedUser,
+    firstName,
+    lastName,
+    name: [firstName, lastName].filter(Boolean).join(' ').trim()
+      || mergedUser.username
+      || 'Usuario',
+  };
+}
+
 export default function UserManager({ onSessionExpired }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +60,9 @@ export default function UserManager({ onSessionExpired }) {
       const updatedUser = await updateUserStatus(user.id, !user.isActive);
       setUsers((current) =>
         current.map((currentUser) =>
-          currentUser.id === updatedUser.id ? updatedUser : currentUser
+          currentUser.id === updatedUser.id
+            ? mergeUserUpdate(currentUser, updatedUser)
+            : currentUser
         )
       );
     } catch (err) {
@@ -68,7 +85,9 @@ export default function UserManager({ onSessionExpired }) {
       const updatedUser = await updateUserRole(user.id, role);
       setUsers((current) =>
         current.map((currentUser) =>
-          currentUser.id === updatedUser.id ? updatedUser : currentUser
+          currentUser.id === updatedUser.id
+            ? mergeUserUpdate(currentUser, updatedUser)
+            : currentUser
         )
       );
     } catch (err) {
