@@ -143,10 +143,6 @@ button {
   border-radius: 999px;
 }
 
-.auth-experience-form .password-visibility-toggle {
-  color: #f8fafc;
-}
-
 .auth-experience-form .password-visibility-toggle:hover {
   background: rgba(255, 255, 255, 0.15);
 }
