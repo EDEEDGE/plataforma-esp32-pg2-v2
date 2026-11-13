@@ -63,28 +63,28 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
 
   const pageContent = {
     summary: {
-      title: `Bienvenido, ${user.name}`,
-      description: 'Consulta el estado de tus dispositivos y accede a las herramientas de gestión OTA.'
+      title: 'Resumen de la plataforma',
+      description: `Hola, ${user.name}. Supervisa tus dispositivos y accede a las herramientas de gestión desde un solo lugar.`
     },
     rooms: {
       title: 'Salas y proyectos',
-      description: 'Organiza tus espacios de trabajo, proyectos y dispositivos.'
+      description: 'Organiza proyectos, dispositivos y colaboradores en espacios de trabajo independientes.'
     },
     updates: {
-      title: 'Centro de actualizaciones',
-      description: 'Administra versiones de firmware y prepara despliegues para tus dispositivos.'
+      title: 'Actualizaciones OTA',
+      description: 'Administra versiones de firmware y prepara actualizaciones remotas para tus dispositivos.'
     },
     reports: {
-      title: 'Reportes',
-      description: 'Consulta el estado de tus dispositivos y el resultado de las actualizaciones OTA.'
+      title: 'Reportes de actividad',
+      description: 'Consulta el inventario de dispositivos y el estado confirmado de cada actualización OTA.'
     },
     users: {
       title: 'Gestión de usuarios',
-      description: 'Administra las cuentas y los niveles de acceso a la plataforma.'
+      description: 'Administra las cuentas y sus permisos de acceso a la plataforma.'
     },
     profile: {
       title: 'Tu perfil',
-      description: 'Mantén actualizados tus datos personales y credenciales de acceso.'
+      description: 'Actualiza tu información personal y protege tus credenciales de acceso.'
     }
   }[selectedPage];
 
@@ -163,18 +163,16 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
 
               <div className="dashboard-grid">
                 <article className="card">
-                  <h3>Visibilidad de tus dispositivos</h3>
+                  <h3>Estado de los dispositivos</h3>
                   <p>
-                    Los indicadores reflejan los dispositivos disponibles en las salas y proyectos a los que
-                    tienes acceso.
+                  Consulta los dispositivos disponibles en las salas y proyectos a los que tienes acceso.
                   </p>
                 </article>
 
                 <article className="card">
                   <h3>Gestión de firmware</h3>
                   <p>
-                    Accede a Actualizaciones OTA para administrar versiones y preparar despliegues compatibles
-                    con tus placas.
+                    Administra versiones de firmware y prepara despliegues compatibles con tus dispositivos.
                   </p>
                 </article>
               </div>

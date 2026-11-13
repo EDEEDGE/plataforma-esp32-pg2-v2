@@ -29,7 +29,7 @@ export default function ChangePasswordForm({ onPasswordChanged, onSessionExpired
   return (
     <article className="card profile-card">
       <h3>Cambiar contraseña</h3>
-      <p>Por seguridad, se cerrará tu sesión después de actualizarla.</p>
+      <p>Por seguridad, se cerrará tu sesión después de actualizar la contraseña.</p>
       <form className="user-form" onSubmit={handleSubmit}>
         <label className="field" htmlFor="current-password">
           <span>Contraseña actual</span>
@@ -56,11 +56,11 @@ export default function ChangePasswordForm({ onPasswordChanged, onSessionExpired
         </label>
         {error ? <p className="form-error" role="alert">{error}</p> : null}
         <button type="submit" disabled={loading} aria-busy={loading}>
-          {loading ? 'Actualizando...' : 'Cambiar contraseña'}
+          {loading ? 'Actualizando…' : 'Actualizar contraseña'}
         </button>
       </form>
       <aside className="password-guidance">
-        <strong>Recomendaciones</strong>
+        <strong>Recomendaciones de seguridad</strong>
         <ul>
           <li>Usa al menos 8 caracteres.</li>
           <li>Combina letras, números y símbolos.</li>

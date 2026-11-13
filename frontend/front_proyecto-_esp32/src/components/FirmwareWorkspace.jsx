@@ -79,8 +79,8 @@ export default function FirmwareWorkspace() {
     <section className="firmware-workspace">
       <article className="card firmware-workspace-heading">
         <div>
-          <h3>Gestión de firmware</h3>
-          <p>Selecciona una sala para administrar versiones y preparar despliegues OTA.</p>
+          <h3>Versiones y despliegues</h3>
+          <p>Selecciona una sala para administrar el firmware y preparar actualizaciones OTA.</p>
         </div>
         {rooms.length > 0 ? (
           <label className="field" htmlFor="firmware-workspace-room">
@@ -101,11 +101,11 @@ export default function FirmwareWorkspace() {
 
       {error ? <p className="form-error rooms-feedback" role="alert">{error}</p> : null}
       {loadingRooms || loadingProjects ? (
-        <p className="room-secondary-text" role="status">Cargando proyectos de la sala...</p>
+        <p className="room-secondary-text" role="status">Cargando proyectos de la sala…</p>
       ) : rooms.length === 0 ? (
         <article className="card rooms-empty-state">
-          <h3>No tienes salas disponibles</h3>
-          <p>Crea una sala o acepta una invitación para comenzar a gestionar firmware.</p>
+          <h3>Aún no tienes salas</h3>
+          <p>Crea una sala o acepta una invitación para gestionar proyectos y firmware.</p>
         </article>
       ) : projects.length === 0 && !error ? (
         <article className="card rooms-empty-state">

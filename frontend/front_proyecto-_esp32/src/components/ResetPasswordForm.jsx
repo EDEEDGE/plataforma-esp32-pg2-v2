@@ -41,7 +41,7 @@ export default function ResetPasswordForm({ token }) {
       <div className="auth-header">
         <p className="eyebrow">Portal de usuario</p>
         <h2>Actualiza tu contraseña</h2>
-        <p>Elige una contraseña segura para volver a acceder a tu cuenta.</p>
+        <p>Define una nueva contraseña segura para recuperar el acceso a tu cuenta.</p>
       </div>
       <label className="field" htmlFor="reset-password">
         <span>Nueva contraseña</span>
@@ -70,7 +70,7 @@ export default function ResetPasswordForm({ token }) {
       {error ? <p className="form-error" role="alert">{error}</p> : null}
       {message ? <p className="form-message" role="status">{message}</p> : null}
       <button type="submit" disabled={loading || Boolean(message)}>
-        {loading ? 'Actualizando contraseña...' : 'Guardar nueva contraseña'}
+        {loading ? 'Actualizando contraseña…' : 'Guardar contraseña'}
       </button>
     </form>
   );

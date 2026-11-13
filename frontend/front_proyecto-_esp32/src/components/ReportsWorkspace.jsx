@@ -173,8 +173,8 @@ export default function ReportsWorkspace() {
     <section className="reports-workspace">
       <article className="card reports-toolbar">
         <div>
-          <h3>Reportes del proyecto</h3>
-          <p>Consulta dispositivos, despliegues y resultados confirmados por las placas.</p>
+          <h3>Actividad del proyecto</h3>
+          <p>Revisa el inventario, los despliegues y las actualizaciones confirmadas por los dispositivos.</p>
         </div>
         <div className="reports-selectors">
           <label className="field" htmlFor="reports-room">
@@ -224,7 +224,7 @@ export default function ReportsWorkspace() {
       ) : null}
       {error ? <p className="form-error reports-feedback" role="alert">{error}</p> : null}
       {loadingRooms || loadingProjects || loadingReports ? (
-        <p className="room-secondary-text" role="status">Cargando reportes del proyecto…</p>
+        <p className="room-secondary-text" role="status">Cargando la actividad del proyecto…</p>
       ) : !error && rooms.length === 0 ? (
         <article className="card reports-empty">
           <h4>No tienes salas disponibles</h4>
@@ -342,7 +342,7 @@ export default function ReportsWorkspace() {
             )}
           </section>
           <p className="reports-footnote">
-            El estado instalado aparece cuando la placa confirma la actualización después de reiniciar.
+            Una actualización se considera instalada cuando el dispositivo la confirma después de reiniciarse.
           </p>
         </>
       ) : null}

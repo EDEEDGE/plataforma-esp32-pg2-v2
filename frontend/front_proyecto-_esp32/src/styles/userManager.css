@@ -42,9 +42,9 @@
 
 .user-manager-grid {
   display: grid;
-  grid-template-columns: minmax(210px, 0.65fr) minmax(0, 1.9fr);
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.9fr);
   align-items: start;
-  gap: 24px;
+  gap: 18px;
 }
 
 .user-manager-intro,
@@ -68,20 +68,22 @@
 
 .user-list {
   display: grid;
+  min-width: 0;
   gap: 12px;
   margin-top: 18px;
   max-height: 640px;
-  overflow-y: auto;
+  overflow: auto;
   padding: 2px 6px 2px 2px;
 }
 
 .user-item {
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, auto);
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 18px;
+  gap: 16px;
+  min-width: 0;
+  padding: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 18px;
   border-color: rgba(191, 219, 254, 0.14);
@@ -97,9 +99,11 @@
 
 .user-self-note {
   flex-basis: 100%;
-  color: rgba(248, 250, 252, 0.58);
-  font-size: 0.7rem;
-  text-align: right;
+  color: rgba(248, 250, 252, 0.72);
+  font-size: 0.76rem;
+  line-height: 1.45;
+  text-align: left;
+  overflow-wrap: anywhere;
 }
 
 .user-identity {
@@ -153,11 +157,10 @@
 .user-controls {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   flex-wrap: wrap;
-  gap: 12px;
-  flex: 0 0 auto;
-  min-width: 290px;
+  gap: 10px 12px;
+  min-width: 0;
 }
 
 .user-control {
@@ -174,7 +177,8 @@
 }
 
 .user-control select {
-  min-width: 104px;
+  width: 100%;
+  min-width: 0;
   border: 1px solid rgba(147, 197, 253, 0.25);
   border-radius: 12px;
   padding: 0.65rem 0.75rem;
@@ -210,10 +214,11 @@
 }
 
 .user-list button {
-  min-width: 104px;
+  min-width: 0;
   padding: 0.55rem 0.85rem;
   border-radius: 14px;
   font-size: 0.88rem;
+  white-space: normal;
 }
 
 .user-list select {
@@ -268,7 +273,7 @@
   line-height: 1.5;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1180px) {
   .profile-grid {
     grid-template-columns: 1fr;
   }
@@ -278,8 +283,8 @@
   }
 
   .user-item {
-    align-items: stretch;
-    flex-direction: column;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
   }
 
   .user-identity {
@@ -291,17 +296,16 @@
     width: 100%;
     min-width: 0;
   }
+
+  .user-control {
+    min-width: min(100%, 150px);
+  }
 }
 
 @media (max-width: 760px) {
   .user-list {
     max-height: none;
-    overflow-y: visible;
-  }
-
-  .user-item {
-    align-items: stretch;
-    flex-direction: column;
+    overflow: visible;
   }
 
   .user-controls {
@@ -312,10 +316,6 @@
   .user-control select,
   .user-list button {
     flex: 1;
-  }
-
-  .user-controls {
-    min-width: 0;
   }
 }
 

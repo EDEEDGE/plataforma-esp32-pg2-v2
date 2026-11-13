@@ -38,7 +38,7 @@ export default function ProfileForm({ user, onUserUpdated, onSessionExpired }) {
     <section className="dashboard-grid profile-grid">
       <article className="card profile-card">
         <h3>Información personal</h3>
-        <p>Actualiza el nombre y los datos asociados a tu cuenta.</p>
+        <p>Administra el nombre y el identificador asociados a tu cuenta.</p>
         <form className="user-form" onSubmit={handleSubmit}>
         <label className="field" htmlFor="profile-username">
           <span>Usuario</span>
@@ -70,7 +70,7 @@ export default function ProfileForm({ user, onUserUpdated, onSessionExpired }) {
         {error ? <p className="form-error" role="alert">{error}</p> : null}
         {message ? <p className="form-message" role="status">{message}</p> : null}
         <button type="submit" disabled={loading} aria-busy={loading}>
-          {loading ? 'Guardando...' : 'Guardar cambios'}
+          {loading ? 'Guardando…' : 'Guardar cambios'}
         </button>
         </form>
       </article>

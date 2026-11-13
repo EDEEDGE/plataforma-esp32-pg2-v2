@@ -108,8 +108,8 @@ export default function UserManager({ currentUserId, onSessionExpired }) {
   return (
     <section className="user-manager-grid">
       <article className="card user-manager-intro">
-        <h3>Control de acceso</h3>
-        <p>Gestiona los permisos y el estado de las cuentas de la plataforma.</p>
+        <h3>Acceso y seguridad</h3>
+        <p>Administra los roles y el estado de acceso de cada cuenta.</p>
         {error ? (
           <p className="form-error" role="alert">
             {error}
@@ -165,7 +165,7 @@ export default function UserManager({ currentUserId, onSessionExpired }) {
                   </button>
                   {user.id === currentUserId ? (
                     <span className="user-self-note">
-                      No puedes cambiar tu propio rol ni desactivar tu cuenta.
+                      Por seguridad, no puedes modificar el rol ni el estado de tu propia cuenta.
                     </span>
                   ) : null}
                 </div>

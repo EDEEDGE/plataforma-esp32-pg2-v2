@@ -63,7 +63,7 @@ export default function LoginForm({ onSubmit, loading, error, message, onForgotP
       </button>
 
       <button type="button" className="auth-link" onClick={onForgotPassword}>
-        ¿Necesitas recuperar tu contraseña?
+        ¿Olvidaste tu contraseña?
       </button>
     </form>
   );

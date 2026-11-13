@@ -5,6 +5,11 @@ import { useState } from 'react';
 export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const handleSelectPage = (page) => {
+    onSelectPage(page);
+    setMenuOpen(false);
+  };
+
   return (
     <aside className={`sidebar ${menuOpen ? 'sidebar-open' : ''}`}>
       <div className="sidebar-top">
@@ -43,7 +48,7 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
               type="button"
               className={`nav-item${selectedPage === 'summary' ? ' active' : ''}`}
               aria-current={selectedPage === 'summary' ? 'page' : undefined}
-              onClick={() => onSelectPage('summary')}
+              onClick={() => handleSelectPage('summary')}
             >
               Resumen
             </button>
@@ -53,7 +58,7 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
               type="button"
               className={`nav-item${selectedPage === 'rooms' ? ' active' : ''}`}
               aria-current={selectedPage === 'rooms' ? 'page' : undefined}
-              onClick={() => onSelectPage('rooms')}
+              onClick={() => handleSelectPage('rooms')}
             >
               Salas y proyectos
             </button>
@@ -63,7 +68,7 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
               type="button"
               className={`nav-item${selectedPage === 'updates' ? ' active' : ''}`}
               aria-current={selectedPage === 'updates' ? 'page' : undefined}
-              onClick={() => onSelectPage('updates')}
+              onClick={() => handleSelectPage('updates')}
             >
               Actualizaciones OTA
             </button>
@@ -73,7 +78,7 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
               type="button"
               className={`nav-item${selectedPage === 'reports' ? ' active' : ''}`}
               aria-current={selectedPage === 'reports' ? 'page' : undefined}
-              onClick={() => onSelectPage('reports')}
+              onClick={() => handleSelectPage('reports')}
             >
               Reportes
             </button>
@@ -84,7 +89,7 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
                 type="button"
                 className={`nav-item${selectedPage === 'users' ? ' active' : ''}`}
                 aria-current={selectedPage === 'users' ? 'page' : undefined}
-                onClick={() => onSelectPage('users')}
+                onClick={() => handleSelectPage('users')}
               >
                 Gestión de usuarios
               </button>
@@ -95,7 +100,7 @@ export default function Sidebar({ user, onLogout, selectedPage, onSelectPage }) 
               type="button"
               className={`nav-item${selectedPage === 'profile' ? ' active' : ''}`}
               aria-current={selectedPage === 'profile' ? 'page' : undefined}
-              onClick={() => onSelectPage('profile')}
+              onClick={() => handleSelectPage('profile')}
             >
               Mi perfil
             </button>

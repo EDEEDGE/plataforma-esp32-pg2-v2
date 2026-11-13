@@ -5,18 +5,18 @@ let previousExperienceHeight = 560;
 
 const panelContent = {
   login: {
-    title: 'Bienvenido de nuevo',
-    description: 'Accede a tu espacio y continúa gestionando tus dispositivos ESP32.',
+    title: 'Tu plataforma, bajo control',
+    description: 'Supervisa tus dispositivos ESP32 y ESP8266 y gestiona sus actualizaciones desde un solo lugar.',
     action: 'Crear una cuenta'
   },
   register: {
-    title: 'Empieza hoy',
-    description: 'Crea tu perfil para gestionar y actualizar tus dispositivos.',
+    title: 'Conecta tu proyecto',
+    description: 'Crea tu cuenta para organizar dispositivos, firmware y equipos de trabajo.',
     action: 'Iniciar sesión'
   },
   recovery: {
-    title: 'Tu espacio te espera',
-    description: 'Cuando estés listo, vuelve al portal para continuar gestionando tus dispositivos.',
+    title: 'Recupera tu acceso',
+    description: 'Restablece tus credenciales y vuelve a gestionar tu plataforma con seguridad.',
     action: 'Volver al inicio de sesión'
   }
 };

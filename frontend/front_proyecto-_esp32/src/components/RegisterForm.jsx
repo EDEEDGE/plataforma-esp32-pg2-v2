@@ -27,7 +27,7 @@ export default function RegisterForm({ onSubmit, loading, error }) {
       <div className="auth-header">
         <p className="eyebrow">Portal de usuario</p>
         <h2>Crear cuenta</h2>
-        <p>Completa tus datos para acceder a la plataforma.</p>
+        <p>Registra tus datos para acceder a la plataforma de gestión.</p>
       </div>
 
       <label className="field" htmlFor="register-username">
@@ -100,7 +100,7 @@ export default function RegisterForm({ onSubmit, loading, error }) {
       ) : null}
 
       <button type="submit" disabled={loading}>
-        {loading ? 'Creando cuenta...' : 'Crear mi cuenta'}
+        {loading ? 'Creando cuenta…' : 'Crear cuenta'}
       </button>
 
     </form>

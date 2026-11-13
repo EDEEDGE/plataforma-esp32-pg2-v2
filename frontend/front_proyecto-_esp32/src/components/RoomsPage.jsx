@@ -51,7 +51,7 @@ export default function RoomsPage({ onOpenRoom }) {
       setRooms((currentRooms) => [room, ...currentRooms]);
       setForm({ name: '', description: '' });
       setShowForm(false);
-      setMessage(`La sala “${room.name}” se creó correctamente. Ahora tienes el rol OWNER.`);
+      setMessage(`La sala “${room.name}” se creó correctamente. Tu rol es Propietario.`);
     } catch (createError) {
       setError(createError.message || 'No se pudo crear la sala.');
     } finally {
@@ -64,7 +64,7 @@ export default function RoomsPage({ onOpenRoom }) {
       <div className="rooms-toolbar">
         <div>
           <h3>Mis salas</h3>
-          <p>Espacios de trabajo para reunir proyectos, dispositivos y colaboradores.</p>
+          <p>Espacios de trabajo para organizar proyectos, dispositivos y colaboradores.</p>
         </div>
         <button
           type="button"
@@ -124,8 +124,8 @@ export default function RoomsPage({ onOpenRoom }) {
         </article>
       ) : rooms.length === 0 ? (
         <article className="card rooms-empty-state">
-          <h3>Comienza con tu primera sala</h3>
-          <p>Crea un espacio para organizar tus proyectos y dispositivos.</p>
+          <h3>Crea tu primer espacio de trabajo</h3>
+          <p>Reúne tus proyectos y dispositivos en una sala dedicada.</p>
         </article>
       ) : (
         <div className="rooms-grid">

@@ -29,7 +29,7 @@ export default function ForgotPasswordForm() {
       <div className="auth-header">
         <p className="eyebrow">Portal de usuario</p>
         <h2>Recuperar acceso</h2>
-        <p>Te enviaremos un enlace para restablecer tu contraseña.</p>
+        <p>Recibirás un enlace seguro para restablecer la contraseña de tu cuenta.</p>
       </div>
       <label className="field" htmlFor="forgot-email">
         <span>Correo electrónico</span>
@@ -45,7 +45,7 @@ export default function ForgotPasswordForm() {
       {error ? <p className="form-error" role="alert">{error}</p> : null}
       {message ? <p className="form-message" role="status">{message}</p> : null}
       <button type="submit" disabled={loading}>
-        {loading ? 'Enviando enlace...' : 'Enviar enlace de recuperación'}
+        {loading ? 'Enviando enlace…' : 'Enviar enlace seguro'}
       </button>
     </form>
   );
