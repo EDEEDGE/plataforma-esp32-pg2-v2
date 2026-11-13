@@ -167,6 +167,10 @@
   gap: 20px;
 }
 
+.room-detail-card > button {
+  justify-self: start;
+}
+
 .room-detail-heading h3 {
   margin: 0;
   overflow-wrap: anywhere;
@@ -294,6 +298,7 @@
 
 .project-devices-content {
   display: grid;
+  justify-items: start;
   gap: 12px;
 }
 

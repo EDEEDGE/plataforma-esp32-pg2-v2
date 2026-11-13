@@ -163,8 +163,13 @@
 
 .firmware-deployment-form {
   display: grid;
+  justify-items: start;
   gap: 14px;
   margin: 0;
+}
+
+.firmware-deployment-form > button {
+  min-width: 180px;
 }
 
 .firmware-deployment-form select {
@@ -295,5 +300,11 @@
 
   .firmware-toolbar .room-project-actions {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 560px) {
+  .firmware-deployment-form > button {
+    width: 100%;
   }
 }

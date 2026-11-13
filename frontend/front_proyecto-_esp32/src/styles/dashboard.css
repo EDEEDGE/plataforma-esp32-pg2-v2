@@ -189,9 +189,11 @@
 
 .dashboard-main {
   display: grid;
+  align-content: start;
   gap: 22px;
   min-width: 0;
   width: 100%;
+  min-height: min(720px, calc(100vh - 44px));
   padding: clamp(22px, 3vw, 34px);
   border-radius: 26px;
   background: rgba(255, 255, 255, 0.08);
@@ -202,6 +204,9 @@
 }
 
 .dashboard-section-content {
+  display: grid;
+  align-content: start;
+  gap: 18px;
   min-width: 0;
 }
 
