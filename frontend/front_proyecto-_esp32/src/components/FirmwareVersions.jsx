@@ -354,46 +354,48 @@ export default function FirmwareVersions({
                     </form>
                   ) : (
                     <>
-                      <div className="room-project-summary">
-                        <div>
-                          <p className="room-label">Firmware</p>
-                          <h5>Versión {firmwareVersion.version}</h5>
-                          <p>{firmwareVersion.description || 'Sin descripción.'}</p>
+                      <div className="firmware-version-header">
+                        <div className="room-project-summary">
+                          <div>
+                            <p className="room-label">Firmware</p>
+                            <h5>Versión {firmwareVersion.version}</h5>
+                            <p>{firmwareVersion.description || 'Sin descripción.'}</p>
+                          </div>
+                          <span className={`room-status${firmwareVersion.isActive ? '' : ' is-inactive'}`}>
+                            {firmwareVersion.isActive ? 'Activa' : 'Desactivada'}
+                          </span>
                         </div>
-                        <span className={`room-status${firmwareVersion.isActive ? '' : ' is-inactive'}`}>
-                          {firmwareVersion.isActive ? 'Activa' : 'Desactivada'}
-                        </span>
-                      </div>
 
-                      {canManageFirmware ? (
-                        <div className="room-project-actions">
-                          <button
-                            type="button"
-                            className="secondary-button"
-                            onClick={() => {
-                              setActionError('');
-                              setEditingForm({
-                                version: firmwareVersion.version,
-                                description: firmwareVersion.description || '',
-                              });
-                              setEditingVersionId(firmwareVersion.id);
-                            }}
-                          >
-                            Editar versión
-                          </button>
-                          <button
-                            type="button"
-                            className={firmwareVersion.isActive ? 'danger-button' : 'secondary-button'}
-                            onClick={() => handleToggleVersion(firmwareVersion)}
-                            disabled={savingVersionId === firmwareVersion.id}
-                            aria-busy={savingVersionId === firmwareVersion.id}
-                          >
-                            {savingVersionId === firmwareVersion.id
-                              ? 'Actualizando...'
-                              : firmwareVersion.isActive ? 'Desactivar' : 'Activar'}
-                          </button>
-                        </div>
-                      ) : null}
+                        {canManageFirmware ? (
+                          <div className="room-project-actions firmware-version-actions">
+                            <button
+                              type="button"
+                              className="secondary-button"
+                              onClick={() => {
+                                setActionError('');
+                                setEditingForm({
+                                  version: firmwareVersion.version,
+                                  description: firmwareVersion.description || '',
+                                });
+                                setEditingVersionId(firmwareVersion.id);
+                              }}
+                            >
+                              Editar versión
+                            </button>
+                            <button
+                              type="button"
+                              className={firmwareVersion.isActive ? 'danger-button' : 'secondary-button'}
+                              onClick={() => handleToggleVersion(firmwareVersion)}
+                              disabled={savingVersionId === firmwareVersion.id}
+                              aria-busy={savingVersionId === firmwareVersion.id}
+                            >
+                              {savingVersionId === firmwareVersion.id
+                                ? 'Actualizando...'
+                                : firmwareVersion.isActive ? 'Desactivar' : 'Activar'}
+                            </button>
+                          </div>
+                        ) : null}
+                      </div>
 
                       {canManageFirmware && firmwareVersion.isActive ? (
                         <form
@@ -420,10 +422,6 @@ export default function FirmwareVersions({
                           </label>
                           <label className="field" htmlFor={`firmware-file-${firmwareVersion.id}`}>
                             <span>Archivo .bin (máximo 8 MB)</span>
-                            <small className="firmware-upload-hint">
-                              Selecciona el binario generado al compilar para esta placa. Un archivo de texto
-                              renombrado a .bin no es firmware válido para OTA.
-                            </small>
                             <input
                               id={`firmware-file-${firmwareVersion.id}`}
                               type="file"
@@ -447,6 +445,10 @@ export default function FirmwareVersions({
                               ? 'Subiendo...'
                               : 'Subir firmware'}
                           </button>
+                          <small className="firmware-upload-hint">
+                            Usa el binario generado al compilar para esta placa; un archivo de texto renombrado
+                            a .bin no sirve para instalar firmware por OTA.
+                          </small>
                         </form>
                       ) : null}
 
