@@ -8,7 +8,10 @@ import { ApiError } from '../services/auth.js';
 import '../styles/userManager.css';
 
 function mergeUserUpdate(currentUser, updatedUser) {
-  const mergedUser = { ...currentUser, ...updatedUser };
+  const definedUpdates = Object.fromEntries(
+    Object.entries(updatedUser).filter(([, value]) => value !== undefined)
+  );
+  const mergedUser = { ...currentUser, ...definedUpdates };
   const firstName = updatedUser.firstName ?? currentUser.firstName;
   const lastName = updatedUser.lastName ?? currentUser.lastName;
 
