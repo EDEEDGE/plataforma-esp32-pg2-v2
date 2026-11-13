@@ -16,6 +16,7 @@ export default function FirmwareDeployments({
   projectActive,
   roomActive,
   canManage,
+  versionRefresh,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [versions, setVersions] = useState([]);
@@ -34,6 +35,8 @@ export default function FirmwareDeployments({
     [devices]
   );
   const canCreateDeployment = canManage && roomActive && projectActive;
+  const versionRefreshRevision = versionRefresh?.revision || 0;
+  const preferredVersionId = versionRefresh?.preferredVersionId;
 
   useEffect(() => {
     if (!isOpen) {
@@ -51,15 +54,20 @@ export default function FirmwareDeployments({
           return;
         }
 
+        setLoadError('');
         setVersions(loadedVersions);
         setDevices(loadedDevices);
         setVersionId((currentVersionId) => (
-          loadedVersions.some(
+          loadedVersions.find(
+            (firmwareVersion) =>
+              firmwareVersion.id === preferredVersionId && firmwareVersion.isActive
+          )?.id
+          || loadedVersions.find(
             (firmwareVersion) =>
               firmwareVersion.id === currentVersionId && firmwareVersion.isActive
-          )
-            ? currentVersionId
-            : loadedVersions.find((firmwareVersion) => firmwareVersion.isActive)?.id || ''
+          )?.id
+          || loadedVersions.find((firmwareVersion) => firmwareVersion.isActive)?.id
+          || ''
         ));
         setSelectedDeviceIds((currentIds) => currentIds.filter(
           (deviceId) => loadedDevices.some(
@@ -81,7 +89,7 @@ export default function FirmwareDeployments({
     return () => {
       isMounted = false;
     };
-  }, [isOpen, projectId]);
+  }, [isOpen, projectId, preferredVersionId, versionRefreshRevision]);
 
   const handleDeviceSelection = (deviceId) => {
     setSelectedDeviceIds((currentIds) => (

@@ -16,6 +16,7 @@ export default function FirmwareWorkspace() {
   const [loadingRooms, setLoadingRooms] = useState(true);
   const [loadingProjects, setLoadingProjects] = useState(false);
   const [error, setError] = useState('');
+  const [versionRefreshes, setVersionRefreshes] = useState({});
 
   useEffect(() => {
     let isMounted = true;
@@ -74,6 +75,15 @@ export default function FirmwareWorkspace() {
   };
 
   const selectedRoom = rooms.find((room) => room.id === selectedRoomId);
+  const handleFirmwareVersionChange = (projectId, preferredVersionId) => {
+    setVersionRefreshes((current) => ({
+      ...current,
+      [projectId]: {
+        revision: (current[projectId]?.revision || 0) + 1,
+        preferredVersionId,
+      },
+    }));
+  };
 
   return (
     <section className="firmware-workspace">
@@ -131,12 +141,16 @@ export default function FirmwareWorkspace() {
                 projectActive={project.isActive}
                 roomActive={selectedRoom?.isActive || false}
                 canManage={['OWNER', 'ADMIN'].includes(selectedRoom?.role)}
+                onVersionsChanged={(preferredVersionId) =>
+                  handleFirmwareVersionChange(project.id, preferredVersionId)
+                }
               />
               <FirmwareDeployments
                 projectId={project.id}
                 projectActive={project.isActive}
                 roomActive={selectedRoom?.isActive || false}
                 canManage={['OWNER', 'ADMIN'].includes(selectedRoom?.role)}
+                versionRefresh={versionRefreshes[project.id]}
               />
             </article>
           ))}

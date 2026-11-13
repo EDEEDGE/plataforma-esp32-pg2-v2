@@ -33,6 +33,7 @@ export default function FirmwareVersions({
   projectActive,
   roomActive,
   canManage,
+  onVersionsChanged,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [versions, setVersions] = useState([]);
@@ -93,6 +94,7 @@ export default function FirmwareVersions({
         description: versionForm.description.trim(),
       });
       setVersions((current) => [result.firmwareVersion, ...current]);
+      onVersionsChanged?.(result.firmwareVersion.id);
       setVersionForm({ version: '', description: '' });
       setShowCreateForm(false);
       setMessage(result.message || 'Versión creada correctamente.');
@@ -117,6 +119,7 @@ export default function FirmwareVersions({
       setVersions((current) => current.map((item) => (
         item.id === versionId ? result.firmwareVersion : item
       )));
+      onVersionsChanged?.(result.firmwareVersion.id);
       setEditingVersionId(null);
       setMessage(result.message || 'Versión actualizada correctamente.');
     } catch (error) {
@@ -139,6 +142,7 @@ export default function FirmwareVersions({
       setVersions((current) => current.map((item) => (
         item.id === firmwareVersion.id ? result.firmwareVersion : item
       )));
+      onVersionsChanged?.(result.firmwareVersion.id);
       setMessage(result.message || 'Estado de la versión actualizado.');
     } catch (error) {
       setActionError(error.message || 'No se pudo cambiar el estado de la versión.');

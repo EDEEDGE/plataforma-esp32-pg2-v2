@@ -54,6 +54,17 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [editingProjectForm, setEditingProjectForm] = useState({ name: '', description: '' });
   const [savingProjectId, setSavingProjectId] = useState(null);
+  const [versionRefreshes, setVersionRefreshes] = useState({});
+
+  const handleFirmwareVersionChange = (projectId, preferredVersionId) => {
+    setVersionRefreshes((current) => ({
+      ...current,
+      [projectId]: {
+        revision: (current[projectId]?.revision || 0) + 1,
+        preferredVersionId,
+      },
+    }));
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -656,12 +667,16 @@ export default function RoomDetailPage({ roomId, userId, onBack }) {
                       projectActive={project.isActive}
                       roomActive={room.isActive}
                       canManage={canManageProjects}
+                      onVersionsChanged={(preferredVersionId) =>
+                        handleFirmwareVersionChange(project.id, preferredVersionId)
+                      }
                     />
                     <FirmwareDeployments
                       projectId={project.id}
                       projectActive={project.isActive}
                       roomActive={room.isActive}
                       canManage={canManageProjects}
+                      versionRefresh={versionRefreshes[project.id]}
                     />
                   </article>
                 ))}
