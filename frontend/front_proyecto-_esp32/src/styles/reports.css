@@ -374,6 +374,7 @@
   }
 
   .app-header,
+  .sidebar,
   .dashboard-sidebar,
   .dashboard-top,
   .reports-toolbar,
@@ -408,9 +409,15 @@
   .reports-context,
   .reports-footnote,
   .reports-section h4,
-  .reports-summary-grid .overview-card,
-  .reports-summary-grid .overview-card small {
+  .reports-workspace,
+  .reports-workspace * {
     color: #111827 !important;
+    text-shadow: none !important;
+  }
+
+  .reports-feedback {
+    border: 1px solid #93c5fd !important;
+    background: #eff6ff !important;
   }
 
   .reports-summary-grid {
