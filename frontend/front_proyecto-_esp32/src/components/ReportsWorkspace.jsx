@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { getMyRooms } from '../services/roomService.js';
 import { getRoomProjects } from '../services/projectService.js';
 import {
@@ -26,10 +26,121 @@ function formatDate(value) {
 
 function ReportStatus({ status }) {
   return (
-    <span className={`report-status report-status-${status?.toLowerCase() || 'unknown'}`}>
+    <span
+      className={`report-status report-status-${status?.toLowerCase() || 'unknown'}`}
+      aria-label={`Estado: ${reportStatusLabels[status] || status || 'Sin estado'}`}
+    >
       {reportStatusLabels[status] || status || 'Sin estado'}
     </span>
   );
+}
+
+const historyColumns = [
+  { key: 'device', label: 'Dispositivo', value: (item) => item.device.name || '—' },
+  { key: 'type', label: 'Tipo', value: (item) => item.device.deviceType || '—' },
+  { key: 'version', label: 'Versión', value: (item) => item.firmware.version || '—' },
+  {
+    key: 'status',
+    label: 'Estado',
+    value: (item) => reportStatusLabels[item.status] || item.status || 'Sin estado',
+  },
+  {
+    key: 'assignedAt',
+    label: 'Asignada',
+    value: (item) => formatDate(item.assignedAt),
+    sortValue: (item) => item.assignedAt ? new Date(item.assignedAt).getTime() : Number.NEGATIVE_INFINITY,
+  },
+  {
+    key: 'installedAt',
+    label: 'Instalada',
+    value: (item) => formatDate(item.installedAt),
+    sortValue: (item) => item.installedAt ? new Date(item.installedAt).getTime() : Number.NEGATIVE_INFINITY,
+  },
+];
+
+const deviceColumns = [
+  { key: 'name', label: 'Nombre', value: (device) => device.name || '—' },
+  { key: 'deviceType', label: 'Tipo', value: (device) => device.deviceType || '—' },
+  { key: 'isActive', label: 'Estado', value: (device) => (device.isActive ? 'Activo' : 'Inactivo') },
+  { key: 'isPaired', label: 'Vinculación', value: (device) => (device.isPaired ? 'Vinculado' : 'Sin vincular') },
+];
+
+function filterRows(rows, columns, search) {
+  const normalizedSearch = search.trim().toLocaleLowerCase();
+  if (!normalizedSearch) {
+    return rows;
+  }
+
+  return rows.filter((row) => columns.some(({ value }) => (
+    String(value(row)).toLocaleLowerCase().includes(normalizedSearch)
+  )));
+}
+
+function sortRows(rows, columns, sort) {
+  const column = columns.find(({ key }) => key === sort.key);
+  if (!column) {
+    return rows;
+  }
+
+  return [...rows].sort((first, second) => {
+    const firstValue = column.sortValue ? column.sortValue(first) : column.value(first);
+    const secondValue = column.sortValue ? column.sortValue(second) : column.value(second);
+    const comparison = typeof firstValue === 'number' && typeof secondValue === 'number'
+      ? firstValue - secondValue
+      : String(firstValue).localeCompare(String(secondValue), 'es', {
+        numeric: true,
+        sensitivity: 'base',
+      });
+    return sort.direction === 'asc' ? comparison : -comparison;
+  });
+}
+
+function SortableHeader({ column, sort, onSort }) {
+  const direction = sort.key === column.key ? sort.direction : null;
+  return (
+    <th scope="col" aria-sort={direction ? (direction === 'asc' ? 'ascending' : 'descending') : 'none'}>
+      <button
+        type="button"
+        className="reports-sort-button"
+        onClick={() => onSort(column.key)}
+        aria-label={`Ordenar por ${column.label}${direction === 'asc' ? ', orden ascendente' : direction === 'desc' ? ', orden descendente' : ''}`}
+      >
+        {column.label}
+        <span aria-hidden="true">{direction === 'asc' ? ' ↑' : direction === 'desc' ? ' ↓' : ' ↕'}</span>
+      </button>
+    </th>
+  );
+}
+
+function csvCell(value) {
+  const text = String(value ?? '').replace(/^(\s*)([=+\-@])/, "$1'$2");
+  return `"${text.replaceAll('"', '""')}"`;
+}
+
+function downloadCsv(filename, columns, rows) {
+  const csv = [
+    columns.map(({ label }) => csvCell(label)).join(','),
+    ...rows.map((row) => columns.map(({ value }) => csvCell(value(row))).join(',')),
+  ].join('\r\n');
+  const url = URL.createObjectURL(new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function filenamePart(value) {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 64)
+    .replace(/-$/g, '') || 'proyecto';
 }
 
 export default function ReportsWorkspace() {
@@ -42,7 +153,17 @@ export default function ReportsWorkspace() {
   const [loadingProjects, setLoadingProjects] = useState(false);
   const [loadingReports, setLoadingReports] = useState(false);
   const [error, setError] = useState('');
+  const [exportMessage, setExportMessage] = useState('');
+  const [exportError, setExportError] = useState('');
   const [refreshKey, setRefreshKey] = useState(0);
+  const [refreshMessage, setRefreshMessage] = useState('');
+  const [search, setSearch] = useState('');
+  const [historyStatus, setHistoryStatus] = useState('all');
+  const [deviceStatus, setDeviceStatus] = useState('all');
+  const [devicePairing, setDevicePairing] = useState('all');
+  const [historySort, setHistorySort] = useState({ key: 'assignedAt', direction: 'desc' });
+  const [deviceSort, setDeviceSort] = useState({ key: 'name', direction: 'asc' });
+  const refreshRequestProjectId = useRef(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -123,11 +244,19 @@ export default function ReportsWorkspace() {
       .then(([summary, history, devices]) => {
         if (isMounted) {
           setReports({ summary, history, devices });
+          if (refreshRequestProjectId.current === selectedProjectId) {
+            setRefreshMessage('Los reportes se actualizaron con los datos disponibles del servidor.');
+            refreshRequestProjectId.current = null;
+          }
         }
       })
       .catch((loadError) => {
         if (isMounted) {
           setReports(null);
+          setRefreshMessage('');
+          if (refreshRequestProjectId.current === selectedProjectId) {
+            refreshRequestProjectId.current = null;
+          }
           setError(loadError.message || 'No se pudieron cargar los reportes.');
         }
       })
@@ -144,11 +273,59 @@ export default function ReportsWorkspace() {
 
   const selectedProject = projects.find((project) => project.id === selectedProjectId);
   const selectedRoom = rooms.find((room) => room.id === selectedRoomId);
+  const historyRows = useMemo(() => {
+    const rows = reports?.history.history || [];
+    return sortRows(
+      filterRows(
+        rows.filter((item) => historyStatus === 'all' || item.status === historyStatus),
+        historyColumns,
+        search
+      ),
+      historyColumns,
+      historySort
+    );
+  }, [reports, historyStatus, search, historySort]);
+  const deviceRows = useMemo(() => {
+    const rows = reports?.devices.devices || [];
+    return sortRows(
+      filterRows(
+        rows.filter((device) => (
+          (deviceStatus === 'all' || String(device.isActive) === deviceStatus)
+          && (devicePairing === 'all' || String(device.isPaired) === devicePairing)
+        )),
+        deviceColumns,
+        search
+      ),
+      deviceColumns,
+      deviceSort
+    );
+  }, [reports, deviceStatus, devicePairing, search, deviceSort]);
+
+  const toggleSort = (setSort) => (key) => {
+    setSort((current) => ({
+      key,
+      direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  };
+
+  const handleExport = (filename, columns, rows, reportName) => {
+    setExportMessage('');
+    setExportError('');
+
+    try {
+      downloadCsv(filename, columns, rows);
+      setExportMessage(`Se inició la descarga del CSV de ${reportName}.`);
+    } catch (exportFailure) {
+      setExportError(exportFailure.message || `No se pudo generar el CSV de ${reportName}.`);
+    }
+  };
 
   const refreshReports = () => {
     setReports(null);
     setLoadingReports(true);
     setError('');
+    setRefreshMessage('');
+    refreshRequestProjectId.current = selectedProjectId;
     setRefreshKey((currentKey) => currentKey + 1);
   };
 
@@ -160,6 +337,12 @@ export default function ReportsWorkspace() {
     setSelectedProjectId('');
     setReports(null);
     setError('');
+    setRefreshMessage('');
+    refreshRequestProjectId.current = null;
+    setSearch('');
+    setHistoryStatus('all');
+    setDeviceStatus('all');
+    setDevicePairing('all');
   };
 
   const handleProjectChange = (event) => {
@@ -167,10 +350,17 @@ export default function ReportsWorkspace() {
     setSelectedProjectId(event.target.value);
     setReports(null);
     setError('');
+    setRefreshMessage('');
+    refreshRequestProjectId.current = null;
+    setSearch('');
+    setHistoryStatus('all');
+    setDeviceStatus('all');
+    setDevicePairing('all');
   };
 
   return (
     <section className="reports-workspace">
+      <h2 className="reports-print-title">Reporte de actividad del proyecto</h2>
       <article className="card reports-toolbar">
         <div>
           <h3>Actividad del proyecto</h3>
@@ -215,6 +405,28 @@ export default function ReportsWorkspace() {
             {loadingReports ? 'Actualizando…' : 'Actualizar reportes'}
           </button>
         </div>
+        <div className="reports-toolbar-tools">
+          <label className="reports-search" htmlFor="reports-search">
+            <span>Buscar en el historial y los dispositivos</span>
+            <input
+              id="reports-search"
+              type="search"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Nombre, tipo, versión o estado"
+              aria-describedby="reports-search-help"
+            />
+            <small id="reports-search-help">La búsqueda se aplica a los datos del proyecto cargados en esta página.</small>
+          </label>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => window.print()}
+            disabled={!reports}
+          >
+            Imprimir / Guardar PDF
+          </button>
+        </div>
       </article>
 
       {selectedRoom && selectedProject ? (
@@ -222,9 +434,20 @@ export default function ReportsWorkspace() {
           {selectedRoom.name} <span aria-hidden="true">/</span> {selectedProject.name}
         </p>
       ) : null}
+      <details className="reports-help">
+        <summary>Acerca de estos reportes</summary>
+        <p>
+          Los datos corresponden a la sala y el proyecto seleccionados. La búsqueda, los filtros y los archivos
+          exportados usan únicamente la información cargada aquí; las instalaciones reflejan las confirmaciones
+          recibidas de los dispositivos.
+        </p>
+      </details>
       {error ? <p className="form-error reports-feedback" role="alert">{error}</p> : null}
+      {refreshMessage ? <p className="form-message reports-feedback" role="status">{refreshMessage}</p> : null}
+      {exportError ? <p className="form-error reports-feedback" role="alert">{exportError}</p> : null}
+      {exportMessage ? <p className="form-message reports-feedback" role="status">{exportMessage}</p> : null}
       {loadingRooms || loadingProjects || loadingReports ? (
-        <p className="room-secondary-text" role="status">Cargando la actividad del proyecto…</p>
+        <p className="room-secondary-text" role="status" aria-live="polite">Cargando la actividad del proyecto…</p>
       ) : !error && rooms.length === 0 ? (
         <article className="card reports-empty">
           <h4>No tienes salas disponibles</h4>
@@ -275,35 +498,68 @@ export default function ReportsWorkspace() {
 
           <section className="reports-section" aria-labelledby="reports-history-title">
             <h4 id="reports-history-title">Historial de actualizaciones</h4>
+            <div className="reports-section-tools">
+              <label className="reports-filter" htmlFor="reports-history-status">
+                <span>Filtrar por estado</span>
+                <select
+                  id="reports-history-status"
+                  value={historyStatus}
+                  onChange={(event) => setHistoryStatus(event.target.value)}
+                >
+                  <option value="all">Todos los estados</option>
+                  {Object.entries(reportStatusLabels).map(([status, label]) => (
+                    <option value={status} key={status}>{label}</option>
+                  ))}
+                </select>
+              </label>
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => handleExport(
+                  `historial-actualizaciones-${filenamePart(selectedProject?.name || '')}.csv`,
+                  historyColumns,
+                  historyRows,
+                  'historial de actualizaciones'
+                )}
+                disabled={historyRows.length === 0}
+              >
+                Exportar historial CSV ({historyRows.length})
+              </button>
+            </div>
             {reports.history.history.length === 0 ? (
               <p className="reports-empty-inline">Todavía no hay asignaciones OTA para este proyecto.</p>
+            ) : historyRows.length === 0 ? (
+              <p className="reports-empty-inline" role="status">No hay actualizaciones que coincidan con la búsqueda y el filtro.</p>
             ) : (
-              <div className="reports-table-scroll">
+              <div className="reports-table-scroll" aria-busy={loadingReports}>
                 <table className="reports-table">
+                  <caption className="visually-hidden">Historial de actualizaciones del proyecto seleccionado</caption>
                   <thead>
                     <tr>
-                      <th scope="col">Dispositivo</th>
-                      <th scope="col">Tipo</th>
-                      <th scope="col">Versión</th>
-                      <th scope="col">Estado</th>
-                      <th scope="col">Asignada</th>
-                      <th scope="col">Instalada</th>
+                      {historyColumns.map((column) => (
+                        <SortableHeader
+                          column={column}
+                          sort={historySort}
+                          onSort={toggleSort(setHistorySort)}
+                          key={column.key}
+                        />
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {reports.history.history.map((item) => (
+                    {historyRows.map((item) => (
                       <tr key={item.deploymentDeviceId}>
-                        <td>{item.device.name}</td>
-                        <td>{item.device.deviceType || '—'}</td>
-                        <td>{item.firmware.version || '—'}</td>
+                        <td>{historyColumns[0].value(item)}</td>
+                        <td>{historyColumns[1].value(item)}</td>
+                        <td>{historyColumns[2].value(item)}</td>
                         <td>
                           <ReportStatus status={item.status} />
                           {item.errorMessage ? (
                             <small className="report-error-message">{item.errorMessage}</small>
                           ) : null}
                         </td>
-                        <td>{formatDate(item.assignedAt)}</td>
-                        <td>{formatDate(item.installedAt)}</td>
+                        <td>{historyColumns[4].value(item)}</td>
+                        <td>{historyColumns[5].value(item)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -314,26 +570,71 @@ export default function ReportsWorkspace() {
 
           <section className="reports-section" aria-labelledby="reports-devices-title">
             <h4 id="reports-devices-title">Dispositivos del proyecto</h4>
+            <div className="reports-section-tools">
+              <label className="reports-filter" htmlFor="reports-device-status">
+                <span>Estado</span>
+                <select
+                  id="reports-device-status"
+                  value={deviceStatus}
+                  onChange={(event) => setDeviceStatus(event.target.value)}
+                >
+                  <option value="all">Todos</option>
+                  <option value="true">Activos</option>
+                  <option value="false">Inactivos</option>
+                </select>
+              </label>
+              <label className="reports-filter" htmlFor="reports-device-pairing">
+                <span>Vinculación</span>
+                <select
+                  id="reports-device-pairing"
+                  value={devicePairing}
+                  onChange={(event) => setDevicePairing(event.target.value)}
+                >
+                  <option value="all">Todas</option>
+                  <option value="true">Vinculados</option>
+                  <option value="false">Sin vincular</option>
+                </select>
+              </label>
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => handleExport(
+                  `dispositivos-${filenamePart(selectedProject?.name || '')}.csv`,
+                  deviceColumns,
+                  deviceRows,
+                  'dispositivos'
+                )}
+                disabled={deviceRows.length === 0}
+              >
+                Exportar dispositivos CSV ({deviceRows.length})
+              </button>
+            </div>
             {reports.devices.devices.length === 0 ? (
               <p className="reports-empty-inline">Este proyecto aún no tiene dispositivos registrados.</p>
+            ) : deviceRows.length === 0 ? (
+              <p className="reports-empty-inline" role="status">No hay dispositivos que coincidan con la búsqueda y los filtros.</p>
             ) : (
-              <div className="reports-table-scroll">
+              <div className="reports-table-scroll" aria-busy={loadingReports}>
                 <table className="reports-table reports-devices-table">
+                  <caption className="visually-hidden">Dispositivos del proyecto seleccionado</caption>
                   <thead>
                     <tr>
-                      <th scope="col">Nombre</th>
-                      <th scope="col">Tipo</th>
-                      <th scope="col">Estado</th>
-                      <th scope="col">Vinculación</th>
+                      {deviceColumns.map((column) => (
+                        <SortableHeader
+                          column={column}
+                          sort={deviceSort}
+                          onSort={toggleSort(setDeviceSort)}
+                          key={column.key}
+                        />
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {reports.devices.devices.map((device) => (
+                    {deviceRows.map((device) => (
                       <tr key={device.id}>
-                        <td>{device.name}</td>
-                        <td>{device.deviceType}</td>
-                        <td>{device.isActive ? 'Activo' : 'Inactivo'}</td>
-                        <td>{device.isPaired ? 'Vinculado' : 'Sin vincular'}</td>
+                        {deviceColumns.map((column) => (
+                          <td key={column.key}>{column.value(device)}</td>
+                        ))}
                       </tr>
                     ))}
                   </tbody>
