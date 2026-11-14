@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PasswordInput from './PasswordInput.jsx';
 import '../styles/login.css';
 
 const initialForm = {
@@ -11,14 +12,21 @@ const initialForm = {
 
 export default function RegisterForm({ onSubmit, loading, error }) {
   const [form, setForm] = useState(initialForm);
+  const [confirmation, setConfirmation] = useState('');
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
   };
 
+  const passwordsMismatch = confirmation.length > 0 && form.password !== confirmation;
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (passwordsMismatch) {
+      return;
+    }
+
     onSubmit(form);
   };
 
@@ -57,16 +65,34 @@ export default function RegisterForm({ onSubmit, loading, error }) {
 
       <label className="field" htmlFor="register-password">
         <span>Contraseña</span>
-        <input
+        <PasswordInput
           id="register-password"
           name="password"
-          type="password"
           value={form.password}
           onChange={handleChange}
           minLength="8"
           autoComplete="new-password"
           required
         />
+      </label>
+
+      <label className="field" htmlFor="register-password-confirmation">
+        <span>Confirmar contraseña</span>
+        <PasswordInput
+          id="register-password-confirmation"
+          value={confirmation}
+          onChange={(event) => setConfirmation(event.target.value)}
+          minLength="8"
+          autoComplete="new-password"
+          aria-invalid={passwordsMismatch}
+          aria-describedby={passwordsMismatch ? 'register-password-mismatch' : undefined}
+          required
+        />
+        {passwordsMismatch ? (
+          <p id="register-password-mismatch" className="form-error" role="alert">
+            Las contraseñas no coinciden.
+          </p>
+        ) : null}
       </label>
 
       <label className="field" htmlFor="register-first-name">

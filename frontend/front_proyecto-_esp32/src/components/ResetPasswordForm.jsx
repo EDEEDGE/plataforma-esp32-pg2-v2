@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PasswordInput from './PasswordInput.jsx';
 import { resetPassword } from '../services/auth.js';
 import '../styles/login.css';
 
@@ -8,6 +9,7 @@ export default function ResetPasswordForm({ token }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const passwordsMismatch = confirmation.length > 0 && newPassword !== confirmation;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -19,8 +21,7 @@ export default function ResetPasswordForm({ token }) {
       return;
     }
 
-    if (newPassword !== confirmation) {
-      setError('Las contraseñas no coinciden.');
+    if (passwordsMismatch) {
       return;
     }
 
@@ -45,9 +46,8 @@ export default function ResetPasswordForm({ token }) {
       </div>
       <label className="field" htmlFor="reset-password">
         <span>Nueva contraseña</span>
-        <input
+        <PasswordInput
           id="reset-password"
-          type="password"
           value={newPassword}
           onChange={(event) => setNewPassword(event.target.value)}
           minLength="8"
@@ -57,15 +57,21 @@ export default function ResetPasswordForm({ token }) {
       </label>
       <label className="field" htmlFor="reset-password-confirmation">
         <span>Confirmar contraseña</span>
-        <input
+        <PasswordInput
           id="reset-password-confirmation"
-          type="password"
           value={confirmation}
           onChange={(event) => setConfirmation(event.target.value)}
           minLength="8"
           autoComplete="new-password"
+          aria-invalid={passwordsMismatch}
+          aria-describedby={passwordsMismatch ? 'reset-password-mismatch' : undefined}
           required
         />
+        {passwordsMismatch ? (
+          <p id="reset-password-mismatch" className="form-error" role="alert">
+            Las contraseñas no coinciden.
+          </p>
+        ) : null}
       </label>
       {error ? <p className="form-error" role="alert">{error}</p> : null}
       {message ? <p className="form-message" role="status">{message}</p> : null}

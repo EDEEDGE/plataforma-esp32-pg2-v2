@@ -65,17 +65,6 @@ const deviceColumns = [
   { key: 'isPaired', label: 'Vinculación', value: (device) => (device.isPaired ? 'Vinculado' : 'Sin vincular') },
 ];
 
-function filterRows(rows, columns, search) {
-  const normalizedSearch = search.trim().toLocaleLowerCase();
-  if (!normalizedSearch) {
-    return rows;
-  }
-
-  return rows.filter((row) => columns.some(({ value }) => (
-    String(value(row)).toLocaleLowerCase().includes(normalizedSearch)
-  )));
-}
-
 function sortRows(rows, columns, sort) {
   const column = columns.find(({ key }) => key === sort.key);
   if (!column) {
@@ -157,7 +146,6 @@ export default function ReportsWorkspace() {
   const [exportError, setExportError] = useState('');
   const [refreshKey, setRefreshKey] = useState(0);
   const [refreshMessage, setRefreshMessage] = useState('');
-  const [search, setSearch] = useState('');
   const [historyStatus, setHistoryStatus] = useState('all');
   const [deviceStatus, setDeviceStatus] = useState('all');
   const [devicePairing, setDevicePairing] = useState('all');
@@ -276,30 +264,22 @@ export default function ReportsWorkspace() {
   const historyRows = useMemo(() => {
     const rows = reports?.history.history || [];
     return sortRows(
-      filterRows(
-        rows.filter((item) => historyStatus === 'all' || item.status === historyStatus),
-        historyColumns,
-        search
-      ),
+      rows.filter((item) => historyStatus === 'all' || item.status === historyStatus),
       historyColumns,
       historySort
     );
-  }, [reports, historyStatus, search, historySort]);
+  }, [reports, historyStatus, historySort]);
   const deviceRows = useMemo(() => {
     const rows = reports?.devices.devices || [];
     return sortRows(
-      filterRows(
-        rows.filter((device) => (
-          (deviceStatus === 'all' || String(device.isActive) === deviceStatus)
-          && (devicePairing === 'all' || String(device.isPaired) === devicePairing)
-        )),
-        deviceColumns,
-        search
-      ),
+      rows.filter((device) => (
+        (deviceStatus === 'all' || String(device.isActive) === deviceStatus)
+        && (devicePairing === 'all' || String(device.isPaired) === devicePairing)
+      )),
       deviceColumns,
       deviceSort
     );
-  }, [reports, deviceStatus, devicePairing, search, deviceSort]);
+  }, [reports, deviceStatus, devicePairing, deviceSort]);
 
   const toggleSort = (setSort) => (key) => {
     setSort((current) => ({
@@ -339,7 +319,6 @@ export default function ReportsWorkspace() {
     setError('');
     setRefreshMessage('');
     refreshRequestProjectId.current = null;
-    setSearch('');
     setHistoryStatus('all');
     setDeviceStatus('all');
     setDevicePairing('all');
@@ -352,7 +331,6 @@ export default function ReportsWorkspace() {
     setError('');
     setRefreshMessage('');
     refreshRequestProjectId.current = null;
-    setSearch('');
     setHistoryStatus('all');
     setDeviceStatus('all');
     setDevicePairing('all');
@@ -406,18 +384,6 @@ export default function ReportsWorkspace() {
           </button>
         </div>
         <div className="reports-toolbar-tools">
-          <label className="reports-search" htmlFor="reports-search">
-            <span>Buscar en el historial y los dispositivos</span>
-            <input
-              id="reports-search"
-              type="search"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Nombre, tipo, versión o estado"
-              aria-describedby="reports-search-help"
-            />
-            <small id="reports-search-help">La búsqueda se aplica a los datos del proyecto cargados en esta página.</small>
-          </label>
           <button
             type="button"
             className="secondary-button"
@@ -437,7 +403,7 @@ export default function ReportsWorkspace() {
       <details className="reports-help">
         <summary>Acerca de estos reportes</summary>
         <p>
-          Los datos corresponden a la sala y el proyecto seleccionados. La búsqueda, los filtros y los archivos
+          Los datos corresponden a la sala y el proyecto seleccionados. Los filtros y los archivos
           exportados usan únicamente la información cargada aquí; las instalaciones reflejan las confirmaciones
           recibidas de los dispositivos.
         </p>
@@ -529,7 +495,7 @@ export default function ReportsWorkspace() {
             {reports.history.history.length === 0 ? (
               <p className="reports-empty-inline">Todavía no hay asignaciones OTA para este proyecto.</p>
             ) : historyRows.length === 0 ? (
-              <p className="reports-empty-inline" role="status">No hay actualizaciones que coincidan con la búsqueda y el filtro.</p>
+              <p className="reports-empty-inline" role="status">No hay actualizaciones que coincidan con el filtro.</p>
             ) : (
               <div className="reports-table-scroll" aria-busy={loadingReports}>
                 <table className="reports-table">
@@ -612,7 +578,7 @@ export default function ReportsWorkspace() {
             {reports.devices.devices.length === 0 ? (
               <p className="reports-empty-inline">Este proyecto aún no tiene dispositivos registrados.</p>
             ) : deviceRows.length === 0 ? (
-              <p className="reports-empty-inline" role="status">No hay dispositivos que coincidan con la búsqueda y los filtros.</p>
+              <p className="reports-empty-inline" role="status">No hay dispositivos que coincidan con los filtros.</p>
             ) : (
               <div className="reports-table-scroll" aria-busy={loadingReports}>
                 <table className="reports-table reports-devices-table">

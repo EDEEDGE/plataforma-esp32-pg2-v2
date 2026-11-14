@@ -72,25 +72,22 @@
   min-width: 0;
 }
 
-.reports-search,
+.reports-toolbar-tools {
+  justify-content: flex-end;
+}
+
 .reports-filter {
   display: grid;
   gap: 6px;
   min-width: min(100%, 220px);
 }
 
-.reports-search {
-  flex: 1 1 300px;
-}
-
-.reports-search > span,
 .reports-filter > span {
   color: rgba(248, 250, 252, 0.82);
   font-size: 0.88rem;
   font-weight: 650;
 }
 
-.reports-search input,
 .reports-filter select {
   width: 100%;
   min-width: 0;
@@ -100,15 +97,6 @@
   padding: 0.7rem 0.9rem;
   background: #17243b;
   color: #f8fafc;
-}
-
-.reports-search input::placeholder {
-  color: rgba(248, 250, 252, 0.6);
-}
-
-.reports-search small {
-  color: var(--text-muted);
-  line-height: 1.45;
 }
 
 .reports-filter {

@@ -267,12 +267,6 @@ export default function FirmwareVersions({
             </p>
           ) : null}
 
-          <p className="room-readonly-note">
-            La API actual no permite consultar los archivos ya cargados. Los detalles de los binarios se muestran
-            aquí solo durante esta sesión; si un tipo ya tiene archivo, el backend indicará que existe al intentar
-            subir otro.
-          </p>
-
           {showCreateForm && canManageFirmware ? (
             <form className="user-form firmware-form" onSubmit={handleCreateVersion}>
               <label className="field" htmlFor={`firmware-version-new-${projectId}`}>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ApiError, changePassword } from '../services/auth.js';
+import PasswordInput from './PasswordInput.jsx';
 
 export default function ChangePasswordForm({ onPasswordChanged, onSessionExpired }) {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -33,9 +34,8 @@ export default function ChangePasswordForm({ onPasswordChanged, onSessionExpired
       <form className="user-form" onSubmit={handleSubmit}>
         <label className="field" htmlFor="current-password">
           <span>Contraseña actual</span>
-          <input
+          <PasswordInput
             id="current-password"
-            type="password"
             value={currentPassword}
             onChange={(event) => setCurrentPassword(event.target.value)}
             autoComplete="current-password"
@@ -44,9 +44,8 @@ export default function ChangePasswordForm({ onPasswordChanged, onSessionExpired
         </label>
         <label className="field" htmlFor="new-password">
           <span>Nueva contraseña</span>
-          <input
+          <PasswordInput
             id="new-password"
-            type="password"
             value={newPassword}
             onChange={(event) => setNewPassword(event.target.value)}
             minLength="8"

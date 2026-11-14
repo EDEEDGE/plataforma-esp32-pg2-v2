@@ -101,6 +101,13 @@ input:focus {
   padding-right: 3.5rem;
 }
 
+.password-input-wrap input,
+.auth-experience-form .password-input-wrap input,
+.user-form .password-input-wrap input {
+  border-color: rgba(219, 234, 254, 0.72);
+  background: rgba(148, 163, 184, 0.34);
+}
+
 .password-visibility-toggle {
   position: absolute;
   top: 50%;
@@ -117,6 +124,17 @@ input:focus {
   color: #334155;
   box-shadow: none;
   cursor: pointer;
+}
+
+.user-form .password-visibility-toggle {
+  width: 2.5rem;
+  height: 2.5rem;
+  min-height: 0;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #f8fafc;
+  box-shadow: none;
 }
 
 .password-visibility-toggle:hover {
