@@ -103,32 +103,44 @@
 
 .firmware-upload-form {
   display: grid;
-  grid-template-columns: minmax(180px, 0.8fr) minmax(260px, 1.2fr) auto;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   align-items: end;
   gap: 10px 12px;
+  min-width: 0;
+  width: 100%;
   margin: 0;
+}
+
+.firmware-replace-form {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
 }
 
 .firmware-version-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
 }
 
 .firmware-version-header .room-project-summary {
-  flex: 1;
+  flex: 1 1 240px;
+  flex-wrap: wrap;
   min-width: 0;
 }
 
 .firmware-version-actions {
-  flex: 0 0 auto;
+  flex: 1 1 240px;
   align-self: flex-start;
+  justify-content: flex-start;
+  min-width: 0;
 }
 
 .firmware-version-actions button {
+  max-width: 100%;
   min-height: 44px;
   padding: 0.75rem 1rem;
+  white-space: normal;
 }
 
 .firmware-form textarea {
@@ -161,6 +173,7 @@
 .firmware-version-item {
   display: grid;
   gap: 14px;
+  min-width: 0;
   padding: 14px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 18px;
@@ -180,6 +193,9 @@
 
 .firmware-form select,
 .firmware-upload-form select {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 44px;
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 16px;
@@ -191,6 +207,7 @@
 .firmware-upload-form input[type='file'] {
   display: block;
   width: 100%;
+  max-width: 100%;
   min-width: 0;
   min-height: 44px;
   padding: 6px;
@@ -205,6 +222,10 @@
   color: var(--text-muted);
 }
 
+.firmware-upload-form .field {
+  min-width: 0;
+}
+
 .firmware-upload-hint {
   grid-column: 1 / -1;
   margin-top: -4px;
@@ -214,10 +235,14 @@
 }
 
 .firmware-upload-form > button {
-  justify-self: end;
-  min-width: 190px;
+  grid-column: 1 / -1;
+  justify-self: stretch;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 44px;
   padding: 0.75rem 1rem;
+  white-space: normal;
 }
 
 .firmware-upload-form input[type='file']::file-selector-button {
@@ -424,6 +449,17 @@
   .firmware-workspace-heading {
     align-items: stretch;
     flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .firmware-workspace-heading .field {
+    flex: 0 1 auto;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .firmware-workspace-heading select {
+    height: auto;
   }
 
   .firmware-toolbar,
@@ -442,7 +478,13 @@
     gap: 12px;
   }
 
+  .firmware-version-header .room-project-summary,
   .firmware-version-actions {
+    flex: 0 1 auto;
+  }
+
+  .firmware-version-actions {
+    align-items: center;
     justify-content: flex-start;
   }
 
@@ -460,22 +502,9 @@
     grid-row: auto;
   }
 
-  .firmware-upload-form {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .firmware-upload-form > button {
-    justify-self: stretch;
-    min-width: 0;
-  }
 }
 
 @media (max-width: 560px) {
-  .firmware-upload-form {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .firmware-upload-form > button,
   .firmware-deployment-form > button {
     width: 100%;
   }

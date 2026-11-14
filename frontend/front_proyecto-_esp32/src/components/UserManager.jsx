@@ -107,18 +107,13 @@ export default function UserManager({ currentUserId, onSessionExpired }) {
 
   return (
     <section className="user-manager-grid">
-      <article className="card user-manager-intro">
-        <h3>Acceso y seguridad</h3>
-        <p>Administra los roles y el estado de acceso de cada cuenta.</p>
+      <article className="card user-manager-list-card">
+        <h3>Cuentas registradas</h3>
         {error ? (
           <p className="form-error" role="alert">
             {error}
           </p>
         ) : null}
-      </article>
-
-      <article className="card user-manager-list-card">
-        <h3>Cuentas registradas</h3>
         {loading ? (
           <p>Cargando cuentas...</p>
         ) : users.length === 0 ? (

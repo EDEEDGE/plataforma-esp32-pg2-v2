@@ -6,6 +6,7 @@ const normalizeVersion = (firmwareVersion) => ({
   version: firmwareVersion.version,
   description: firmwareVersion.description,
   isActive: firmwareVersion.isActive,
+  files: Array.isArray(firmwareVersion.files) ? firmwareVersion.files : [],
   createdAt: firmwareVersion.createdAt,
   updatedAt: firmwareVersion.updatedAt,
 });
@@ -24,7 +25,7 @@ export async function getProjectFirmwareVersions(projectId) {
   return data.firmwareVersions.map(normalizeVersion);
 }
 
-/** Creates a version that can later receive ESP32 and/or ESP8266 binary files. */
+/** Creates a version that can receive one firmware file per board type. */
 export async function createFirmwareVersion(projectId, versionData) {
   const data = await request(`/projects/${projectId}/firmware/versions`, {
     method: 'POST',
@@ -99,6 +100,28 @@ export async function uploadFirmwareFile(versionId, file, deviceType) {
 
   if (!data.firmwareFile) {
     throw new Error('La respuesta no contiene los datos del archivo subido.');
+  }
+
+  return {
+    message: data.message,
+    firmwareFile: data.firmwareFile,
+  };
+}
+
+/** Replaces the binary for an existing board without changing its device type. */
+export async function replaceFirmwareFile(fileId, file) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const data = await request(`/firmware/files/${fileId}`, {
+    method: 'PUT',
+    auth: true,
+    body: formData,
+    fallbackMessage: 'No se pudo reemplazar el archivo de firmware',
+  });
+
+  if (!data.firmwareFile) {
+    throw new Error('La respuesta no contiene los datos del archivo reemplazado.');
   }
 
   return {

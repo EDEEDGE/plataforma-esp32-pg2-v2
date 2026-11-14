@@ -110,8 +110,7 @@ export const uploadFirmwareFile = async (req, res) => {
       });
     }
 
-    // Solo puede existir un .bin por tipo de dispositivo
-    // dentro de una misma versión
+    // Cada versión admite un archivo por tipo de dispositivo.
     const existingFile =
       await db.orm.public.FirmwareFile.first({
         firmwareVersionId: versionId,
@@ -120,7 +119,7 @@ export const uploadFirmwareFile = async (req, res) => {
 
     if (existingFile) {
       return res.status(409).json({
-        message: `Ya existe un archivo para ${deviceType} en esta versión`
+        message: `Ya existe un archivo para ${deviceType} en esta versión. Usa la opción de reemplazo para actualizarlo.`
       });
     }
 

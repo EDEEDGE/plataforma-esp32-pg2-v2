@@ -473,9 +473,11 @@ export default function ReportsWorkspace() {
                   onChange={(event) => setHistoryStatus(event.target.value)}
                 >
                   <option value="all">Todos los estados</option>
-                  {Object.entries(reportStatusLabels).map(([status, label]) => (
-                    <option value={status} key={status}>{label}</option>
-                  ))}
+                  {Object.entries(reportStatusLabels)
+                    .filter(([status]) => status !== 'SUPERSEDED')
+                    .map(([status, label]) => (
+                      <option value={status} key={status}>{label}</option>
+                    ))}
                 </select>
               </label>
               <button

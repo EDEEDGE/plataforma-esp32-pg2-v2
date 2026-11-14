@@ -223,6 +223,20 @@
   align-items: start;
 }
 
+.dashboard-heading {
+  display: grid;
+  gap: 8px;
+}
+
+.dashboard-top-users {
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.8fr);
+  gap: 18px 24px;
+}
+
+.dashboard-top-users .user-manager-intro {
+  grid-column: 2;
+}
+
 .dashboard-top .eyebrow {
   margin-bottom: 8px;
   color: #bfdbfe;
@@ -387,6 +401,15 @@
   .dashboard-main {
     padding: 20px;
     border-radius: 22px;
+  }
+
+  .dashboard-top-users {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-top-users .user-manager-intro {
+    grid-column: 1;
+    grid-row: auto;
   }
 }
 

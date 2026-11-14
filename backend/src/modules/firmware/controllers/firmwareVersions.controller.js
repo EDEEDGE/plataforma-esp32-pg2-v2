@@ -178,15 +178,39 @@ export const getProjectFirmwareVersions = async (req, res) => {
         })
         .all();
 
+    const versionsWithFirmwareFiles = await Promise.all(
+      firmwareVersions.map(async (firmwareVersion) => {
+        const firmwareFiles = await db.orm.public.FirmwareFile
+          .where({
+            firmwareVersionId: firmwareVersion.id
+          })
+          .all();
+
+        return {
+          ...firmwareVersion,
+          files: firmwareFiles.map((firmwareFile) => ({
+            id: firmwareFile.id,
+            deviceType: firmwareFile.deviceType,
+            originalName: firmwareFile.originalName,
+            sizeBytes: firmwareFile.sizeBytes,
+            sha256: firmwareFile.sha256,
+            contentType: firmwareFile.contentType,
+            createdAt: firmwareFile.createdAt
+          }))
+        };
+      })
+    );
+
     return res.status(200).json({
       message: 'Versiones obtenidas correctamente',
 
-      firmwareVersions: firmwareVersions.map((firmwareVersion) => ({
+      firmwareVersions: versionsWithFirmwareFiles.map((firmwareVersion) => ({
         id: firmwareVersion.id,
         projectId: firmwareVersion.projectId,
         version: firmwareVersion.version,
         description: firmwareVersion.description,
         isActive: firmwareVersion.isActive,
+        files: firmwareVersion.files,
         createdById: firmwareVersion.createdById,
         createdAt: firmwareVersion.createdAt,
         updatedAt: firmwareVersion.updatedAt

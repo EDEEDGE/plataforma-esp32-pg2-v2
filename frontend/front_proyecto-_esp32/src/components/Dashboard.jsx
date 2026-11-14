@@ -98,12 +98,25 @@ export default function Dashboard({ user, onLogout, onUserUpdated }) {
       />
 
       <section className="dashboard-main">
-        <div className="dashboard-top" key={`header-${selectedPage}`}>
-          <div>
+        <div
+          className={`dashboard-top${selectedPage === 'users' ? ' dashboard-top-users' : ''}`}
+          key={`header-${selectedPage}`}
+        >
+          <div className="dashboard-heading">
             <p className="eyebrow">Plataforma de dispositivos</p>
             <h2>{pageContent.title}</h2>
+            {selectedPage === 'users' ? (
+              <p className="dashboard-help">{pageContent.description}</p>
+            ) : null}
           </div>
-          <p className="dashboard-help">{pageContent.description}</p>
+          {selectedPage === 'users' ? (
+            <article className="card user-manager-intro">
+              <h3>Acceso y seguridad</h3>
+              <p>Administra los roles y el estado de acceso de cada cuenta.</p>
+            </article>
+          ) : (
+            <p className="dashboard-help">{pageContent.description}</p>
+          )}
         </div>
 
         <div
