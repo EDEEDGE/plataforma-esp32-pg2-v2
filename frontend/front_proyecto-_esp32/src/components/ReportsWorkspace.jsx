@@ -119,8 +119,8 @@ function csvCell(value) {
 
 function downloadCsv(filename, columns, rows) {
   const csv = [
-    columns.map(({ label }) => csvCell(label)).join(','),
-    ...rows.map((row) => columns.map(({ value }) => csvCell(value(row))).join(',')),
+    columns.map(({ label }) => csvCell(label)).join(';'),
+    ...rows.map((row) => columns.map(({ value }) => csvCell(value(row))).join(';')),
   ].join('\r\n');
   const url = URL.createObjectURL(new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8' }));
   const link = document.createElement('a');
