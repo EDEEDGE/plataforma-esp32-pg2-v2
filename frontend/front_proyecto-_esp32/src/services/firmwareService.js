@@ -148,3 +148,21 @@ export async function createFirmwareDeployment(projectId, deploymentData) {
     deployment: data.deployment,
   };
 }
+
+/** Cancels a pending firmware assignment. */
+export async function cancelFirmwareDeploymentAssignment(deploymentDeviceId) {
+  const data = await request(`/deployments/assignments/${deploymentDeviceId}/cancel`, {
+    method: 'PATCH',
+    auth: true,
+    fallbackMessage: 'No se pudo cancelar la actualización de firmware',
+  });
+
+  if (data.deploymentDeviceId !== deploymentDeviceId || data.status !== 'CANCELLED') {
+    throw new Error('La respuesta no confirma la cancelación de la actualización.');
+  }
+
+  return {
+    message: data.message,
+    status: data.status,
+  };
+}

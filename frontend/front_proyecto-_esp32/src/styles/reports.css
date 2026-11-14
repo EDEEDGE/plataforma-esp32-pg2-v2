@@ -291,6 +291,19 @@
   color: #ddd6fe;
 }
 
+.report-status-cancelled {
+  background: rgba(148, 163, 184, 0.18);
+  color: #cbd5e1;
+}
+
+.reports-cancel-button {
+  display: block;
+  margin-top: 6px;
+  padding: 0.4rem 0.7rem;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
 .report-error-message {
   display: block;
   max-width: 240px;

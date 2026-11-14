@@ -6,6 +6,7 @@ import {
   getProjectSummary,
   getProjectUpdateHistory,
 } from '../services/reportService.js';
+import { cancelFirmwareDeploymentAssignment } from '../services/firmwareService.js';
 import '../styles/reports.css';
 
 const reportStatusLabels = {
@@ -13,6 +14,7 @@ const reportStatusLabels = {
   INSTALLED: 'Instalada',
   FAILED: 'Fallida',
   SUPERSEDED: 'Sustituida',
+  CANCELLED: 'Cancelada',
 };
 
 function formatDate(value) {
@@ -108,8 +110,8 @@ function csvCell(value) {
 
 function downloadCsv(filename, columns, rows) {
   const csv = [
-    columns.map(({ label }) => csvCell(label)).join(';'),
-    ...rows.map((row) => columns.map(({ value }) => csvCell(value(row))).join(';')),
+    columns.map(({ label }) => csvCell(label)).join(','),
+    ...rows.map((row) => columns.map(({ value }) => csvCell(value(row))).join(',')),
   ].join('\r\n');
   const url = URL.createObjectURL(new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8' }));
   const link = document.createElement('a');
@@ -142,6 +144,9 @@ export default function ReportsWorkspace() {
   const [loadingProjects, setLoadingProjects] = useState(false);
   const [loadingReports, setLoadingReports] = useState(false);
   const [error, setError] = useState('');
+  const [actionError, setActionError] = useState('');
+  const [actionMessage, setActionMessage] = useState('');
+  const [cancelingAssignmentId, setCancelingAssignmentId] = useState(null);
   const [exportMessage, setExportMessage] = useState('');
   const [exportError, setExportError] = useState('');
   const [refreshKey, setRefreshKey] = useState(0);
@@ -261,6 +266,7 @@ export default function ReportsWorkspace() {
 
   const selectedProject = projects.find((project) => project.id === selectedProjectId);
   const selectedRoom = rooms.find((room) => room.id === selectedRoomId);
+  const canCancelDeployments = ['OWNER', 'ADMIN'].includes(selectedRoom?.role);
   const historyRows = useMemo(() => {
     const rows = reports?.history.history || [];
     return sortRows(
@@ -309,6 +315,30 @@ export default function ReportsWorkspace() {
     setRefreshKey((currentKey) => currentKey + 1);
   };
 
+  const handleCancelAssignment = async (item) => {
+    if (
+      item.status !== 'PENDING'
+      || !canCancelDeployments
+      || !window.confirm(`¿Cancelar la actualización pendiente de ${item.device.name || 'este dispositivo'}?`)
+    ) {
+      return;
+    }
+
+    setCancelingAssignmentId(item.deploymentDeviceId);
+    setActionError('');
+    setActionMessage('');
+
+    try {
+      const result = await cancelFirmwareDeploymentAssignment(item.deploymentDeviceId);
+      setActionMessage(result.message || 'Actualización cancelada correctamente.');
+      refreshReports();
+    } catch (cancelError) {
+      setActionError(cancelError.message || 'No se pudo cancelar la actualización.');
+    } finally {
+      setCancelingAssignmentId(null);
+    }
+  };
+
   const handleRoomChange = (event) => {
     setLoadingProjects(true);
     setLoadingReports(false);
@@ -317,6 +347,8 @@ export default function ReportsWorkspace() {
     setSelectedProjectId('');
     setReports(null);
     setError('');
+    setActionError('');
+    setActionMessage('');
     setRefreshMessage('');
     refreshRequestProjectId.current = null;
     setHistoryStatus('all');
@@ -329,6 +361,8 @@ export default function ReportsWorkspace() {
     setSelectedProjectId(event.target.value);
     setReports(null);
     setError('');
+    setActionError('');
+    setActionMessage('');
     setRefreshMessage('');
     refreshRequestProjectId.current = null;
     setHistoryStatus('all');
@@ -409,6 +443,8 @@ export default function ReportsWorkspace() {
         </p>
       </details>
       {error ? <p className="form-error reports-feedback" role="alert">{error}</p> : null}
+      {actionError ? <p className="form-error reports-feedback" role="alert">{actionError}</p> : null}
+      {actionMessage ? <p className="form-message reports-feedback" role="status">{actionMessage}</p> : null}
       {refreshMessage ? <p className="form-message reports-feedback" role="status">{refreshMessage}</p> : null}
       {exportError ? <p className="form-error reports-feedback" role="alert">{exportError}</p> : null}
       {exportMessage ? <p className="form-message reports-feedback" role="status">{exportMessage}</p> : null}
@@ -527,7 +563,21 @@ export default function ReportsWorkspace() {
                           ) : null}
                         </td>
                         <td>{historyColumns[4].value(item)}</td>
-                        <td>{historyColumns[5].value(item)}</td>
+                        <td>
+                          {historyColumns[5].value(item)}
+                          {item.status === 'PENDING' && canCancelDeployments ? (
+                            <button
+                              type="button"
+                              className="danger-button reports-cancel-button"
+                              onClick={() => handleCancelAssignment(item)}
+                              disabled={cancelingAssignmentId !== null}
+                              aria-busy={cancelingAssignmentId === item.deploymentDeviceId}
+                              aria-label={`Cancelar actualización pendiente de ${item.device.name || 'este dispositivo'}`}
+                            >
+                              {cancelingAssignmentId === item.deploymentDeviceId ? 'Cancelando…' : 'Cancelar'}
+                            </button>
+                          ) : null}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
