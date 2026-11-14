@@ -1,5 +1,7 @@
 import { db } from '../../../prisma/db.ts';
 
+import { Temporal } from 'temporal-polyfill';
+
 // Comparar versiones X.Y.Z
 const compararVersionesFirmware = (a, b) => {
   const patron = /^\d{1,4}\.\d{1,4}\.\d{1,4}$/;
@@ -395,6 +397,115 @@ export const createDeployment = async (req, res) => {
 
     console.error(
       'Error al crear deployment:',
+      error
+    );
+
+    return res.status(500).json({
+      message: 'Error interno del servidor'
+    });
+  }
+};
+
+
+// ============================================
+// CANCELAR UNA ACTUALIZACION OTA PENDIENTE
+// ============================================
+
+export const cancelDeploymentAssignment = async (req, res) => {
+  try {
+    const { deploymentDeviceId } = req.params;
+
+    // 1. Buscar la asignacion
+    const assignment =
+      await db.orm.public.DeploymentDevice.first({
+        id: deploymentDeviceId
+      });
+
+    if (!assignment) {
+      return res.status(404).json({
+        message: 'Asignación de actualización no encontrada'
+      });
+    }
+
+    // 2. Buscar el despliegue
+    const deployment = await db.orm.public.Deployment.first({
+      id: assignment.deploymentId
+    });
+
+    if (!deployment) {
+      return res.status(404).json({
+        message: 'Despliegue no encontrado'
+      });
+    }
+
+    // 3. Buscar proyecto
+    const project = await db.orm.public.Project.first({
+      id: deployment.projectId
+    });
+
+    if (!project) {
+      return res.status(404).json({
+        message: 'Proyecto no encontrado'
+      });
+    }
+
+    // 4. Verificar acceso a la sala
+    const membership = await db.orm.public.RoomMember.first({
+      roomId: project.roomId,
+      userId: req.user.id
+    });
+
+    if (!membership) {
+      return res.status(403).json({
+        message: 'No tienes acceso a este proyecto'
+      });
+    }
+
+    // 5. Solo OWNER y ADMIN pueden cancelar
+    if (
+      membership.role !== 'OWNER' &&
+      membership.role !== 'ADMIN'
+    ) {
+      return res.status(403).json({
+        message: 'No tienes permisos para cancelar actualizaciones'
+      });
+    }
+
+    // 6. Solo se pueden cancelar asignaciones pendientes
+    if (assignment.status !== 'PENDING') {
+      return res.status(409).json({
+        message: 'Solo se pueden cancelar actualizaciones pendientes',
+        currentStatus: assignment.status
+      });
+    }
+
+    // 7. Actualizar el estado de forma condicionada
+    const updated =
+      await db.orm.public.DeploymentDevice
+        .where({
+          id: deploymentDeviceId,
+          status: 'PENDING'
+        })
+        .update({
+          status: 'CANCELLED',
+          updatedAt: Temporal.Now.instant()
+        });
+
+    if (!updated) {
+      return res.status(409).json({
+        message: 'La actualización cambió de estado antes de cancelarse'
+      });
+    }
+
+    return res.status(200).json({
+      message: 'Actualización cancelada correctamente',
+      deploymentDeviceId: updated.id,
+      status: updated.status
+    });
+
+  } catch (error) {
+    console.error(
+      'Error al cancelar actualización OTA:',
       error
     );
 

@@ -9,11 +9,13 @@ import {
 } from '../controllers/firmwareVersions.controller.js';
 
 import {
-  uploadFirmwareFile
+  uploadFirmwareFile,
+  replaceFirmwareFile
 } from '../controllers/firmwareFiles.controller.js';
 
 import {
-  createDeployment
+  createDeployment,
+  cancelDeploymentAssignment
 } from '../controllers/deployments.controller.js'
 
 //middleware para subir el archivo
@@ -82,6 +84,14 @@ router.post(
   uploadFirmwareFile
 );
 
+// Reemplazar archivo .bin de una versión de firmware
+router.put(
+  '/firmware/files/:fileId',
+  authMiddleware,
+  firmwareUpload.single('file'),
+  replaceFirmwareFile
+);
+
 // Crear despliegue de firmware
 router.post(
   '/projects/:projectId/deployments',
@@ -89,6 +99,12 @@ router.post(
   createDeployment
 );
 
+// Cancelar una actualización OTA pendiente
+router.patch(
+  '/deployments/assignments/:deploymentDeviceId/cancel',
+  authMiddleware,
+  cancelDeploymentAssignment
+);
 
 // ESP32 consulta si tiene una actualización pendiente
 router.get(
@@ -111,5 +127,7 @@ router.post(
   deviceAuthMiddleware,
   confirmFirmwareInstallation
 );
+
+
 
 export default router;
